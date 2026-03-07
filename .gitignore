@@ -4,3 +4,4 @@
 /storage/*.key
 /public/build
 /public/hot
+/.vscode
