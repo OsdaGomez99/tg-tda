@@ -83,24 +83,7 @@ Route::get('/videos', function () {
     return view('pages.ui-elements.videos', ['title' => 'Videos']);
 })->name('videos');
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// Fallback route for 404 errors
+Route::fallback(function () {
+    return view('pages.errors.error-404', ['title' => 'Error 404']);
+});

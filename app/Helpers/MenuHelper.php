@@ -8,6 +8,16 @@ class MenuHelper
     {
         return [
             [
+                'icon' => 'task',
+                'name' => 'Preguntas',
+                'path' => '/preguntas',
+            ],
+            [
+                'icon' => 'forms',
+                'name' => 'Encuestas',
+                'path' => '/encuestas',
+            ],
+            [
                 'icon' => 'dashboard',
                 'name' => 'Dashboard',
                 'subItems' => [
