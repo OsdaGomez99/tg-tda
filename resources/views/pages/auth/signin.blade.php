@@ -16,7 +16,7 @@
                             </p>
                         </div>
                         <div>
-                            <form @submit.prevent="handleLogin" x-data="loginForm()" novalidate>
+                            <form @submit.prevent="handleLogin" x-data="loginForm" novalidate>
                                 <div class="space-y-5">
                                     <!-- Success Message -->
                                     <div x-show="successMessage" @click.away="successMessage = ''"
@@ -144,7 +144,7 @@
                     <x-common.common-grid-shape />
                     <div class="flex max-w-xs flex-col items-center">
                         <a href="/" class="mb-4 block">
-                            <img src="./images/logo/auth-logo.svg" alt="Logo" />
+                            <img src="./images/logo/auth-logo.png" alt="Logo" />
                         </a>
                         <p class="text-center text-gray-400 dark:text-white/60">
                             Plantilla gratuita de Panel de Administración Tailwind CSS de código abierto

@@ -8,15 +8,19 @@ import 'flatpickr/dist/flatpickr.min.css';
 // FullCalendar
 import { Calendar } from '@fullcalendar/core';
 
-// Componentes Alpine
-import './alpine-components.js';
-
-
-
 window.Alpine = Alpine;
 window.ApexCharts = ApexCharts;
 window.flatpickr = flatpickr;
 window.FullCalendar = Calendar;
+
+// Importar componentes
+import { loginForm } from './forms/login-form.js';
+import { registerForm } from './forms/register-form.js';
+
+// Registrar con Alpine.data() ANTES de Alpine.start()
+// Alpine.data() espera la FUNCIÓN, no su retorno
+Alpine.data('loginForm', loginForm);
+Alpine.data('registerForm', registerForm);
 
 Alpine.start();
 
