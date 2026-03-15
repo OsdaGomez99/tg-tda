@@ -8,6 +8,9 @@ import 'flatpickr/dist/flatpickr.min.css';
 // FullCalendar
 import { Calendar } from '@fullcalendar/core';
 
+// Componentes Alpine
+import './alpine-components.js';
+
 
 
 window.Alpine = Alpine;
