@@ -2,21 +2,14 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/preguntas', function () {
-    return view('pages.preguntas.preguntas-index', ['title' => 'Preguntas']);
-})->name('preguntas');
+Route::get('/preguntas', [App\Http\Controllers\PreguntaController::class, 'index'])->name('preguntas');
+Route::get('/preguntas/create', [App\Http\Controllers\PreguntaController::class, 'create'])->name('preguntas-create');
+Route::post('/preguntas', [App\Http\Controllers\PreguntaController::class, 'store'])->name('preguntas.store');
 
-Route::get('/preguntas/create', function () {
-    return view('pages.preguntas.preguntas-create', ['title' => 'Nueva Pregunta']);
-})->name('preguntas-create');
-
-Route::get('/encuestas', function () {
-    return view('pages.encuestas.encuestas-index', ['title' => 'Encuestas']);
-})->name('encuestas');
-
-Route::get('/encuestas/create', function () {
-    return view('pages.encuestas.encuestas-create', ['title' => 'Nueva Encuesta']);
-})->name('encuestas-create');
+//encuestas routes
+Route::get('/encuestas', [App\Http\Controllers\EncuestaController::class, 'index'])->name('encuestas');
+Route::get('/encuestas/create', [App\Http\Controllers\EncuestaController::class, 'create'])->name('encuestas-create');
+Route::post('/encuestas', [App\Http\Controllers\EncuestaController::class, 'store'])->name('encuestas.store');
 
 
 // dashboard pages
