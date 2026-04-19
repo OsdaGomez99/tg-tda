@@ -1,7 +1,23 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DashboardController;
+
+Route::get('/preguntas', function () {
+    return view('pages.preguntas.preguntas-index', ['title' => 'Preguntas']);
+})->name('preguntas');
+
+Route::get('/preguntas/create', function () {
+    return view('pages.preguntas.preguntas-create', ['title' => 'Nueva Pregunta']);
+})->name('preguntas-create');
+
+Route::get('/encuestas', function () {
+    return view('pages.encuestas.encuestas-index', ['title' => 'Encuestas']);
+})->name('encuestas');
+
+Route::get('/encuestas/create', function () {
+    return view('pages.encuestas.encuestas-create', ['title' => 'Nueva Encuesta']);
+})->name('encuestas-create');
+
 
 // dashboard pages
 Route::get('/', function () {
