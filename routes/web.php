@@ -11,6 +11,10 @@ Route::get('/encuestas', [App\Http\Controllers\EncuestaController::class, 'index
 Route::get('/encuestas/create', [App\Http\Controllers\EncuestaController::class, 'create'])->name('encuestas-create');
 Route::post('/encuestas', [App\Http\Controllers\EncuestaController::class, 'store'])->name('encuestas.store');
 
+// authentication routes
+Route::post('/login', [App\Http\Controllers\AuthController::class, 'login'])->name('login.post');
+Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('logout');
+
 
 // dashboard pages
 Route::get('/', function () {
