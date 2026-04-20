@@ -173,4 +173,91 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('loginForm', () => ({
+                form: {
+                    email: '',
+                    password: '',
+                    rememberMe: false
+                },
+                errors: [],
+                successMessage: '',
+                isLoading: false,
+
+                async handleLogin() {
+                    // Reset messages
+                    this.errors = [];
+                    this.successMessage = '';
+
+                    // Validate
+                    if (!this.form.email) {
+                        this.errors.push('El correo es requerido');
+                    } else if (!this.isValidEmail(this.form.email)) {
+                        this.errors.push('El correo no es válido');
+                    }
+
+                    if (!this.form.password) {
+                        this.errors.push('La contraseña es requerida');
+                    } else if (this.form.password.length < 6) {
+                        this.errors.push('La contraseña debe tener al menos 6 caracteres');
+                    }
+
+                    if (this.errors.length > 0) {
+                        return;
+                    }
+
+                    this.isLoading = true;
+
+                    try {
+                        const response = await fetch('/login', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector(
+                                    'meta[name="csrf-token"]')?.content || ''
+                            },
+                            body: JSON.stringify({
+                                email: this.form.email,
+                                password: this.form.password
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (!response.ok) {
+                            this.errors = data.errors || ['Error al iniciar sesión'];
+                        } else if (data.accessToken) {
+                            // Store JWT token
+                            localStorage.setItem('authToken', data.accessToken);
+                            localStorage.setItem('user', JSON.stringify({
+                                fullname: data.fullname,
+                                email: data.email,
+                                permissions: data.permissions
+                            }));
+
+                            this.successMessage = 'Iniciando sesión...';
+                            // Redirect after success
+                            setTimeout(() => {
+                                window.location.href = '/';
+                            }, 1000);
+                        } else {
+                            this.errors = ['Error al iniciar sesión'];
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        this.errors = ['Error de conexión. Por favor intenta de nuevo.'];
+                    } finally {
+                        this.isLoading = false;
+                    }
+                },
+
+                isValidEmail(email) {
+                    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    return re.test(email);
+                }
+            }));
+        });
+    </script>
 @endsection
