@@ -9,7 +9,7 @@ class PreguntaController extends Controller
 {
     public function index()
     {
-        $preguntas = Pregunta::with('categoria')->get();
+        $preguntas = Pregunta::get();
 
         return view('pages.preguntas.preguntas-index', [
             'title' => 'Preguntas',
@@ -27,14 +27,59 @@ class PreguntaController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nombre' => 'required|string',
+            'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
-            'categoria_id' => 'required|exists:categorias,id',
+            'tipo_tda' => 'required|in:I,H',
+            'ejemplo' => 'nullable|string',
             'estado' => 'boolean'
         ]);
+
+        // Asegurar que estado sea booleano
+        $validated['estado'] = $request->has('estado');
 
         Pregunta::create($validated);
 
         return redirect()->route('preguntas')->with('success', 'Pregunta creada correctamente');
+    }
+
+    public function show(Pregunta $pregunta)
+    {
+        return view('pages.preguntas.preguntas-show', [
+            'title' => 'Detalle de Pregunta',
+            'pregunta' => $pregunta
+        ]);
+    }
+
+    public function edit(Pregunta $pregunta)
+    {
+        return view('pages.preguntas.preguntas-edit', [
+            'title' => 'Editar Pregunta',
+            'pregunta' => $pregunta
+        ]);
+    }
+
+    public function update(Request $request, Pregunta $pregunta)
+    {
+        $validated = $request->validate([
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'nullable|string',
+            'tipo_tda' => 'required|in:I,H',
+            'ejemplo' => 'nullable|string',
+            'estado' => 'boolean'
+        ]);
+
+        // Asegurar que estado sea booleano
+        $validated['estado'] = $request->has('estado');
+
+        $pregunta->update($validated);
+
+        return redirect()->route('preguntas')->with('success', 'Pregunta actualizada correctamente');
+    }
+
+    public function destroy(Pregunta $pregunta)
+    {
+        $pregunta->delete();
+
+        return redirect()->route('preguntas')->with('success', 'Pregunta eliminada correctamente');
     }
 }

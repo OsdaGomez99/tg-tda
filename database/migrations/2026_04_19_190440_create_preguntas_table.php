@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('preguntas', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->text('descripcion')->nullable();
-            $table->foreignId('categoria_id')->constrained('categorias');
+            $table->text('ejemplo')->nullable()->comment('Ejemplo o explicación de la pregunta');
+            $table->foreignId('categoria_id')->constrained('categorias')->nullable();
+            $table->char('tipo_tda', 1)->nullable()->comment('I = Inatención, H = Hiperactividad/Impulsividad');
             $table->boolean('estado')->default(true);
             $table->timestamps();
         });

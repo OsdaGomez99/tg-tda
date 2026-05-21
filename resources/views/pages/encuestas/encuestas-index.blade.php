@@ -43,7 +43,7 @@
                         </svg>
                         Filtros
                     </button>
-                    <a href="/encuestas/create">
+                    <a href="{{ route('encuestas.create') }}">
                         <x-ui.button size="sm" variant="primary">Nueva encuesta</x-ui.button>
                     </a>
                 </div>
@@ -65,7 +65,13 @@
                             </th>
                             <th class="px-6 py-3">
                                 <div class="flex items-center">
-                                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Usuario responsable</p>
+                                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Usuario
+                                        responsable</p>
+                                </div>
+                            </th>
+                            <th class="px-6 py-3">
+                                <div class="flex items-center">
+                                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Preguntas</p>
                                 </div>
                             </th>
                             <th class="px-6 py-3">
@@ -108,14 +114,30 @@
                                 <td class="px-6 py-3.5">
                                     <div class="flex items-center">
                                         <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+                                            <span
+                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                                {{ $encuesta->preguntas->count() }} preguntas
+                                            </span>
+                                        </p>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-3.5">
+                                    <div class="flex items-center">
+                                        <p class="text-gray-500 text-theme-sm dark:text-gray-400">
                                             {{ $encuesta->created_at->format('d/m/Y') }}
                                         </p>
                                     </div>
                                 </td>
                                 <td class="px-6 py-3.5">
                                     <div class="flex items-center gap-2">
-                                        <a href="#" class="text-blue-600 hover:text-blue-800 text-theme-sm">Editar</a>
-                                        <a href="#" class="text-red-600 hover:text-red-800 text-theme-sm">Eliminar</a>
+                                        <a href="{{ route('iniciar-encuesta', $encuesta) }}"
+                                            class="rounded-lg bg-blue-600 px-3 py-2 text-xs font-medium text-white hover:bg-blue-700">
+                                            Responder
+                                        </a>
+                                        <a href="{{ route('estadisticas-encuesta', $encuesta) }}"
+                                            class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400">
+                                            Estadísticas
+                                        </a>
                                     </div>
                                 </td>
                             </tr>

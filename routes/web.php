@@ -3,13 +3,50 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/preguntas', [App\Http\Controllers\PreguntaController::class, 'index'])->name('preguntas');
-Route::get('/preguntas/create', [App\Http\Controllers\PreguntaController::class, 'create'])->name('preguntas-create');
-Route::post('/preguntas', [App\Http\Controllers\PreguntaController::class, 'store'])->name('preguntas.store');
+Route::get('/preguntas/crear', [App\Http\Controllers\PreguntaController::class, 'create'])->name('preguntas-create');
+Route::post('/preguntas/guardar', [App\Http\Controllers\PreguntaController::class, 'store'])->name('preguntas.store');
+Route::get('/preguntas/{pregunta}/editar', [App\Http\Controllers\PreguntaController::class, 'edit'])->name('preguntas.edit');
+Route::put('/preguntas/{pregunta}', [App\Http\Controllers\PreguntaController::class, 'update'])->name('preguntas.update');
+Route::delete('/preguntas/{pregunta}', [App\Http\Controllers\PreguntaController::class, 'destroy'])->name('preguntas.destroy');
 
-//encuestas routes
-Route::get('/encuestas', [App\Http\Controllers\EncuestaController::class, 'index'])->name('encuestas');
-Route::get('/encuestas/create', [App\Http\Controllers\EncuestaController::class, 'create'])->name('encuestas-create');
-Route::post('/encuestas', [App\Http\Controllers\EncuestaController::class, 'store'])->name('encuestas.store');
+// RUTAS DE ADMINISTRACIÓN DE ENCUESTAS
+Route::prefix('admin/encuestas')->name('encuestas.')->group(function () {
+    Route::get('/', [App\Http\Controllers\EncuestaController::class, 'index'])->name('index');
+    Route::get('/crear', [App\Http\Controllers\EncuestaController::class, 'create'])->name('create');
+    Route::post('/', [App\Http\Controllers\EncuestaController::class, 'store'])->name('store');
+    Route::get('/{encuesta}/editar', [App\Http\Controllers\EncuestaController::class, 'edit'])->name('edit');
+    Route::put('/{encuesta}', [App\Http\Controllers\EncuestaController::class, 'update'])->name('update');
+    Route::delete('/{encuesta}', [App\Http\Controllers\EncuestaController::class, 'destroy'])->name('destroy');
+    Route::get('/{encuesta}/asignar-preguntas', [App\Http\Controllers\EncuestaController::class, 'asignarPreguntasForm'])->name('asignar-preguntas');
+    Route::post('/{encuesta}/asignar-preguntas', [App\Http\Controllers\EncuestaController::class, 'asignarPreguntas'])->name('asignar-preguntas-store');
+});
+
+//RUTAS PARA ENCUESTAS - ESTUDIANTE
+//Lista de encuestas
+Route::get('/encuestas', [App\Http\Controllers\EncuestaWebController::class, 'index'])->name('encuestas');
+
+// Página de estadísticas de encuesta
+Route::get('/encuestas/{encuesta}/estadisticas', [App\Http\Controllers\EncuestaWebController::class, 'estadisticas'])->name('estadisticas-encuesta');
+
+//Pagina de iniciar encuesta
+Route::get('/encuestas/{encuesta}/iniciar', [App\Http\Controllers\EncuestaWebController::class, 'iniciar'])->name('iniciar-encuesta');
+
+// Guardar datos iniciales y redirigir a responder encuesta
+Route::post('/encuestas/{encuesta}/guardar-datos', [App\Http\Controllers\EncuestaWebController::class, 'store'])->name('guardar-datos-encuesta');
+
+// Página de responder encuesta
+Route::get('/respuestas/{resultado}/responder', [App\Http\Controllers\EncuestaWebController::class, 'responder'])->name('responder-encuesta');
+
+// Página de resultado de encuesta en estudiante
+Route::get('/respuestas/{resultado}/resultado', [App\Http\Controllers\EncuestaWebController::class, 'resultado'])->name('resultado-encuesta');
+
+// Página de detalles de resultado de encuesta en estudiante
+Route::get('/respuestas/{resultado}/detalles', [App\Http\Controllers\EncuestaWebController::class, 'detalles'])->name('detalles-encuesta');
+
+
+
+
+
 
 // authentication routes
 Route::post('/login', [App\Http\Controllers\AuthController::class, 'login'])->name('login.post');
