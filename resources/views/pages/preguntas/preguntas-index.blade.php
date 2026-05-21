@@ -2,7 +2,8 @@
 
 @section('content')
     <div class="space-y-6">
-        <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white pt-4 dark:border-gray-800 dark:bg-white/[0.03]">
+        <div
+            class="overflow-hidden rounded-2xl border border-gray-200 bg-white pt-4 dark:border-gray-800 dark:bg-white/[0.03]">
             <div class="flex flex-col gap-4 px-6 mb-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">Preguntas</h3>
@@ -14,8 +15,8 @@
                             <div class="relative">
                                 <span class="absolute -translate-y-1/2 pointer-events-none left-4 top-1/2">
                                     <!-- Search Icon -->
-                                    <svg class="fill-gray-500 dark:fill-gray-400" width="20" height="20" viewBox="0 0 20 20"
-                                        fill="none">
+                                    <svg class="fill-gray-500 dark:fill-gray-400" width="20" height="20"
+                                        viewBox="0 0 20 20" fill="none">
                                         <path fill-rule="evenodd" clip-rule="evenodd"
                                             d="M3.04175 9.37363C3.04175 5.87693 5.87711 3.04199 9.37508 3.04199C12.8731 3.04199 15.7084 5.87693 15.7084 9.37363C15.7084 12.8703 12.8731 15.7053 9.37508 15.7053C5.87711 15.7053 3.04175 12.8703 3.04175 9.37363ZM9.37508 1.54199C5.04902 1.54199 1.54175 5.04817 1.54175 9.37363C1.54175 13.6991 5.04902 17.2053 9.37508 17.2053C11.2674 17.2053 13.003 16.5344 14.357 15.4176L17.177 18.238C17.4699 18.5309 17.9448 18.5309 18.2377 18.238C18.5306 17.9451 18.5306 17.4703 18.2377 17.1774L15.418 14.3573C16.5365 13.0033 17.2084 11.2669 17.2084 9.37363C17.2084 5.04817 13.7011 1.54199 9.37508 1.54199Z"
                                             fill="" />
@@ -44,7 +45,7 @@
 
                         Filtros
                     </button>
-                    <a href="/preguntas/create">
+                    <a href="/preguntas/crear">
                         <x-ui.button size="sm" variant="primary">Nueva pregunta</x-ui.button>
                     </a>
                 </div>
@@ -67,7 +68,7 @@
                             </th>
                             <th class="px-6 py-3">
                                 <div class="flex items-center">
-                                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Categoría</p>
+                                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Tipo TDA</p>
                                 </div>
                             </th>
                             <th class="px-6 py-3">
@@ -97,35 +98,50 @@
                                 </td>
                                 <td class="px-6 py-3.5">
                                     <div class="flex items-center">
-                                        <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $pregunta->nombre }}</p>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-3.5">
-                                    <div class="flex items-center">
-                                        <p class="text-gray-500 text-theme-sm dark:text-gray-400">
-                                            {{ $pregunta->categoria?->nombre ?? 'Sin categoría' }}
+                                        <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $pregunta->nombre }}
                                         </p>
                                     </div>
                                 </td>
                                 <td class="px-6 py-3.5">
                                     <div class="flex items-center">
-                                        @if ($pregunta->estado)
+                                        @if ($pregunta->tipo_tda === 'I')
                                             <span
-                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                                                Activo
+                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200">
+                                                Inatención
+                                            </span>
+                                        @elseif ($pregunta->tipo_tda === 'H')
+                                            <span
+                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                                Hiperactividad
                                             </span>
                                         @else
-                                            <span
-                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
-                                                Inactivo
-                                            </span>
+                                            <span class="text-gray-500 text-theme-sm dark:text-gray-400">N/A</span>
+                                        @endif
+                                    </div>
+                                </td>
+                                <td class="px-6 py-3.5">
+                                    <div class="flex items-center">
+                                        @if ($pregunta->estado)
+                                        <x-ui.badge color="success">
+                                            Activo
+                                        </x-ui.badge>
+                                        @else
+                                        <x-ui.badge color="danger">
+                                            Inactivo
+                                        </x-ui.badge>
                                         @endif
                                     </div>
                                 </td>
                                 <td class="px-6 py-3.5">
                                     <div class="flex items-center gap-2">
-                                        <a href="#" class="text-blue-600 hover:text-blue-800 text-theme-sm">Editar</a>
-                                        <a href="#" class="text-red-600 hover:text-red-800 text-theme-sm">Eliminar</a>
+                                        <a href="/preguntas/{{ $pregunta->id }}/editar" class="text-blue-600 hover:text-blue-800 text-theme-sm">
+                                            <x-ui.button size="xs" variant="outline">Editar</x-ui.button>
+                                        </a>
+                                        <form action="/preguntas/{{ $pregunta->id }}" method="POST" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <x-ui.button size="xs" variant="danger">Eliminar</x-ui.button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
