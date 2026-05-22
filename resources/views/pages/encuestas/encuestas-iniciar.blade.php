@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.encuestas')
 
 @section('content')
     <div class="space-y-6">
@@ -6,7 +6,7 @@
         <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
             <h1 class="text-2xl font-bold text-gray-800 dark:text-white">{{ $encuesta->nombre }}</h1>
             <p class="mt-2 text-gray-600 dark:text-gray-400">
-                Cuestionario de detección de Trastorno por Déficit de Atención (TDA)
+                {{ $encuesta->descripcion }}
             </p>
         </div>
 
@@ -16,7 +16,7 @@
             <ul class="mt-4 space-y-2 text-sm text-blue-800 dark:text-blue-300">
                 <li class="flex items-start gap-3">
                     <span class="mt-0.5 inline-block h-2 w-2 rounded-full bg-blue-600"></span>
-                    <span>Esta encuesta contiene 18 preguntas basadas en criterios DSM-5</span>
+                    <span>Esta encuesta contiene preguntas basadas en criterios DSM-5</span>
                 </li>
                 <li class="flex items-start gap-3">
                     <span class="mt-0.5 inline-block h-2 w-2 rounded-full bg-blue-600"></span>
@@ -61,7 +61,7 @@
                         Edad <span class="text-red-600">*</span>
                     </label>
                     <input type="number" name="edad_estudiante" placeholder="Ingrese su edad"
-                        value="{{ old('edad_estudiante') }}" min="5" max="100" required
+                        value="{{ old('edad_estudiante') }}" min="10" max="100" required
                         class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-blue-600 dark:focus:ring-blue-600/20">
                     @error('edad_estudiante')
                         <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -103,7 +103,7 @@
             <div class="mt-8 flex gap-4">
                 <a href="/encuestas"
                     class="flex-1 rounded-lg border border-gray-300 bg-white px-6 py-3 text-center font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
-                    ← Cancelar
+                    ← Salir
                 </a>
                 <button type="submit"
                     class="flex-1 rounded-lg bg-blue-600 px-6 py-3 font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500/50 dark:bg-blue-700 dark:hover:bg-blue-800">

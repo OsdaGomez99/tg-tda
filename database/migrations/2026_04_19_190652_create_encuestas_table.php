@@ -15,6 +15,7 @@ return new class extends Migration
         Schema::create('encuestas', function (Blueprint $table) {
             $table->id();
             $table->string('nombre')->unique();
+            $table->text('descripcion')->nullable();
             $table->foreignId('usuario_id')->constrained('users');
             $table->timestamps();
         });
