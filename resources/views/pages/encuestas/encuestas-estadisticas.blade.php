@@ -254,7 +254,7 @@
                 ← Volver a Encuestas
             </a>
             <button onclick="window.print()"
-                class="flex-1 rounded-lg bg-gray-600 px-6 py-3 font-medium text-white hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-800">
+                class="flex-1 rounded-lg border border-gray-300 bg-white px-6 py-3 text-center font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
                 📊 Exportar Estadísticas
             </button>
         </div>
@@ -272,7 +272,7 @@
             default => 'bg-gray-100 text-gray-800',
         };
     }
-    
+
     function getResultadoLabel($resultado)
     {
         return match ($resultado) {
