@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Encuesta extends Model
 {
-    protected $fillable = ['nombre', 'usuario_id'];
+    protected $fillable = ['nombre', 'descripcion', 'usuario_id'];
 
     /**
      * Relación con Usuario
