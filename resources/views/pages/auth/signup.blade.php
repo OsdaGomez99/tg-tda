@@ -108,59 +108,24 @@
                                         </template>
                                     </ul>
                                 </div>
-                                <!-- Checkbox -->
-                                <div>
-                                    <div x-data="{ checkboxToggle: false }">
-                                        <label for="checkboxLabelOne"
-                                            class="flex cursor-pointer items-start text-sm font-normal text-gray-700 select-none dark:text-gray-400">
-                                            <div class="relative">
-                                                <input type="checkbox" x-model="form.agreeTerms" id="checkboxLabelOne"
-                                                    class="sr-only" @change="checkboxToggle = !checkboxToggle" />
-                                                <div :class="checkboxToggle ? 'border-brand-500 bg-brand-500' :
-                                                    'bg-transparent border-gray-300 dark:border-gray-700'"
-                                                    class="mr-3 flex h-5 w-5 items-center justify-center rounded-md border-[1.25px]">
-                                                    <span :class="checkboxToggle ? '' : 'opacity-0'">
-                                                        <svg width="14" height="14" viewBox="0 0 14 14"
-                                                            fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M11.6666 3.5L5.24992 9.91667L2.33325 7" stroke="white"
-                                                                stroke-width="1.94437" stroke-linecap="round"
-                                                                stroke-linejoin="round" />
-                                                        </svg>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <p class="inline-block font-normal text-gray-500 dark:text-gray-400">
-                                                Al crear una cuenta, aceptas los
-                                                <span class="text-gray-800 dark:text-white/90">
-                                                    Términos y Condiciones,
-                                                </span>
-                                                y nuestra
-                                                <span class="text-gray-800 dark:text-white">
-                                                    Política de Privacidad
-                                                </span>
-                                            </p>
-                                        </label>
-                                    </div>
-                                </div>
                                 <!-- Button -->
-                                <div>
-                                    <button type="submit" :disabled="isLoading"
-                                        class="bg-brand-500 shadow-theme-xs hover:bg-brand-600 disabled:opacity-50 flex w-full items-center justify-center rounded-lg px-4 py-3 text-sm font-medium text-white transition"
-                                        :class="isLoading && 'opacity-50 cursor-not-allowed'">
-                                        <span x-show="!isLoading">Registrarse</span>
-                                        <span x-show="isLoading" class="flex items-center gap-2">
-                                            <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                                                fill="none" viewBox="0 0 24 24">
-                                                <circle class="opacity-25" cx="12" cy="12" r="10"
-                                                    stroke="currentColor" stroke-width="4"></circle>
-                                                <path class="opacity-75" fill="currentColor"
-                                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                                                </path>
-                                            </svg>
-                                            Registrando...
-                                        </span>
-                                    </button>
-                                </div>
+                                <button type="submit" :disabled="isLoading"
+                                    class="w-full flex items-center justify-center rounded-lg bg-brand-500 px-6 py-3 text-sm font-medium text-white shadow-lg hover:bg-brand-600 transition disabled:opacity-50 disabled:cursor-not-allowed mt-6">
+
+                                    <span x-show="!isLoading" style="display:block" class="font-semibold">Registrarse</span>
+
+                                    <span x-show="isLoading" style="display:none" class="flex items-center gap-2">
+                                        <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg"
+                                            fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10"
+                                                stroke="currentColor" stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor"
+                                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                            </path>
+                                        </svg>
+                                        Registrando...
+                                    </span>
+                                </button>
                             </div>
                         </form>
                         <div class="mt-5">
@@ -177,12 +142,13 @@
                 <div class="z-1 flex items-center justify-center">
                     <!-- ===== Common Grid Shape Start ===== -->
                     <x-common.common-grid-shape />
-                    <div class="flex max-w-xs flex-col items-center">
+                    <div class="flex max-w-md flex-col items-center">
                         <a href="/" class="mb-4 block">
-                            <img src="./images/logo/auth-logo.png" alt="Logo" />
+                            <img src="./images/logo/logo-xl.png" alt="Logo" />
                         </a>
                         <p class="text-center text-gray-400 dark:text-white/60">
-                            Plantilla gratuita de Panel de Administración Tailwind CSS de código abierto
+                            Aplicación web para la detección y orientación integral de Trastorno de Deficit de Atencion
+                            (TDA) en los estudiantes de la Universidad Nacional Experimental de Guayana
                         </p>
                     </div>
                 </div>

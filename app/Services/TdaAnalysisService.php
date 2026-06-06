@@ -26,7 +26,7 @@ class TdaAnalysisService
                 'id'       => $pregunta->id,
                 'category' => $pregunta->tipo_tda,
                 'text'     => $pregunta->nombre,
-                'example'  => $pregunta->ejemplo,
+                'example'  => $pregunta->descripcion,
             ];
         })->toArray();
     }

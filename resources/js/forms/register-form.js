@@ -10,7 +10,6 @@ export function registerForm() {
             email: '',
             password: '',
             passwordConfirmation: '',
-            agreeTerms: false,
         },
         errors: [],
         isLoading: false,
@@ -23,12 +22,6 @@ export function registerForm() {
          */
         async handleRegister() {
             this.errors = [];
-
-            // Validación local: términos y condiciones
-            if (!this.form.agreeTerms) {
-                this.errors.push('Debes aceptar los términos y condiciones.');
-                return;
-            }
 
             this.isLoading = true;
 

@@ -110,18 +110,21 @@
                                         <span x-text="pregunta.id"
                                             class="text-xs font-bold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded"></span>
                                         <span
-                                            :class="{ 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200': pregunta
-                                                    .tipo_tda === 'I', 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200': pregunta
-                                                    .tipo_tda === 'H' }"
+                                            :class="{
+                                                'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200': pregunta
+                                                    .tipo_tda === 'I',
+                                                'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200': pregunta
+                                                    .tipo_tda === 'H'
+                                            }"
                                             class="text-xs font-semibold px-2 py-0.5 rounded">
                                             <span
                                                 x-text="pregunta.tipo_tda === 'I' ? 'Inatención' : 'Hiperactividad'"></span>
                                         </span>
                                     </div>
                                     <p class="text-sm text-gray-700 dark:text-gray-300 mt-1" x-text="pregunta.nombre"></p>
-                                    <template x-if="pregunta.ejemplo">
+                                    <template x-if="pregunta.descripcion">
                                         <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 italic">
-                                            <span x-text="'Ej: ' + pregunta.ejemplo"></span>
+                                            <span x-text="pregunta.descripcion"></span>
                                         </p>
                                     </template>
                                 </div>
@@ -142,13 +145,12 @@
             return {
                 filtro: 'todas',
                 seleccionadas: [],
-                preguntas: @json(
-                    $preguntasDisponibles->map(fn($p) => [
-                                'id' => $p->id,
-                                'nombre' => $p->nombre,
-                                'tipo_tda' => $p->tipo_tda,
-                                'ejemplo' => $p->ejemplo,
-                            ])->toArray()),
+                preguntas: {{ Js::from($preguntasDisponibles->map(fn($p) => [
+                    'id'       => $p->id,
+                    'nombre'   => $p->nombre,
+                    'tipo_tda' => $p->tipo_tda,
+                    'descripcion'  => $p->descripcion
+                ])->values()->toArray()) }},
 
                 get preguntasFiltradas() {
                     if (this.filtro === 'todas') {

@@ -45,15 +45,17 @@ export function loginForm() {
                 const password = this.form.password;
 
                 // Llamar al API de login
-                const response = await fetch('/api/auth/login', {
+                const response = await fetch('/login', {
                     method: 'POST',
+                    credentials: 'same-origin',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
                     },
                     body: JSON.stringify({
-                        email: email,
-                        password: password,
+                        email: this.form.email,
+                        password: this.form.password,
                     }),
                 });
 
@@ -65,13 +67,12 @@ export function loginForm() {
                     return;
                 }
 
-                // Login exitoso - guardar token y sesión
-                if (data.accessToken) {
-                    await this.saveLoginData(data);
+                const token = data.accessToken || data.access_token || data.token;
+                if (token) {
+                    await this.saveLoginData({...data, accessToken: token});
                     window.location.href = '/';
                 }
             } catch (error) {
-                console.error('Error:', error);
                 this.errors = ['Error de conexión. Por favor, intenta de nuevo.'];
             } finally {
                 this.isLoading = false;
@@ -102,29 +103,9 @@ export function loginForm() {
          */
         async saveLoginData(data) {
             const token = data.accessToken;
-
-            // Guardar en localStorage (persistencia en cliente)
             localStorage.setItem('auth_token', token);
             localStorage.setItem('user_name', data.fullname);
             localStorage.setItem('user_email', data.email);
-
-            // Guardar en sesión del servidor
-            try {
-                await fetch('/api/auth/store-session', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                    },
-                });
-
-                // Esperar para asegurar que la sesión se guarde
-                await new Promise(resolve => setTimeout(resolve, 500));
-            } catch (error) {
-                console.error('Error guardando sesión:', error);
-                // Continuar incluso si falla (localStorage ya tiene datos)
-            }
         }
     };
 }

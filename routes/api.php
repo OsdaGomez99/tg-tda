@@ -4,45 +4,53 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ApiEncuestaController;
 
-// Auth routes
+// ===== RUTAS PÚBLICAS (SIN AUTENTICACIÓN) =====
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register'])->name('register');
-    Route::post('/login', [AuthController::class, 'login'])->name('login');
+    Route::post('/login', [AuthController::class, 'login'])->name('api.login');
     Route::post('/store-session', [AuthController::class, 'storeSession'])->name('store-session');
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    Route::post('/refresh', [AuthController::class, 'refresh'])->name('refresh');
-    Route::get('/is-auth', [AuthController::class, 'isAuth'])->name('is-auth');
 });
 
-// Encuestas y TDA Analysis routes
-Route::prefix('encuestas')->group(function () {
-    // Obtener encuestas disponibles
-    Route::get('/', [ApiEncuestaController::class, 'index'])->name('encuestas.index');
+// ===== RUTAS PROTEGIDAS (REQUIEREN AUTENTICACIÓN) =====
+Route::group(['middleware' => ['auth:api']], function () {
 
-    // Obtener una encuesta específica con sus preguntas
-    Route::get('/{encuesta}', [ApiEncuestaController::class, 'show'])->name('encuestas.show');
+    // Auth routes (protegidas)
+    Route::prefix('auth')->group(function () {
+        Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+        Route::post('/refresh', [AuthController::class, 'refresh'])->name('refresh');
+        Route::get('/is-auth', [AuthController::class, 'isAuth'])->name('is-auth');
+    });
 
-    // Iniciar una nueva respuesta de encuesta
-    Route::post('/{encuesta}/iniciar', [ApiEncuestaController::class, 'iniciar'])->name('encuestas.iniciar');
+    // Encuestas y TDA Analysis routes
+    Route::prefix('encuestas')->group(function () {
+        // Obtener encuestas disponibles
+        Route::get('/', [ApiEncuestaController::class, 'index'])->name('encuestas.index');
 
-    // Obtener resultados de una encuesta
-    Route::get('/{encuesta}/resultados', [ApiEncuestaController::class, 'obtenerResultados'])->name('encuestas.resultados');
+        // Obtener una encuesta específica con sus preguntas
+        Route::get('/{encuesta}', [ApiEncuestaController::class, 'show'])->name('encuestas.show');
 
-    // Obtener estadísticas de una encuesta
-    Route::get('/{encuesta}/estadisticas', [ApiEncuestaController::class, 'estadisticas'])->name('encuestas.estadisticas');
-});
+        // Iniciar una nueva respuesta de encuesta
+        Route::post('/{encuesta}/iniciar', [ApiEncuestaController::class, 'iniciar'])->name('encuestas.iniciar');
 
-// Respuestas de encuesta
-Route::prefix('respuestas')->group(function () {
-    // Guardar una respuesta individual
-    Route::post('/{resultado}', [ApiEncuestaController::class, 'guardarRespuesta'])->name('respuestas.store');
+        // Obtener resultados de una encuesta
+        Route::get('/{encuesta}/resultados', [ApiEncuestaController::class, 'obtenerResultados'])->name('encuestas.resultados');
 
-    // Guardar múltiples respuestas
-    Route::post('/{resultado}/batch', [ApiEncuestaController::class, 'guardarRespuestas'])->name('respuestas.batch');
+        // Obtener estadísticas de una encuesta
+        Route::get('/{encuesta}/estadisticas', [ApiEncuestaController::class, 'estadisticas'])->name('encuestas.estadisticas');
+    });
 
-    // Finalizar encuesta y generar análisis
-    Route::post('/{resultado}/finalizar', [ApiEncuestaController::class, 'finalizar'])->name('respuestas.finalizar');
+    // Respuestas de encuesta
+    Route::prefix('respuestas')->group(function () {
+        // Guardar una respuesta individual
+        Route::post('/{resultado}', [ApiEncuestaController::class, 'guardarRespuesta'])->name('respuestas.store');
 
-    // Obtener resultado y análisis
-    Route::get('/{resultado}', [ApiEncuestaController::class, 'obtenerResultado'])->name('respuestas.show');
+        // Guardar múltiples respuestas
+        Route::post('/{resultado}/batch', [ApiEncuestaController::class, 'guardarRespuestas'])->name('respuestas.batch');
+
+        // Finalizar encuesta y generar análisis
+        Route::post('/{resultado}/finalizar', [ApiEncuestaController::class, 'finalizar'])->name('respuestas.finalizar');
+
+        // Obtener resultado y análisis
+        Route::get('/{resultado}', [ApiEncuestaController::class, 'obtenerResultado'])->name('respuestas.show');
+    });
 });

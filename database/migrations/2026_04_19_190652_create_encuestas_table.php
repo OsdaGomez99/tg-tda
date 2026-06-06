@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Container\Attributes\DB;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,9 +13,18 @@ return new class extends Migration
     {
         Schema::create('encuestas', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre')->unique();
-            $table->text('descripcion')->nullable();
-            $table->foreignId('usuario_id')->constrained('users');
+            $table->string('codigo')
+                  ->unique()
+                  ->comment('Código único para identificar la encuesta, ej: E1, E2, etc.');
+            $table->string('nombre')
+                  ->unique()
+                  ->comment('Nombre de la encuesta');
+            $table->text('descripcion')
+                  ->nullable()
+                  ->comment('Descripción de la encuesta');
+            $table->foreignId('usuario_id')
+                  ->constrained('users')
+                  ->comment('ID del usuario que creó la encuesta');
             $table->timestamps();
         });
     }
@@ -26,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('carreras');
+        Schema::dropIfExists('encuestas');
     }
 };

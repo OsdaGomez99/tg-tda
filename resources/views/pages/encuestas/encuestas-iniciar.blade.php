@@ -97,6 +97,24 @@
                         <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                     @enderror
                 </div>
+
+                <!-- Carrera -->
+                <div>
+                    <label class="mb-3 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Carrera <span class="text-red-600">*</span>
+                    </label>
+                    <select name="carrera_id" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300">
+                        <option value="">Seleccione una carrera</option>
+                        @foreach($carreras as $carrera)
+                            <option value="{{ $carrera->id }}" {{ old('carrera_id') == $carrera->id ? 'selected' : '' }}>
+                                {{ $carrera->nombre }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('carrera_id')
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                    @enderror
+                </div>
             </div>
 
             <!-- Botones de Acción -->

@@ -13,11 +13,20 @@ return new class extends Migration
     {
         Schema::create('preguntas', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
-            $table->text('ejemplo')->nullable()->comment('Ejemplo o explicación de la pregunta');
-            $table->foreignId('categoria_id')->constrained('categorias')->nullable();
-            $table->char('tipo_tda', 1)->nullable()->comment('I = Inatención, H = Hiperactividad/Impulsividad');
-            $table->boolean('estado')->default(true);
+            $table->string('codigo')
+                  ->nullable()
+                  ->comment('Código único para identificar la pregunta, ej: P1, P2, etc.');
+            $table->string('nombre')
+                  ->comment('Texto de la pregunta');
+            $table->text('descripcion')
+                  ->nullable()
+                  ->comment('Descripción o explicación de la pregunta');
+            $table->char('tipo_tda', 1)
+                  ->nullable()
+                  ->comment('I = Inatención, H = Hiperactividad/Impulsividad');
+            $table->boolean('estado')
+                  ->default(true)
+                  ->comment('Indica si la pregunta está activa o inactiva');
             $table->timestamps();
         });
     }

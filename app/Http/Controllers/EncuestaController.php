@@ -71,9 +71,9 @@ class EncuestaController extends Controller
     }
 
     /**
-     * Mostrar página para asignar preguntas a una encuesta
+     * Editar encuesta
      */
-    public function asignarPreguntasForm(Encuesta $encuesta): View
+    public function edit(Encuesta $encuesta): View
     {
         $preguntasDisponibles = Pregunta::where('estado', true)
             ->whereNotNull('tipo_tda')
@@ -81,47 +81,10 @@ class EncuestaController extends Controller
             ->orderBy('id')
             ->get();
 
-        $preguntasAsignadas = $encuesta->preguntas()->pluck('pregunta_id')->toArray();
-
-        return view('pages.encuestas.encuestas-asignar-preguntas', [
-            'title' => 'Asignar Preguntas',
-            'encuesta' => $encuesta,
-            'preguntasDisponibles' => $preguntasDisponibles,
-            'preguntasAsignadas' => $preguntasAsignadas,
-        ]);
-    }
-
-    /**
-     * Guardar preguntas asignadas a una encuesta
-     */
-    public function asignarPreguntas(Request $request, Encuesta $encuesta)
-    {
-        $validated = $request->validate([
-            'pregunta_ids' => 'required|array|min:1',
-            'pregunta_ids.*' => 'integer|exists:preguntas,id',
-        ]);
-
-        // Preparar datos para sincronización con orden
-        $sync = [];
-        foreach ($validated['pregunta_ids'] as $index => $preguntaId) {
-            $sync[$preguntaId] = ['orden' => $index + 1];
-        }
-
-        // Sincronizar preguntas con la encuesta
-        $encuesta->preguntas()->sync($sync);
-
-        return redirect()->route('encuestas')
-            ->with('success', 'Preguntas asignadas correctamente a la encuesta.');
-    }
-
-    /**
-     * Editar encuesta
-     */
-    public function edit(Encuesta $encuesta): View
-    {
         return view('pages.encuestas.encuestas-edit', [
             'title' => 'Editar Encuesta',
-            'encuesta' => $encuesta
+            'encuesta' => $encuesta,
+            'preguntasDisponibles' => $preguntasDisponibles
         ]);
     }
 

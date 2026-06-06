@@ -76,30 +76,8 @@
                                             </span>
                                         </div>
                                     </div>
-                                    <!-- Checkbox -->
+                                    <!-- ¿Olvidaste tu contraseña? -->
                                     <div class="flex items-center justify-between">
-                                        <div x-data="{ checkboxToggle: false }">
-                                            <label for="checkboxLabelOne"
-                                                class="flex cursor-pointer items-center text-sm font-normal text-gray-700 select-none dark:text-gray-400">
-                                                <div class="relative">
-                                                    <input type="checkbox" x-model="form.rememberMe" id="checkboxLabelOne"
-                                                        class="sr-only" @change="checkboxToggle = !checkboxToggle" />
-                                                    <div :class="checkboxToggle ? 'border-brand-500 bg-brand-500' :
-                                                        'bg-transparent border-gray-300 dark:border-gray-700'"
-                                                        class="mr-3 flex h-5 w-5 items-center justify-center rounded-md border-[1.25px]">
-                                                        <span :class="checkboxToggle ? '' : 'opacity-0'">
-                                                            <svg width="14" height="14" viewBox="0 0 14 14"
-                                                                fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                <path d="M11.6666 3.5L5.24992 9.91667L2.33325 7"
-                                                                    stroke="white" stroke-width="1.94437"
-                                                                    stroke-linecap="round" stroke-linejoin="round" />
-                                                            </svg>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                Keep me logged in
-                                            </label>
-                                        </div>
                                         <a href="/reset-password"
                                             class="text-brand-500 hover:text-brand-600 dark:text-brand-400 text-sm">
                                             ¿Olvidaste tu contraseña?
@@ -130,7 +108,7 @@
                                 <p class="text-center text-sm font-normal text-gray-700 sm:text-start dark:text-gray-400">
                                     ¿No tienes una cuenta?
                                     <a href="/signup"
-                                        class="text-brand-500 hover:text-brand-600 dark:text-brand-400">Registrarse</a>
+                                        class="text-brand-500 hover:text-brand-600 dark:text-brand-400">Registrate aquí</a>
                                 </p>
                             </div>
                         </div>
@@ -142,12 +120,12 @@
                 <div class="z-1 flex items-center justify-center">
                     <!-- ===== Common Grid Shape Start ===== -->
                     <x-common.common-grid-shape />
-                    <div class="flex max-w-xs flex-col items-center">
+                    <div class="flex max-w-md flex-col items-center">
                         <a href="/" class="mb-4 block">
-                            <img src="./images/logo/auth-logo.png" alt="Logo" />
+                            <img src="./images/logo/logo-xl.png" alt="Logo" />
                         </a>
                         <p class="text-center text-gray-400 dark:text-white/60">
-                            Plantilla gratuita de Panel de Administración Tailwind CSS de código abierto
+                            Aplicación web para la detección y orientación integral de Trastorno de Deficit de Atencion (TDA) en los estudiantes de la Universidad Nacional Experimental de Guayana
                         </p>
                     </div>
                 </div>
@@ -173,91 +151,4 @@
             </div>
         </div>
     </div>
-
-    <script>
-        document.addEventListener('alpine:init', () => {
-            Alpine.data('loginForm', () => ({
-                form: {
-                    email: '',
-                    password: '',
-                    rememberMe: false
-                },
-                errors: [],
-                successMessage: '',
-                isLoading: false,
-
-                async handleLogin() {
-                    // Reset messages
-                    this.errors = [];
-                    this.successMessage = '';
-
-                    // Validate
-                    if (!this.form.email) {
-                        this.errors.push('El correo es requerido');
-                    } else if (!this.isValidEmail(this.form.email)) {
-                        this.errors.push('El correo no es válido');
-                    }
-
-                    if (!this.form.password) {
-                        this.errors.push('La contraseña es requerida');
-                    } else if (this.form.password.length < 6) {
-                        this.errors.push('La contraseña debe tener al menos 6 caracteres');
-                    }
-
-                    if (this.errors.length > 0) {
-                        return;
-                    }
-
-                    this.isLoading = true;
-
-                    try {
-                        const response = await fetch('/login', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector(
-                                    'meta[name="csrf-token"]')?.content || ''
-                            },
-                            body: JSON.stringify({
-                                email: this.form.email,
-                                password: this.form.password
-                            })
-                        });
-
-                        const data = await response.json();
-
-                        if (!response.ok) {
-                            this.errors = data.errors || ['Error al iniciar sesión'];
-                        } else if (data.accessToken) {
-                            // Store JWT token
-                            localStorage.setItem('authToken', data.accessToken);
-                            localStorage.setItem('user', JSON.stringify({
-                                fullname: data.fullname,
-                                email: data.email,
-                                permissions: data.permissions
-                            }));
-
-                            this.successMessage = 'Iniciando sesión...';
-                            // Redirect after success
-                            setTimeout(() => {
-                                window.location.href = '/';
-                            }, 1000);
-                        } else {
-                            this.errors = ['Error al iniciar sesión'];
-                        }
-                    } catch (error) {
-                        console.error('Error:', error);
-                        this.errors = ['Error de conexión. Por favor intenta de nuevo.'];
-                    } finally {
-                        this.isLoading = false;
-                    }
-                },
-
-                isValidEmail(email) {
-                    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    return re.test(email);
-                }
-            }));
-        });
-    </script>
 @endsection

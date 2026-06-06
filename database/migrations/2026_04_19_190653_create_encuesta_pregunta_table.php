@@ -13,9 +13,17 @@ return new class extends Migration
     {
         Schema::create('encuesta_pregunta', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('encuesta_id')->constrained('encuestas')->onDelete('cascade');
-            $table->foreignId('pregunta_id')->constrained('preguntas')->onDelete('cascade');
-            $table->integer('orden')->default(1)->comment('Orden de aparición en la encuesta');
+            $table->foreignId('encuesta_id')
+                  ->constrained('encuestas')
+                  ->onDelete('cascade')
+                  ->comment('ID de la encuesta');
+            $table->foreignId('pregunta_id')
+                  ->constrained('preguntas')
+                  ->onDelete('cascade')
+                  ->comment('ID de la pregunta');
+            $table->integer('orden')
+                  ->default(1)
+                  ->comment('Orden en que las preguntas aparecen en la encuesta');
             $table->timestamps();
 
             // Una pregunta puede aparecer solo una vez por encuesta

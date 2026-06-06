@@ -71,7 +71,8 @@
                             </th>
                             <th class="px-6 py-3">
                                 <div class="flex items-center">
-                                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Preguntas</p>
+                                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Preguntas
+                                    </p>
                                 </div>
                             </th>
                             <th class="px-6 py-3">
@@ -138,6 +139,19 @@
                                             class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400">
                                             Estadísticas
                                         </a>
+                                        <a href="{{ route('encuestas.edit', $encuesta) }}"
+                                            class="rounded-lg bg-amber-600 px-3 py-2 text-xs font-medium text-white hover:bg-amber-700">
+                                            Editar
+                                        </a>
+                                        <form action="{{ route('encuestas.destroy', $encuesta) }}" method="POST"
+                                            class="inline" onsubmit="return confirm('¿Estás seguro?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                class="rounded-lg bg-red-600 px-3 py-2 text-xs font-medium text-white hover:bg-red-700">
+                                                Eliminar
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>

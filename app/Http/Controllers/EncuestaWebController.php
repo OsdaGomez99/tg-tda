@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Carrera;
 use App\Models\Encuesta;
 use App\Models\EncuestaResultado;
 use App\Services\TdaAnalysisService;
@@ -30,9 +31,11 @@ class EncuestaWebController extends Controller
      */
     public function iniciar(Encuesta $encuesta): View
     {
+        $carreras = Carrera::orderBy('nombre')->get();
         return view('pages.encuestas.encuestas-iniciar', [
             'title' => 'Iniciar Encuesta',
-            'encuesta' => $encuesta
+            'encuesta' => $encuesta,
+            'carreras' => $carreras
         ]);
     }
 
@@ -45,6 +48,7 @@ class EncuestaWebController extends Controller
             'nombre_estudiante' => 'required|string|max:255',
             'edad_estudiante' => 'required|integer|min:5|max:100',
             'sexo_estudiante' => 'required|in:M,F,O',
+            'carrera_id' => 'nullable|exists:carreras,id',
         ]);
 
         $resultado = EncuestaResultado::create(array_merge($validated, [

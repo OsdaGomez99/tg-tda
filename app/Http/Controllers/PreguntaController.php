@@ -30,7 +30,6 @@ class PreguntaController extends Controller
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
             'tipo_tda' => 'required|in:I,H',
-            'ejemplo' => 'nullable|string',
             'estado' => 'boolean'
         ]);
 
@@ -64,7 +63,7 @@ class PreguntaController extends Controller
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
             'tipo_tda' => 'required|in:I,H',
-            'ejemplo' => 'nullable|string',
+            'descripcion' => 'nullable|string',
             'estado' => 'boolean'
         ]);
 

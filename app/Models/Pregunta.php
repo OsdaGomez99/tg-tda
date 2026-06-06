@@ -9,24 +9,27 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Pregunta extends Model
 {
     protected $fillable = [
+        'codigo',
         'nombre',
         'descripcion',
-        'categoria_id',
         'estado',
         'tipo_tda',
-        'ejemplo',
+        'descripcion',
     ];
 
     protected $casts = [
         'estado' => 'boolean',
     ];
 
-    /**
-     * Relación con Categoría
-     */
-    public function categoria(): BelongsTo
+    protected static function boot()
     {
-        return $this->belongsTo(Categoria::class);
+        parent::boot();
+
+        static::created(function ($pregunta) {
+            $pregunta->updateQuietly([
+                'codigo' => 'P' . $pregunta->id
+            ]);
+        });
     }
 
     /**

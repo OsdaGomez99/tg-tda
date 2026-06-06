@@ -13,16 +13,30 @@ return new class extends Migration
     {
         Schema::create('analisis_tda', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('encuesta_resultado_id')->unique()->constrained('encuestas_resultados')->onDelete('cascade');
+            $table->foreignId('encuesta_resultado_id')
+                ->unique()
+                ->constrained('encuestas_resultados')
+                ->onDelete('cascade')
+                ->comment('ID del resultado de la encuesta al que corresponde este análisis');
 
             // Puntuaciones
-            $table->integer('puntuacion_inatención')->default(0);
-            $table->integer('puntuacion_hiperactividad')->default(0);
-            $table->integer('puntuacion_total')->default(0);
+            $table->integer('puntuacion_inatención')
+                ->default(0)
+                ->comment('Suma de puntuaciones de las preguntas de inatención');
+            $table->integer('puntuacion_hiperactividad')
+                ->default(0)
+                ->comment('Suma de puntuaciones de las preguntas de hiperactividad');
+            $table->integer('puntuacion_total')
+                ->default(0)
+                ->comment('Suma total de puntuaciones');
 
             // Síntomas significativos (≥6 con puntuación ≥2)
-            $table->integer('sintomas_inatención')->default(0);
-            $table->integer('sintomas_hiperactividad')->default(0);
+            $table->integer('sintomas_inatención')
+                ->default(0)
+                ->comment('Número de síntomas de inatención');
+            $table->integer('sintomas_hiperactividad')
+                ->default(0)
+                ->comment('Número de síntomas de hiperactividad');
 
             // Resultado del análisis
             $table->enum('resultado', [
@@ -31,14 +45,21 @@ return new class extends Migration
                 'tda_hiperactivo',
                 'tda_possible',
                 'no_tda'
-            ])->default('no_tda');
+            ])->default('no_tda')
+                ->comment('Resultado del análisis: TDA combinado, TDA inatento, TDA hiperactivo, TDA posible, No TDA');
 
             // Porcentajes para visualización
-            $table->decimal('porcentaje_inatención', 5, 2)->default(0);
-            $table->decimal('porcentaje_hiperactividad', 5, 2)->default(0);
+            $table->decimal('porcentaje_inatención', 5, 2)
+                ->default(0)
+                ->comment('Porcentaje de síntomas de inatención');
+            $table->decimal('porcentaje_hiperactividad', 5, 2)
+                ->default(0)
+                ->comment('Porcentaje de síntomas de hiperactividad');
 
             // Descripción del resultado
-            $table->text('descripcion')->nullable();
+            $table->text('descripcion')
+                  ->nullable()
+                  ->comment('Descripción detallada del resultado del análisis');
 
             $table->timestamps();
         });

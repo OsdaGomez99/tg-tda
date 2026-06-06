@@ -9,7 +9,18 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Encuesta extends Model
 {
-    protected $fillable = ['nombre', 'descripcion', 'usuario_id'];
+    protected $fillable = ['codigo', 'nombre', 'descripcion', 'usuario_id'];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($encuesta) {
+            $encuesta->updateQuietly([
+                'codigo' => 'E' . $encuesta->id
+            ]);
+        });
+    }
 
     /**
      * Relación con Usuario
@@ -56,7 +67,7 @@ class Encuesta extends Model
                 'id' => $pregunta->id,
                 'category' => $pregunta->tipo_tda,
                 'text' => $pregunta->nombre,
-                'example' => $pregunta->ejemplo,
+                'example' => $pregunta->descripcion,
             ];
         })->toArray();
     }

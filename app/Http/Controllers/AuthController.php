@@ -30,34 +30,22 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request)
     {
-        $user = User::where('email', $request->email)->first();
-
-        // Check if user exists
-        if (!$user) {
-            return response()->json([
-                'errors' => ['Las credenciales proporcionadas son incorrectas.']
-            ], 400);
-        }
-
         $credentials = $request->only(['email', 'password']);
-        $token = JWTAuth::attempt($credentials);
 
-        if (!$token) {
+        if (!Auth::attempt($credentials)) {
             return response()->json([
                 'errors' => ['Las credenciales proporcionadas son incorrectas.']
             ], 400);
         }
 
-        $user = JWTAuth::user();
+        $user = Auth::user();
+        $token = JWTAuth::fromUser($user);
 
-        return response()
-            ->json([
-                'accessToken' => $token,
-                'fullname' => $user->name,
-                'email' => $user->email,
-                'permissions' => $user->getAllPermissions()->pluck('name'),
-            ], Response::HTTP_OK)
-            ->header('Authorization', $token);
+        return response()->json([
+            'accessToken' => $token,
+            'fullname' => $user->name,
+            'email' => $user->email,
+        ]);
     }
 
     /**
@@ -158,54 +146,6 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'errors' => ['Ocurrió un error al registrar el usuario.']
-            ], 500);
-        }
-    }
-
-    /**
-     * Guarda la información de la sesión del usuario autenticado.
-     *
-     * Este método obtiene el usuario actual basado en el token JWT y guarda su información en la sesión.
-     *
-     * @param Request $request La solicitud HTTP entrante.
-     * @return JsonResponse La respuesta JSON indicando éxito.
-     */
-    public function storeSession(Request $request): JsonResponse
-    {
-        try {
-            $payload = JWTAuth::parseToken()->getPayload();
-            $userId = $payload->get('sub');
-            $user = $userId ? User::find($userId) : null;
-
-            if (!$user) {
-                return response()->json([
-                    'errors' => ['Usuario no autenticado.']
-                ], 401);
-            }
-
-            // Guardar información en sesión
-            session(['name' => $user->name, 'email' => $user->email]);
-
-            return response()->json([
-                'message' => 'Sesión guardada correctamente.',
-                'name' => $user->name,
-                'email' => $user->email,
-            ], 200);
-        } catch (TokenExpiredException $e) {
-            return response()->json([
-                'errors' => ['Token expirado.']
-            ], 401);
-        } catch (TokenBlacklistedException $e) {
-            return response()->json([
-                'errors' => ['Token revocado.']
-            ], 401);
-        } catch (JWTException $e) {
-            return response()->json([
-                'errors' => ['Token inválido.']
-            ], 401);
-        } catch (\Exception $e) {
-            return response()->json([
-                'errors' => ['Ocurrió un error al guardar la sesión.']
             ], 500);
         }
     }

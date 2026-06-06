@@ -13,11 +13,21 @@ return new class extends Migration
     {
         Schema::create('encuestas_resultados', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('encuesta_id')->constrained('encuestas')->onDelete('cascade');
-            $table->string('nombre_estudiante');
-            $table->integer('edad_estudiante');
-            $table->enum('sexo_estudiante', ['M', 'F', 'O']);
-
+            $table->foreignId('encuesta_id')
+                  ->constrained('encuestas')
+                  ->onDelete('cascade')
+                  ->comment('ID de la encuesta realizada');
+            $table->string('nombre_estudiante')
+                  ->comment('Nombre completo del estudiante');
+            $table->integer('edad_estudiante')
+                  ->comment('Edad del estudiante');
+            $table->enum('sexo_estudiante', ['M', 'F', 'O'])
+                  ->comment('Sexo del estudiante (M: Masculino, F: Femenino, O: Otro)');
+            $table->foreignId('carrera_id')
+                  ->nullable()
+                  ->constrained('carreras')
+                  ->onDelete('set null')
+                  ->comment('ID de la carrera del estudiante');
             $table->timestamps();
         });
     }
