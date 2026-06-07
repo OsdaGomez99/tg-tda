@@ -131,6 +131,14 @@
                                 </td>
                                 <td class="px-6 py-3.5">
                                     <div class="flex items-center gap-2">
+                                        <a href={{ route('encuestas.show', $encuesta) }} class="text-blue-600 hover:text-blue-800 text-theme-sm">
+                                            <x-ui.button size="xs" variant="outline">Editar</x-ui.button>
+                                        </a>
+                                        <form action={{ route('encuestas.destroy', $encuesta) }} method="POST" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <x-ui.button size="xs" variant="danger">Eliminar</x-ui.button>
+                                        </form>
                                         <a href="{{ route('iniciar-encuesta', $encuesta) }}"
                                             class="rounded-lg bg-blue-600 px-3 py-2 text-xs font-medium text-white hover:bg-blue-700">
                                             Responder
@@ -139,19 +147,6 @@
                                             class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400">
                                             Estadísticas
                                         </a>
-                                        <a href="{{ route('encuestas.edit', $encuesta) }}"
-                                            class="rounded-lg bg-amber-600 px-3 py-2 text-xs font-medium text-white hover:bg-amber-700">
-                                            Editar
-                                        </a>
-                                        <form action="{{ route('encuestas.destroy', $encuesta) }}" method="POST"
-                                            class="inline" onsubmit="return confirm('¿Estás seguro?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                class="rounded-lg bg-red-600 px-3 py-2 text-xs font-medium text-white hover:bg-red-700">
-                                                Eliminar
-                                            </button>
-                                        </form>
                                     </div>
                                 </td>
                             </tr>

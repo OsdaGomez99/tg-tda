@@ -38,20 +38,12 @@ class PreguntaController extends Controller
 
         Pregunta::create($validated);
 
-        return redirect()->route('preguntas')->with('success', 'Pregunta creada correctamente');
+        return redirect()->route('preguntas.index')->with('success', 'Pregunta creada correctamente');
     }
 
     public function show(Pregunta $pregunta)
     {
         return view('pages.preguntas.preguntas-show', [
-            'title' => 'Detalle de Pregunta',
-            'pregunta' => $pregunta
-        ]);
-    }
-
-    public function edit(Pregunta $pregunta)
-    {
-        return view('pages.preguntas.preguntas-edit', [
             'title' => 'Editar Pregunta',
             'pregunta' => $pregunta
         ]);
@@ -63,7 +55,6 @@ class PreguntaController extends Controller
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
             'tipo_tda' => 'required|in:I,H',
-            'descripcion' => 'nullable|string',
             'estado' => 'boolean'
         ]);
 
@@ -72,7 +63,7 @@ class PreguntaController extends Controller
 
         $pregunta->update($validated);
 
-        return redirect()->route('preguntas')->with('success', 'Pregunta actualizada correctamente');
+        return redirect()->route('preguntas.index')->with('success', 'Pregunta actualizada correctamente');
     }
 
     public function destroy(Pregunta $pregunta)

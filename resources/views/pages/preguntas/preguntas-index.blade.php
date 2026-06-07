@@ -123,21 +123,21 @@
                                     <div class="flex items-center">
                                         @if ($pregunta->estado)
                                         <x-ui.badge color="success">
-                                            Activo
+                                            Activa
                                         </x-ui.badge>
                                         @else
-                                        <x-ui.badge color="danger">
-                                            Inactivo
+                                        <x-ui.badge color="warning">
+                                            Inactiva
                                         </x-ui.badge>
                                         @endif
                                     </div>
                                 </td>
                                 <td class="px-6 py-3.5">
                                     <div class="flex items-center gap-2">
-                                        <a href="/preguntas/{{ $pregunta->id }}/editar" class="text-blue-600 hover:text-blue-800 text-theme-sm">
+                                        <a href={{ route('preguntas.show', $pregunta) }} class="text-blue-600 hover:text-blue-800 text-theme-sm">
                                             <x-ui.button size="xs" variant="outline">Editar</x-ui.button>
                                         </a>
-                                        <form action="/preguntas/{{ $pregunta->id }}" method="POST" class="inline">
+                                        <form action={{ route('preguntas.destroy', $pregunta) }} method="POST" class="inline">
                                             @csrf
                                             @method('DELETE')
                                             <x-ui.button size="xs" variant="danger">Eliminar</x-ui.button>

@@ -75,7 +75,7 @@ class EncuestaController extends Controller
     /**
      * Editar encuesta
      */
-    public function edit(Encuesta $encuesta): View
+    public function show(Encuesta $encuesta): View
     {
         $preguntasDisponibles = Pregunta::where('estado', true)
             ->whereNotNull('tipo_tda')
@@ -83,7 +83,7 @@ class EncuestaController extends Controller
             ->orderBy('id')
             ->get();
 
-        return view('pages.encuestas.encuestas-edit', [
+        return view('pages.encuestas.encuestas-show', [
             'title' => 'Editar Encuesta',
             'encuesta' => $encuesta,
             'preguntasDisponibles' => $preguntasDisponibles
@@ -96,12 +96,25 @@ class EncuestaController extends Controller
     public function update(Request $request, Encuesta $encuesta)
     {
         $validated = $request->validate([
-            'nombre' => 'required|string|max:255|unique:encuestas,nombre,' . $encuesta->id,
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'nullable|string',
+            'usuario_id' => 'required|exists:users,id',
+            'pregunta_ids' => 'required|array|min:1',
+            'pregunta_ids.*' => 'integer|exists:preguntas,id',
         ]);
 
         $encuesta->update($validated);
 
-        return redirect()->route('encuestas')
+        // Preparar datos para sincronización con orden
+        $sync = [];
+        foreach ($validated['pregunta_ids'] as $index => $preguntaId) {
+            $sync[$preguntaId] = ['orden' => $index + 1];
+        }
+
+        // Actualizar preguntas asignadas
+        $encuesta->preguntas()->sync($sync);
+
+        return redirect()->route('encuestas.index')
             ->with('success', 'Encuesta actualizada correctamente.');
     }
 

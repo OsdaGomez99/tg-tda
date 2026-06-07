@@ -13,17 +13,18 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
         <!-- Panel Izquierdo: Formulario de Encuesta -->
         <div class="lg:col-span-1 flex flex-col h-full">
-            <x-common.component-card title="Nueva Encuesta" class="flex-1 h-full">
-                <form id="encuestaForm" action="{{ route('encuestas.store') }}" method="POST" class="flex flex-col flex-1">
+            <x-common.component-card title="Editar Encuesta" class="flex-1 h-full">
+                <form action="{{ route('encuestas.update', $encuesta) }}" method="POST">
                     @csrf
+                    @method('PUT')
 
                     <div>
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                             Nombre de la Encuesta
                         </label>
-                        <input type="text" name="nombre" placeholder="Ej: Encuesta TDA..."
+                        <input type="text" name="nombre" placeholder="Ej: Screening TDA 2026..."
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 @error('nombre') border-red-500 @enderror"
-                            value="{{ old('nombre') }}" required />
+                            value="{{ old('nombre', $encuesta->nombre) }}" required />
                         @error('nombre')
                             <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror
@@ -34,7 +35,7 @@
                             Descripción
                         </label>
                         <textarea name="descripcion" placeholder="Ej: Cuestionario para evaluar posible TDA en estudiantes..." rows="6"
-                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 @error('descripcion') border-red-500 @enderror">{{ old('descripcion') }}</textarea>
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 @error('descripcion') border-red-500 @enderror">{{ old('descripcion', $encuesta->descripcion) }}</textarea>
                         @error('descripcion')
                             <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror
@@ -51,7 +52,7 @@
                                 @change="isOptionSelected = true" required>
                                 <option value="">Seleccionar usuario...</option>
                                 @foreach (\App\Models\User::all() as $user)
-                                    <option value="{{ $user->id }}" @if (old('usuario_id') == $user->id) selected @endif>
+                                    <option value="{{ $user->id }}" @if (old('usuario_id') == $user->id || $encuesta->usuario_id == $user->id) selected @endif>
                                         {{ $user->name }}
                                     </option>
                                 @endforeach
@@ -72,14 +73,14 @@
 
                     <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
                         <p class="text-xs font-medium text-gray-500 dark:text-gray-400">
-                            {{ count($preguntasDisponibles) }} preguntas disponibles
+                            {{ count($encuesta->preguntas) }} preguntas asignadas
                         </p>
                     </div>
 
-                    <div class="mt-auto pt-6 flex gap-3">
+                    <div class="mt-6 flex gap-3">
                         <button type="submit"
                             class="inline-flex items-center justify-center rounded-lg bg-blue-600 px-6 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                            Guardar Encuesta
+                            Guardar Cambios
                         </button>
                         <a href="{{ route('encuestas.index') }}"
                             class="inline-flex items-center justify-center rounded-lg border border-gray-300 px-6 py-2.5 text-center text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 dark:focus:ring-gray-700">
@@ -90,30 +91,31 @@
             </x-common.component-card>
         </div>
 
-        <!-- Panel Derecho: Selección de Preguntas -->
+        <!-- Panel derecho para reasignar preguntas -->
         <div class="lg:col-span-2 flex flex-col">
-            <x-common.component-card title="Seleccionar Preguntas" class="flex-1">
+            <x-common.component-card title="Reasignar Preguntas" class="flex-1">
                 <div x-data="preguntasSelector()" class="flex flex-col flex-1 space-y-4">
                     <!-- Controles de Filtro -->
                     <div class="flex flex-wrap gap-2 pb-4 border-b border-gray-200 dark:border-gray-700 shrink-0">
-                        <button @click="filtro = 'todas'"
+                        <button type="button" @click="filtro = 'todas'"
                             :class="{ 'bg-blue-600 text-white': filtro === 'todas', 'bg-gray-200 dark:bg-gray-700': filtro !== 'todas' }"
                             class="px-3 py-1.5 rounded-lg text-sm font-medium transition">
                             Todas
                         </button>
-                        <button @click="filtro = 'I'"
+                        <button type="button" @click="filtro = 'I'"
                             :class="{ 'bg-amber-600 text-white': filtro === 'I', 'bg-gray-200 dark:bg-gray-700': filtro !== 'I' }"
                             class="px-3 py-1.5 rounded-lg text-sm font-medium transition">
                             Inatención
                         </button>
-                        <button @click="filtro = 'H'"
+                        <button type="button" @click="filtro = 'H'"
                             :class="{ 'bg-blue-600 text-white': filtro === 'H', 'bg-gray-200 dark:bg-gray-700': filtro !== 'H' }"
                             class="px-3 py-1.5 rounded-lg text-sm font-medium transition">
                             Hiperactividad
                         </button>
                         <div class="ml-auto flex items-center gap-2">
                             <span class="text-sm font-medium text-gray-600 dark:text-gray-300">
-                                <span x-text="seleccionadas.length"></span> / <span x-text="preguntas.length"></span>
+                                <span x-text="seleccionadas.length"></span> / <span
+                                    x-text="preguntas.length"></span>
                             </span>
                         </div>
                     </div>
@@ -124,6 +126,7 @@
                             <label
                                 class="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition cursor-pointer">
                                 <input type="checkbox" :value="pregunta.id" x-model="seleccionadas"
+                                    name="pregunta_ids"
                                     class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 mt-0.5">
                                 <div class="flex-1">
                                     <div class="flex items-center gap-2">
@@ -150,10 +153,6 @@
                                 </div>
                             </label>
                         </template>
-
-                        <div x-show="preguntas.length === 0" class="text-center py-8">
-                            <p class="text-gray-500 dark:text-gray-400">No hay preguntas disponibles</p>
-                        </div>
                     </div>
                 </div>
             </x-common.component-card>
@@ -164,14 +163,18 @@
         function preguntasSelector() {
             return {
                 filtro: 'todas',
-                seleccionadas: [],
-                preguntas: {{ Js::from($preguntasDisponibles->map(fn($p) => [
-                    'id'           => $p->id,
-                    'codigo'       => $p->codigo,
-                    'nombre'       => $p->nombre,
-                    'tipo_tda'     => $p->tipo_tda,
-                    'descripcion'  => $p->descripcion
-                ])->values()->toArray()) }},
+                seleccionadas: @json($encuesta->preguntas->pluck('id')->toArray()),
+                preguntas: {{ Js::from(
+                    $preguntasDisponibles->map(
+                            fn($p) => [
+                                'id' => $p->id,
+                                'codigo' => $p->codigo,
+                                'nombre' => $p->nombre,
+                                'tipo_tda' => $p->tipo_tda,
+                                'descripcion' => $p->descripcion,
+                            ],
+                        )->values()->toArray(),
+                ) }},
 
                 get preguntasFiltradas() {
                     if (this.filtro === 'todas') {
@@ -181,29 +184,5 @@
                 }
             }
         }
-
-        document.getElementById('encuestaForm')?.addEventListener('submit', function(e) {
-            // Leer el estado de Alpine
-            const alpineComponent = document.querySelector('[x-data="preguntasSelector()"]')?._x_dataStack?.[0];
-            const seleccionadas = alpineComponent?.seleccionadas || [];
-
-            if (seleccionadas.length === 0) {
-                e.preventDefault();
-                alert('Debes seleccionar al menos una pregunta');
-                return;
-            }
-
-            // Eliminar hidden inputs previos
-            document.querySelectorAll('input[name="pregunta_ids[]"]').forEach(el => el.remove());
-
-            // Agregar hidden inputs con los valores seleccionados
-            seleccionadas.forEach(function(id) {
-                const hidden = document.createElement('input');
-                hidden.type = 'hidden';
-                hidden.name = 'pregunta_ids[]';
-                hidden.value = id;
-                document.getElementById('encuestaForm').appendChild(hidden);
-            });
-        });
     </script>
 @endsection

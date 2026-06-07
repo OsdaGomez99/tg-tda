@@ -6,11 +6,11 @@ use Illuminate\Support\Facades\Route;
 
 // Páginas de autenticación
 Route::get('/login', function () {
-    return view('pages.auth.signin', ['title' => 'Sign In']);
+    return view('pages.auth.signin', ['title' => 'Iniciar Sesión']);
 })->name('login');
 
 Route::get('/signup', function () {
-    return view('pages.auth.signup', ['title' => 'Sign Up']);
+    return view('pages.auth.signup', ['title' => 'Registrarse']);
 })->name('signup');
 
 Route::post('/login', [App\Http\Controllers\AuthController::class, 'login'])->name('login');
@@ -29,19 +29,22 @@ Route::middleware(['auth'])->group(function () {
     // Ruta de logout (protegida)
     Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('logout');
 
-    Route::get('/preguntas', [App\Http\Controllers\PreguntaController::class, 'index'])->name('preguntas');
-    Route::get('/preguntas/crear', [App\Http\Controllers\PreguntaController::class, 'create'])->name('preguntas-create');
-    Route::post('/preguntas/guardar', [App\Http\Controllers\PreguntaController::class, 'store'])->name('preguntas.store');
-    Route::get('/preguntas/{pregunta}/editar', [App\Http\Controllers\PreguntaController::class, 'edit'])->name('preguntas.edit');
-    Route::put('/preguntas/{pregunta}', [App\Http\Controllers\PreguntaController::class, 'update'])->name('preguntas.update');
-    Route::delete('/preguntas/{pregunta}', [App\Http\Controllers\PreguntaController::class, 'destroy'])->name('preguntas.destroy');
+    // RUTAS DE PREGUNTAS
+    Route::prefix('/preguntas')->name('preguntas.')->group(function () {
+        Route::get('/', [App\Http\Controllers\PreguntaController::class, 'index'])->name('index');
+        Route::get('/crear', [App\Http\Controllers\PreguntaController::class, 'create'])->name('create');
+        Route::post('/guardar', [App\Http\Controllers\PreguntaController::class, 'store'])->name('store');
+        Route::get('/{pregunta}/editar', [App\Http\Controllers\PreguntaController::class, 'show'])->name('show');
+        Route::put('/{pregunta}', [App\Http\Controllers\PreguntaController::class, 'update'])->name('update');
+        Route::delete('/{pregunta}', [App\Http\Controllers\PreguntaController::class, 'destroy'])->name('destroy');
+    });
 
-    // RUTAS DE ADMINISTRACIÓN DE ENCUESTAS
+    // RUTAS DE DE ENCUESTAS
     Route::prefix('/encuestas')->name('encuestas.')->group(function () {
         Route::get('/', [App\Http\Controllers\EncuestaController::class, 'index'])->name('index');
         Route::get('/crear', [App\Http\Controllers\EncuestaController::class, 'create'])->name('create');
-        Route::post('/', [App\Http\Controllers\EncuestaController::class, 'store'])->name('store');
-        Route::get('/{encuesta}/editar', [App\Http\Controllers\EncuestaController::class, 'edit'])->name('edit');
+        Route::post('/guardar', [App\Http\Controllers\EncuestaController::class, 'store'])->name('store');
+        Route::get('/{encuesta}/editar', [App\Http\Controllers\EncuestaController::class, 'show'])->name('show');
         Route::put('/{encuesta}', [App\Http\Controllers\EncuestaController::class, 'update'])->name('update');
         Route::delete('/{encuesta}', [App\Http\Controllers\EncuestaController::class, 'destroy'])->name('destroy');
     });

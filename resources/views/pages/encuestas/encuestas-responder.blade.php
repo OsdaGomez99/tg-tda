@@ -7,7 +7,7 @@
             <div class="mb-4">
                 <h1 class="text-2xl font-bold text-gray-800 dark:text-white">{{ $encuesta->nombre }}</h1>
                 <p class="mt-2 text-gray-600 dark:text-gray-400">
-                    Cuestionario de detección de Trastorno por Déficit de Atención (TDA)
+                    {{ $encuesta->descripcion }}
                 </p>
             </div>
             <div class="flex items-center gap-4">
