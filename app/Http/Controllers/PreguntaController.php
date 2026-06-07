@@ -9,7 +9,7 @@ class PreguntaController extends Controller
 {
     public function index()
     {
-        $preguntas = Pregunta::get();
+        $preguntas = Pregunta::orderBy('id', 'desc')->get();
 
         return view('pages.preguntas.preguntas-index', [
             'title' => 'Preguntas',

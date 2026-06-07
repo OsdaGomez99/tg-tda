@@ -46,6 +46,7 @@ class EncuestaController extends Controller
     {
         $validated = $request->validate([
             'nombre' => 'required|string|max:255|unique:encuestas,nombre',
+            'descripcion' => 'nullable|string',
             'usuario_id' => 'required|exists:users,id',
             'pregunta_ids' => 'required|array|min:1',
             'pregunta_ids.*' => 'integer|exists:preguntas,id',
@@ -54,6 +55,7 @@ class EncuestaController extends Controller
         // Crear encuesta
         $encuesta = Encuesta::create([
             'nombre' => $validated['nombre'],
+            'descripcion' => $validated['descripcion'],
             'usuario_id' => $validated['usuario_id'],
         ]);
 

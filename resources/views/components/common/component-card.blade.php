@@ -17,8 +17,8 @@
     </div>
 
     <!-- Card Body -->
-    <div class="p-4 border-t border-gray-100 dark:border-gray-800 sm:p-6">
-        <div class="space-y-6">
+    <div class="p-4 border-t border-gray-100 dark:border-gray-800 sm:p-6 flex flex-col flex-1">
+        <div class="flex flex-col flex-1">
             {{ $slot }}
         </div>
     </div>

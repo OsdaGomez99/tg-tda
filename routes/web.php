@@ -5,10 +5,6 @@ use Illuminate\Support\Facades\Route;
 // ===== RUTAS PÚBLICAS (SIN AUTENTICACIÓN) =====
 
 // Páginas de autenticación
-Route::get('/signin', function () {
-    return view('pages.auth.signin', ['title' => 'Sign In']);
-})->name('signin');
-
 Route::get('/login', function () {
     return view('pages.auth.signin', ['title' => 'Sign In']);
 })->name('login');
@@ -17,13 +13,15 @@ Route::get('/signup', function () {
     return view('pages.auth.signup', ['title' => 'Sign Up']);
 })->name('signup');
 
-// Ruta de login (POST)
-Route::post('/login', [App\Http\Controllers\AuthController::class, 'login'])->name('login.post');
+Route::post('/login', [App\Http\Controllers\AuthController::class, 'login'])->name('login');
+
+Route::post('/register', [App\Http\Controllers\AuthController::class, 'register'])->name('register');
 
 // Página de error 404
-Route::get('/error-404', function () {
+Route::fallback(function () {
     return view('pages.errors.error-404', ['title' => 'Error 404']);
-})->name('error-404');
+});
+
 
 // ===== RUTAS PROTEGIDAS (REQUIEREN AUTENTICACIÓN) =====
 Route::middleware(['auth'])->group(function () {
@@ -39,18 +37,16 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/preguntas/{pregunta}', [App\Http\Controllers\PreguntaController::class, 'destroy'])->name('preguntas.destroy');
 
     // RUTAS DE ADMINISTRACIÓN DE ENCUESTAS
-    Route::prefix('admin/encuestas')->name('encuestas.')->group(function () {
+    Route::prefix('/encuestas')->name('encuestas.')->group(function () {
         Route::get('/', [App\Http\Controllers\EncuestaController::class, 'index'])->name('index');
         Route::get('/crear', [App\Http\Controllers\EncuestaController::class, 'create'])->name('create');
-        Route::post('/encuesta', [App\Http\Controllers\EncuestaController::class, 'store'])->name('store');
+        Route::post('/', [App\Http\Controllers\EncuestaController::class, 'store'])->name('store');
         Route::get('/{encuesta}/editar', [App\Http\Controllers\EncuestaController::class, 'edit'])->name('edit');
         Route::put('/{encuesta}', [App\Http\Controllers\EncuestaController::class, 'update'])->name('update');
         Route::delete('/{encuesta}', [App\Http\Controllers\EncuestaController::class, 'destroy'])->name('destroy');
     });
 
     //RUTAS PARA ENCUESTAS - ESTUDIANTE
-    //Lista de encuestas
-    Route::get('/encuestas', [App\Http\Controllers\EncuestaWebController::class, 'index'])->name('encuestas');
 
     // Página de estadísticas de encuesta
     Route::get('/encuestas/{encuesta}/estadisticas', [App\Http\Controllers\EncuestaWebController::class, 'estadisticas'])->name('estadisticas-encuesta');

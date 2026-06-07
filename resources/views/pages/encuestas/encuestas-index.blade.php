@@ -55,7 +55,7 @@
                         <tr class="border-gray-100 border-y dark:border-white/[0.05]">
                             <th class="px-6 py-3">
                                 <div class="flex items-center">
-                                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">ID</p>
+                                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Código</p>
                                 </div>
                             </th>
                             <th class="px-6 py-3">
@@ -95,7 +95,7 @@
                                 <td class="px-6 py-3.5">
                                     <div class="flex items-center">
                                         <p class="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                                            {{ $encuesta->id }}
+                                            {{ $encuesta->codigo }}
                                         </p>
                                     </div>
                                 </td>

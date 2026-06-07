@@ -1,21 +1,41 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    @if($errors->any())
+        <ul>
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    @endif
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
         <!-- Panel Izquierdo: Formulario de Encuesta -->
-        <div class="lg:col-span-1">
-            <x-common.component-card title="Nueva Encuesta">
-                <form id="encuestaForm" action="{{ route('encuestas.store') }}" method="POST">
+        <div class="lg:col-span-1 flex flex-col h-full">
+            <x-common.component-card title="Nueva Encuesta" class="flex-1 h-full">
+                <form id="encuestaForm" action="{{ route('encuestas.store') }}" method="POST" class="flex flex-col flex-1">
                     @csrf
 
                     <div>
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                             Nombre de la Encuesta
                         </label>
-                        <input type="text" name="nombre" placeholder="Ej: Screening TDA 2026..."
+                        <input type="text" name="nombre" placeholder="Ej: Encuesta TDA..."
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 @error('nombre') border-red-500 @enderror"
                             value="{{ old('nombre') }}" required />
                         @error('nombre')
+                            <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Descripción
+                        </label>
+                        <textarea name="descripcion" placeholder="Ej: Cuestionario para evaluar posible TDA en estudiantes..." rows="6"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 @error('descripcion') border-red-500 @enderror">{{ old('descripcion') }}</textarea>
+                        @error('descripcion')
                             <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror
                     </div>
@@ -56,7 +76,7 @@
                         </p>
                     </div>
 
-                    <div class="mt-6 flex gap-3">
+                    <div class="mt-auto pt-6 flex gap-3">
                         <button type="submit"
                             class="inline-flex items-center justify-center rounded-lg bg-blue-600 px-6 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                             Guardar Encuesta
@@ -71,11 +91,11 @@
         </div>
 
         <!-- Panel Derecho: Selección de Preguntas -->
-        <div class="lg:col-span-2">
-            <x-common.component-card title="Seleccionar Preguntas">
-                <div x-data="preguntasSelector()" class="space-y-4">
+        <div class="lg:col-span-2 flex flex-col">
+            <x-common.component-card title="Seleccionar Preguntas" class="flex-1">
+                <div x-data="preguntasSelector()" class="flex flex-col flex-1 space-y-4">
                     <!-- Controles de Filtro -->
-                    <div class="flex flex-wrap gap-2 pb-4 border-b border-gray-200 dark:border-gray-700">
+                    <div class="flex flex-wrap gap-2 pb-4 border-b border-gray-200 dark:border-gray-700 shrink-0">
                         <button @click="filtro = 'todas'"
                             :class="{ 'bg-blue-600 text-white': filtro === 'todas', 'bg-gray-200 dark:bg-gray-700': filtro !== 'todas' }"
                             class="px-3 py-1.5 rounded-lg text-sm font-medium transition">
@@ -99,15 +119,15 @@
                     </div>
 
                     <!-- Lista de Preguntas -->
-                    <div class="space-y-2 max-h-96 overflow-y-auto">
+                    <div class="space-y-2 overflow-y-auto" style="max-height: 520px">
                         <template x-for="pregunta in preguntasFiltradas" :key="pregunta.id">
                             <label
                                 class="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition cursor-pointer">
-                                <input type="checkbox" :value="pregunta.id" x-model="seleccionadas" name="pregunta_ids"
+                                <input type="checkbox" :value="pregunta.id" x-model="seleccionadas"
                                     class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 mt-0.5">
                                 <div class="flex-1">
                                     <div class="flex items-center gap-2">
-                                        <span x-text="pregunta.id"
+                                        <span x-text="pregunta.codigo"
                                             class="text-xs font-bold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded"></span>
                                         <span
                                             :class="{
@@ -146,9 +166,10 @@
                 filtro: 'todas',
                 seleccionadas: [],
                 preguntas: {{ Js::from($preguntasDisponibles->map(fn($p) => [
-                    'id'       => $p->id,
-                    'nombre'   => $p->nombre,
-                    'tipo_tda' => $p->tipo_tda,
+                    'id'           => $p->id,
+                    'codigo'       => $p->codigo,
+                    'nombre'       => $p->nombre,
+                    'tipo_tda'     => $p->tipo_tda,
                     'descripcion'  => $p->descripcion
                 ])->values()->toArray()) }},
 
@@ -161,15 +182,28 @@
             }
         }
 
-        // Asegurar que los valores seleccionados se envíen al formulario
         document.getElementById('encuestaForm')?.addEventListener('submit', function(e) {
-            // Los checkboxes con name="pregunta_ids" se envían automáticamente
-            // Solo asegurar que hay al menos uno seleccionado
-            const checkboxes = document.querySelectorAll('input[name="pregunta_ids"]:checked');
-            if (checkboxes.length === 0) {
+            // Leer el estado de Alpine
+            const alpineComponent = document.querySelector('[x-data="preguntasSelector()"]')?._x_dataStack?.[0];
+            const seleccionadas = alpineComponent?.seleccionadas || [];
+
+            if (seleccionadas.length === 0) {
                 e.preventDefault();
                 alert('Debes seleccionar al menos una pregunta');
+                return;
             }
+
+            // Eliminar hidden inputs previos
+            document.querySelectorAll('input[name="pregunta_ids[]"]').forEach(el => el.remove());
+
+            // Agregar hidden inputs con los valores seleccionados
+            seleccionadas.forEach(function(id) {
+                const hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = 'pregunta_ids[]';
+                hidden.value = id;
+                document.getElementById('encuestaForm').appendChild(hidden);
+            });
         });
     </script>
 @endsection

@@ -14,10 +14,9 @@ return new class extends Migration
         Schema::create('encuestas', function (Blueprint $table) {
             $table->id();
             $table->string('codigo')
-                  ->unique()
+                  ->nullable()
                   ->comment('Código único para identificar la encuesta, ej: E1, E2, etc.');
             $table->string('nombre')
-                  ->unique()
                   ->comment('Nombre de la encuesta');
             $table->text('descripcion')
                   ->nullable()

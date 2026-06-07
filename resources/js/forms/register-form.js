@@ -27,11 +27,13 @@ export function registerForm() {
 
             try {
                 // Llamar al API de registro
-                const response = await fetch('/api/auth/register', {
+                const response = await fetch('/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+
                     },
                     body: JSON.stringify({
                         name: `${this.form.firstName} ${this.form.lastName}`,
@@ -86,7 +88,7 @@ export function registerForm() {
         redirectToLogin() {
             const successMessage = 'El usuario ha sido creado exitosamente. Por favor, inicie sesión para continuar.';
             sessionStorage.setItem('registration_success', successMessage);
-            window.location.href = '/signin';
+            window.location.href = '/login';
         }
     };
 }

@@ -4,13 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ApiEncuestaController;
 
-// ===== RUTAS PÚBLICAS (SIN AUTENTICACIÓN) =====
-Route::prefix('auth')->group(function () {
-    Route::post('/register', [AuthController::class, 'register'])->name('register');
-    Route::post('/login', [AuthController::class, 'login'])->name('api.login');
-    Route::post('/store-session', [AuthController::class, 'storeSession'])->name('store-session');
-});
-
 // ===== RUTAS PROTEGIDAS (REQUIEREN AUTENTICACIÓN) =====
 Route::group(['middleware' => ['auth:api']], function () {
 
@@ -22,7 +15,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     });
 
     // Encuestas y TDA Analysis routes
-    Route::prefix('encuestas')->group(function () {
+    Route::prefix('encuestas')->name('api.encuestas.')->group(function () {
         // Obtener encuestas disponibles
         Route::get('/', [ApiEncuestaController::class, 'index'])->name('encuestas.index');
 
