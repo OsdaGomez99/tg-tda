@@ -114,38 +114,14 @@ class EncuestaWebController extends Controller
             ->with(['analisisTda', 'respuestas'])
             ->get();
 
-        if ($resultados->isEmpty()) {
-            $estadisticas = [];
-        } else {
-            $analisisArray = $resultados->map->analisisTda->filter();
-
-            $estadisticas = [
-                'total_respondientes' => $resultados->count(),
-                'resultados_completados' => $analisisArray->count(),
-                'distribucion_resultados' => [
-                    'tda_combinado' => $analisisArray->where('resultado', 'tda_combinado')->count(),
-                    'tda_inatento' => $analisisArray->where('resultado', 'tda_inatento')->count(),
-                    'tda_hiperactivo' => $analisisArray->where('resultado', 'tda_hiperactivo')->count(),
-                    'tda_possible' => $analisisArray->where('resultado', 'tda_possible')->count(),
-                    'no_tda' => $analisisArray->where('resultado', 'no_tda')->count(),
-                ],
-                'promedio_inatención' => round($analisisArray->avg('puntuacion_inatención'), 2),
-                'promedio_hiperactividad' => round($analisisArray->avg('puntuacion_hiperactividad'), 2),
-                'promedio_total' => round($analisisArray->avg('puntuacion_total'), 2),
-                'edad_promedio' => round($resultados->avg('edad_estudiante'), 1),
-                'distribucion_genero' => [
-                    'M' => $resultados->where('sexo_estudiante', 'M')->count(),
-                    'F' => $resultados->where('sexo_estudiante', 'F')->count(),
-                    'O' => $resultados->where('sexo_estudiante', 'O')->count(),
-                ],
-            ];
-        }
+        // Delegar cálculo al servicio, igual que ApiEncuestaController
+        $estadisticas = $this->tdaService->calcularEstadisticas($resultados);
 
         return view('pages.encuestas.encuestas-estadisticas', [
-            'title' => 'Estadísticas de Encuesta',
-            'encuesta' => $encuesta,
-            'resultados' => $resultados,
-            'estadisticas' => $estadisticas
+            'title'       => 'Estadísticas de Encuesta',
+            'encuesta'    => $encuesta,
+            'resultados'  => $resultados,
+            'estadisticas' => $estadisticas,
         ]);
     }
 }

@@ -10,11 +10,11 @@
         </ul>
     @endif
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch" x-data="preguntasSelector()">
         <!-- Panel Izquierdo: Formulario de Encuesta -->
         <div class="lg:col-span-1 flex flex-col h-full">
             <x-common.component-card title="Editar Encuesta" class="flex-1 h-full">
-                <form action="{{ route('encuestas.update', $encuesta) }}" method="POST">
+                <form action="{{ route('encuestas.update', $encuesta) }}" method="POST" @submit="agregarHiddens">
                     @csrf
                     @method('PUT')
 
@@ -77,6 +77,8 @@
                         </p>
                     </div>
 
+                    <div id="hiddenPreguntaIds"></div>
+
                     <div class="mt-6 flex gap-3">
                         <button type="submit"
                             class="inline-flex items-center justify-center rounded-lg bg-blue-600 px-6 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
@@ -94,7 +96,7 @@
         <!-- Panel derecho para reasignar preguntas -->
         <div class="lg:col-span-2 flex flex-col">
             <x-common.component-card title="Reasignar Preguntas" class="flex-1">
-                <div x-data="preguntasSelector()" class="flex flex-col flex-1 space-y-4">
+                <div class="flex flex-col flex-1 space-y-4">
                     <!-- Controles de Filtro -->
                     <div class="flex flex-wrap gap-2 pb-4 border-b border-gray-200 dark:border-gray-700 shrink-0">
                         <button type="button" @click="filtro = 'todas'"
@@ -126,7 +128,6 @@
                             <label
                                 class="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition cursor-pointer">
                                 <input type="checkbox" :value="pregunta.id" x-model="seleccionadas"
-                                    name="pregunta_ids"
                                     class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 mt-0.5">
                                 <div class="flex-1">
                                     <div class="flex items-center gap-2">
@@ -165,22 +166,30 @@
                 filtro: 'todas',
                 seleccionadas: @json($encuesta->preguntas->pluck('id')->toArray()),
                 preguntas: {{ Js::from(
-                    $preguntasDisponibles->map(
-                            fn($p) => [
-                                'id' => $p->id,
-                                'codigo' => $p->codigo,
-                                'nombre' => $p->nombre,
-                                'tipo_tda' => $p->tipo_tda,
-                                'descripcion' => $p->descripcion,
-                            ],
-                        )->values()->toArray(),
+                    $preguntasDisponibles->map(fn($p) => [
+                        'id'          => $p->id,
+                        'codigo'      => $p->codigo,
+                        'nombre'      => $p->nombre,
+                        'tipo_tda'    => $p->tipo_tda,
+                        'descripcion' => $p->descripcion,
+                    ])->values()->toArray()
                 ) }},
 
                 get preguntasFiltradas() {
-                    if (this.filtro === 'todas') {
-                        return this.preguntas;
-                    }
+                    if (this.filtro === 'todas') return this.preguntas;
                     return this.preguntas.filter(p => p.tipo_tda === this.filtro);
+                },
+
+                agregarHiddens() {
+                    const container = document.getElementById('hiddenPreguntaIds');
+                    container.innerHTML = '';
+                    this.seleccionadas.forEach(id => {
+                        const input = document.createElement('input');
+                        input.type  = 'hidden';
+                        input.name  = 'pregunta_ids[]';
+                        input.value = id;
+                        container.appendChild(input);
+                    });
                 }
             }
         }

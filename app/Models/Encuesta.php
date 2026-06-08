@@ -77,13 +77,6 @@ class Encuesta extends Model
      */
     public function getPreguntasDisponibles(): array
     {
-        $preguntas = $this->obtenerPreguntasTda();
-
-        // Si no hay preguntas asignadas, usar las preguntas activas del sistema
-        if (empty($preguntas)) {
-            return app(\App\Services\TdaAnalysisService::class)->getAvailableQuestions();
-        }
-
-        return $preguntas;
+        return $this->obtenerPreguntasTda();
     }
 }

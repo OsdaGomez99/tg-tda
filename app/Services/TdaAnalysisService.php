@@ -378,4 +378,34 @@ class TdaAnalysisService
             'respuestas_count' => $respuestas->count(),
         ];
     }
+    
+    public function calcularEstadisticas($resultados): array
+    {
+        if ($resultados->isEmpty()) {
+            return [];
+        }
+
+        $analisisArray = $resultados->map->analisisTda->filter();
+
+        return [
+            'total_respondientes'    => $resultados->count(),
+            'resultados_completados' => $analisisArray->count(),
+            'distribucion_resultados' => [
+                'tda_combinado'  => $analisisArray->where('resultado', 'tda_combinado')->count(),
+                'tda_inatento'   => $analisisArray->where('resultado', 'tda_inatento')->count(),
+                'tda_hiperactivo'=> $analisisArray->where('resultado', 'tda_hiperactivo')->count(),
+                'tda_possible'   => $analisisArray->where('resultado', 'tda_possible')->count(),
+                'no_tda'         => $analisisArray->where('resultado', 'no_tda')->count(),
+            ],
+            'promedio_inatención'    => round($analisisArray->avg('puntuacion_inatención'), 2),
+            'promedio_hiperactividad'=> round($analisisArray->avg('puntuacion_hiperactividad'), 2),
+            'promedio_total'         => round($analisisArray->avg('puntuacion_total'), 2),
+            'edad_promedio'          => round($resultados->avg('edad_estudiante'), 1),
+            'distribucion_genero'    => [
+                'M' => $resultados->where('sexo_estudiante', 'M')->count(),
+                'F' => $resultados->where('sexo_estudiante', 'F')->count(),
+                'O' => $resultados->where('sexo_estudiante', 'O')->count(),
+            ],
+        ];
+    }
 }

@@ -24,52 +24,52 @@
                 </div>
 
                 <!-- Puntuación Inatención -->
-                <div class="rounded-2xl border p-6 dark-card-amber" style="border-color: #fcd34d; background-color: #fffbeb;">
+                <div class="rounded-2xl border p-6 border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-900/20">
                     <div class="mb-4 flex items-center justify-between">
-                        <h3 class="text-sm font-semibold" style="color: #78350f;">Inatención</h3>
-                        <span class="text-lg font-bold" style="color: #d97706;">{{ $analisis->porcentaje_inatención }}%</span>
+                        <h3 class="text-sm font-semibold text-amber-900 dark:text-amber-300">Inatención</h3>
+                        <span class="text-lg font-bold text-amber-600 dark:text-amber-400">{{ $analisis->porcentaje_inatención }}%</span>
                     </div>
-                    <div class="mb-3 h-3 overflow-hidden rounded-full" style="background-color: #fde68a;">
-                        <div class="h-full transition-all"
-                            style="width: {{ $analisis->porcentaje_inatención }}%; background-color: #d97706;"></div>
+                    <div class="mb-3 h-3 overflow-hidden rounded-full bg-amber-200 dark:bg-amber-800">
+                        <div class="h-full transition-all bg-amber-500 dark:bg-amber-400"
+                            style="width: {{ $analisis->porcentaje_inatención }}%;"></div>
                     </div>
-                    <p class="text-sm" style="color: #92400e;">
+                    <p class="text-sm text-amber-800 dark:text-amber-300">
                         Puntuación: <span class="font-bold">{{ $analisis->puntuacion_inatención }}/27</span>
                     </p>
-                    <p class="mt-2 text-xs" style="color: #b45309;">
+                    <p class="mt-2 text-xs text-amber-700 dark:text-amber-400">
                         Síntomas significativos: <span class="font-bold">{{ $analisis->sintomas_inatención }}/9</span>
                     </p>
                 </div>
 
                 <!-- Puntuación Hiperactividad -->
-                <div class="rounded-2xl border p-6 dark-card-blue" style="border-color: #93c5fd; background-color: #eff6ff;">
+                <div class="rounded-2xl border p-6 border-blue-300 bg-blue-50 dark:border-blue-700 dark:bg-blue-900/20">
                     <div class="mb-4 flex items-center justify-between">
-                        <h3 class="text-sm font-semibold" style="color: #1e3a8a;">Hiperactividad/Impulsividad</h3>
-                        <span class="text-lg font-bold" style="color: #2563eb;">{{ $analisis->porcentaje_hiperactividad }}%</span>
+                        <h3 class="text-sm font-semibold text-blue-900 dark:text-blue-300">Hiperactividad/Impulsividad</h3>
+                        <span class="text-lg font-bold text-blue-600 dark:text-blue-400">{{ $analisis->porcentaje_hiperactividad }}%</span>
                     </div>
-                    <div class="mb-3 h-3 overflow-hidden rounded-full" style="background-color: #bfdbfe;">
-                        <div class="h-full transition-all"
-                            style="width: {{ $analisis->porcentaje_hiperactividad }}%; background-color: #2563eb;"></div>
+                    <div class="mb-3 h-3 overflow-hidden rounded-full bg-blue-200 dark:bg-blue-800">
+                        <div class="h-full transition-all bg-blue-500 dark:bg-blue-400"
+                            style="width: {{ $analisis->porcentaje_hiperactividad }}%;"></div>
                     </div>
-                    <p class="text-sm" style="color: #1e40af;">
+                    <p class="text-sm text-blue-800 dark:text-blue-300">
                         Puntuación: <span class="font-bold">{{ $analisis->puntuacion_hiperactividad }}/27</span>
                     </p>
-                    <p class="mt-2 text-xs" style="color: #1d4ed8;">
+                    <p class="mt-2 text-xs text-blue-700 dark:text-blue-400">
                         Síntomas significativos: <span class="font-bold">{{ $analisis->sintomas_hiperactividad }}/9</span>
                     </p>
                 </div>
 
                 <!-- Puntuación Total -->
-                <div class="rounded-2xl border p-6 dark-card-purple" style="border-color: #d8b4fe; background-color: #faf5ff;">
+                <div class="rounded-2xl border p-6 border-purple-300 bg-purple-50 dark:border-purple-700 dark:bg-purple-900/20">
                     <div class="mb-4 flex items-center justify-between">
-                        <h3 class="text-sm font-semibold" style="color: #4c1d95;">Puntuación Total</h3>
-                        <span class="text-lg font-bold" style="color: #a855f7;">{{ round(($analisis->puntuacion_total / 54) * 100) }}%</span>
+                        <h3 class="text-sm font-semibold text-purple-900 dark:text-purple-300">Puntuación Total</h3>
+                        <span class="text-lg font-bold text-purple-600 dark:text-purple-400">{{ round(($analisis->puntuacion_total / 54) * 100) }}%</span>
                     </div>
-                    <div class="mb-3 h-3 overflow-hidden rounded-full" style="background-color: #e9d5ff;">
-                        <div class="h-full transition-all"
-                            style="width: {{ round(($analisis->puntuacion_total / 54) * 100) }}%; background-color: #a855f7;"></div>
+                    <div class="mb-3 h-3 overflow-hidden rounded-full bg-purple-200 dark:bg-purple-800">
+                        <div class="h-full transition-all bg-purple-500 dark:bg-purple-400"
+                            style="width: {{ round(($analisis->puntuacion_total / 54) * 100) }}%;"></div>
                     </div>
-                    <p class="text-sm" style="color: #6b21a8;">
+                    <p class="text-sm text-purple-800 dark:text-purple-300">
                         <span class="font-bold">{{ $analisis->puntuacion_total }}/54</span>
                     </p>
                 </div>

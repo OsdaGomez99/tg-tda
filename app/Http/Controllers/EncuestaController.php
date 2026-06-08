@@ -96,22 +96,25 @@ class EncuestaController extends Controller
     public function update(Request $request, Encuesta $encuesta)
     {
         $validated = $request->validate([
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'nullable|string',
-            'usuario_id' => 'required|exists:users,id',
-            'pregunta_ids' => 'required|array|min:1',
-            'pregunta_ids.*' => 'integer|exists:preguntas,id',
+            'nombre'        => 'required|string|max:255',
+            'descripcion'   => 'nullable|string',
+            'usuario_id'    => 'required|exists:users,id',
+            'pregunta_ids'  => 'required|array|min:1',
+            'pregunta_ids.*'=> 'integer|exists:preguntas,id',
         ]);
 
-        $encuesta->update($validated);
+        // Solo actualizar campos de la encuesta, no pregunta_ids
+        $encuesta->update([
+            'nombre'      => $validated['nombre'],
+            'descripcion' => $validated['descripcion'],
+            'usuario_id'  => $validated['usuario_id'],
+        ]);
 
-        // Preparar datos para sincronización con orden
         $sync = [];
         foreach ($validated['pregunta_ids'] as $index => $preguntaId) {
             $sync[$preguntaId] = ['orden' => $index + 1];
         }
 
-        // Actualizar preguntas asignadas
         $encuesta->preguntas()->sync($sync);
 
         return redirect()->route('encuestas.index')

@@ -102,8 +102,8 @@
     </div>
 
     <script>
-        const TOTAL_QUESTIONS = 18;
-        const QUESTIONS_PER_PAGE = 3;
+        let TOTAL_QUESTIONS = 0;
+        const QUESTIONS_PER_PAGE = 2;
         let currentPage = 1;
         let responses = {};
         let allQuestions = [];
@@ -137,7 +137,15 @@
             try {
                 const response = await fetch(`/api/encuestas/{{ $encuesta->id }}`);
                 const data = await response.json();
+
+                if (!data.success) {
+                    alert(data.message ?? 'Error al cargar las preguntas');
+                    return;
+                }
+
                 allQuestions = data.preguntas;
+                TOTAL_QUESTIONS = data.total_preguntas;
+                document.getElementById('totalQuestions').textContent = TOTAL_QUESTIONS;
             } catch (error) {
                 console.error('Error cargando preguntas:', error);
                 alert('Error al cargar las preguntas');

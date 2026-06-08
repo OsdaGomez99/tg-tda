@@ -16,6 +16,7 @@ class EncuestaResultado extends Model
         'nombre_estudiante',
         'edad_estudiante',
         'sexo_estudiante',
+        'carrera_id',
     ];
 
     protected $casts = [
