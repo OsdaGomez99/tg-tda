@@ -17,7 +17,7 @@ class Encuesta extends Model
 
         static::created(function ($encuesta) {
             $encuesta->updateQuietly([
-                'codigo' => 'E' . $encuesta->id
+                'codigo' => 'E-' . str_pad($encuesta->id, 4, '0', STR_PAD_LEFT)
             ]);
         });
     }

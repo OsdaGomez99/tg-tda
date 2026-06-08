@@ -27,7 +27,7 @@ class Pregunta extends Model
 
         static::created(function ($pregunta) {
             $pregunta->updateQuietly([
-                'codigo' => 'P' . $pregunta->id
+                'codigo' => 'P-' . str_pad($pregunta->id, 4, '0', STR_PAD_LEFT)
             ]);
         });
     }
