@@ -70,6 +70,6 @@ class PreguntaController extends Controller
     {
         $pregunta->delete();
 
-        return redirect()->route('preguntas')->with('success', 'Pregunta eliminada correctamente');
+        return redirect()->route('preguntas.index')->with('success', 'Pregunta eliminada correctamente');
     }
 }

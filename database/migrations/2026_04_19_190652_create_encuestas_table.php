@@ -16,6 +16,9 @@ return new class extends Migration
             $table->string('codigo')
                   ->nullable()
                   ->comment('Código único para identificar la encuesta, ej: E1, E2, etc.');
+            $table->string('codigo_acceso')
+                  ->nullable()
+                  ->comment('Código de acceso para participar en la encuesta');
             $table->string('nombre')
                   ->comment('Nombre de la encuesta');
             $table->text('descripcion')

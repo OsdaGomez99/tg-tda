@@ -14,6 +14,7 @@ class EncuestaResultado extends Model
     protected $fillable = [
         'encuesta_id',
         'nombre_estudiante',
+        'documento_estudiante',
         'edad_estudiante',
         'sexo_estudiante',
         'carrera_id',

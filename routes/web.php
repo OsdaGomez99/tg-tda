@@ -23,6 +23,13 @@ Route::fallback(function () {
 });
 
 
+// ===== RUTAS PÚBLICAS DE ENCUESTA POR CÓDIGO DE ACCESO =====
+Route::get('/encuestas/acceso/{codigo_acceso}/iniciar', [App\Http\Controllers\EncuestaWebController::class, 'iniciarPublic'])->name('encuestas.public.iniciar');
+Route::post('/encuestas/acceso/{codigo_acceso}/guardar-datos', [App\Http\Controllers\EncuestaWebController::class, 'storePublic'])->name('encuestas.public.guardar-datos');
+Route::get('/encuestas/acceso/{codigo_acceso}/responder/{resultado}', [App\Http\Controllers\EncuestaWebController::class, 'responderPublic'])->name('encuestas.public.responder');
+Route::get('/encuestas/acceso/{codigo_acceso}/resultado/{resultado}', [App\Http\Controllers\EncuestaWebController::class, 'resultadoPublic'])->name('encuestas.public.resultado');
+Route::get('/encuestas/acceso/{codigo_acceso}/detalles/{resultado}', [App\Http\Controllers\EncuestaWebController::class, 'detallesPublic'])->name('encuestas.public.detalles');
+
 // ===== RUTAS PROTEGIDAS (REQUIEREN AUTENTICACIÓN) =====
 Route::middleware(['auth'])->group(function () {
 

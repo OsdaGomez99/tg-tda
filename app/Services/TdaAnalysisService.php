@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\AnalisisTda;
+use App\Models\Encuesta;
 use App\Models\EncuestaResultado;
 use App\Models\Pregunta;
 use App\Models\RespuestaEncuesta;
@@ -31,125 +32,17 @@ class TdaAnalysisService
         })->toArray();
     }
 
-    /**
-     * Preguntas de referencia DSM-5 (backup en caso de que la BD esté vacía)
-     * Categoría: I = Inatención, H = Hiperactividad/Impulsividad
-     */
-    public function getDefaultQuestions(): array
-    {
-        return [
-            // Inatención (9 síntomas DSM-5)
-            [
-                'id'       => 1,
-                'category' => 'I',
-                'text'     => 'Con frecuencia no presta atención suficiente a los detalles o comete errores por descuido en las tareas o en otras actividades.',
-                'example'  => 'Ej: pasa por alto detalles, el trabajo es impreciso.',
-            ],
-            [
-                'id'       => 2,
-                'category' => 'I',
-                'text'     => 'Con frecuencia tiene dificultades para mantener la atención en tareas o actividades recreativas.',
-                'example'  => 'Ej: le cuesta mantenerse enfocado durante una clase o conversación larga.',
-            ],
-            [
-                'id'       => 3,
-                'category' => 'I',
-                'text'     => 'Con frecuencia parece no escuchar cuando se le habla directamente.',
-                'example'  => 'Ej: su mente parece estar en otro lugar, incluso sin ninguna distracción aparente.',
-            ],
-            [
-                'id'       => 4,
-                'category' => 'I',
-                'text'     => 'Con frecuencia no sigue las instrucciones y no termina las tareas escolares, los quehaceres o las responsabilidades laborales.',
-                'example'  => 'Ej: empieza tareas pero se distrae rápidamente.',
-            ],
-            [
-                'id'       => 5,
-                'category' => 'I',
-                'text'     => 'Con frecuencia tiene dificultades para organizar tareas y actividades.',
-                'example'  => 'Ej: le cuesta gestionar tareas secuenciales o mantener el orden en sus cosas.',
-            ],
-            [
-                'id'       => 6,
-                'category' => 'I',
-                'text'     => 'Con frecuencia evita, le disgusta o es renuente a dedicarse a tareas que requieren un esfuerzo mental sostenido.',
-                'example'  => 'Ej: deberes escolares o trabajo administrativo.',
-            ],
-            [
-                'id'       => 7,
-                'category' => 'I',
-                'text'     => 'Con frecuencia pierde objetos necesarios para tareas o actividades.',
-                'example'  => 'Ej: pierde materiales escolares, llaves, lentes, teléfono.',
-            ],
-            [
-                'id'       => 8,
-                'category' => 'I',
-                'text'     => 'Con frecuencia se distrae fácilmente por estímulos externos.',
-                'example'  => 'Ej: pensamientos no relacionados o ruidos del entorno.',
-            ],
-            [
-                'id'       => 9,
-                'category' => 'I',
-                'text'     => 'Con frecuencia es olvidadizo en las actividades cotidianas.',
-                'example'  => 'Ej: hacer las tareas, las diligencias, responder llamadas.',
-            ],
 
-            // Hiperactividad / Impulsividad (9 síntomas DSM-5)
-            [
-                'id'       => 10,
-                'category' => 'H',
-                'text'     => 'Con frecuencia juguetea con o golpea las manos o los pies, o se retuerce en el asiento.',
-                'example'  => 'Ej: no puede estar quieto en el asiento.',
-            ],
-            [
-                'id'       => 11,
-                'category' => 'H',
-                'text'     => 'Con frecuencia se levanta en situaciones en que se espera que permanezca sentado.',
-                'example'  => 'Ej: se levanta en el aula o en la oficina.',
-            ],
-            [
-                'id'       => 12,
-                'category' => 'H',
-                'text'     => 'Con frecuencia corretea o trepa en situaciones en las que no resulta apropiado.',
-                'example'  => 'Nota: en adultos puede limitarse a una sensación de inquietud.',
-            ],
-            [
-                'id'       => 13,
-                'category' => 'H',
-                'text'     => 'Con frecuencia es incapaz de jugar o de ocuparse tranquilamente en actividades recreativas.',
-                'example'  => 'Ej: le cuesta actividades tranquilas y sosegadas.',
-            ],
-            [
-                'id'       => 14,
-                'category' => 'H',
-                'text'     => 'Con frecuencia está "ocupado", actuando como si "lo impulsara un motor".',
-                'example'  => 'Ej. es incapaz de estar quieto durante mucho tiempo.',
-            ],
-            [
-                'id'       => 15,
-                'category' => 'H',
-                'text'     => 'Con frecuencia habla excesivamente.',
-                'example'  => 'Ej: habla sin parar en situaciones sociales o de trabajo.',
-            ],
-            [
-                'id'       => 16,
-                'category' => 'H',
-                'text'     => 'Con frecuencia responde inesperadamente o antes de que se haya concluido una pregunta.',
-                'example'  => 'Ej: termina la frase de los demás.',
-            ],
-            [
-                'id'       => 17,
-                'category'  => 'H',
-                'text'     => 'Con frecuencia le es difícil esperar su turno.',
-                'example'  => 'Ej. mientras espera en una fila.',
-            ],
-            [
-                'id'       => 18,
-                'category' => 'H',
-                'text'     => 'Con frecuencia interrumpe o se inmiscuye con otros.',
-                'example'  => 'Ej: se entromete en conversaciones, juegos o actividades.',
-            ],
-        ];
+    /**
+     * Obtiene preguntas para una encuesta específica.
+     */
+    public function getQuestionsForSurvey(?Encuesta $encuesta = null): array
+    {
+        if (! $encuesta) {
+            return [];
+        }
+
+        return $encuesta->obtenerPreguntasTda();
     }
 
     /**
@@ -157,8 +50,7 @@ class TdaAnalysisService
      */
     public function getAvailableQuestions(): array
     {
-        $questions = $this->getQuestions();
-        return count($questions) > 0 ? $questions : $this->getDefaultQuestions();
+        return $this->getQuestions();
     }
 
     /**
@@ -179,11 +71,30 @@ class TdaAnalysisService
      * Umbral clínico: ≥6 síntomas con puntuación ≥2 en cada categoría.
      *
      * @param  array $answers  [question_id => score (0-3)]
+     * @param  Encuesta|null $encuesta
      * @return array
      */
-    public function analyze(array $answers): array
+    public function analyze(array $answers, ?Encuesta $encuesta = null): array
     {
-        $questions = collect($this->getAvailableQuestions())->keyBy('id');
+        $questions = $encuesta
+            ? collect($this->getQuestionsForSurvey($encuesta))->keyBy('id')
+            : collect($this->getAvailableQuestions())->keyBy('id');
+
+        if ($questions->isEmpty()) {
+            return [
+                'result' => 'no_tda',
+                'inattention_score' => 0,
+                'hyperactivity_score' => 0,
+                'total_score' => 0,
+                'inattention_symptoms' => 0,
+                'hyperactivity_symptoms' => 0,
+                'max_inattention_score' => 27,
+                'max_hyperactivity_score' => 27,
+                'max_total_score' => 54,
+                'inattention_percentage' => 0,
+                'hyperactivity_percentage' => 0,
+            ];
+        }
 
         $inattentionScore      = 0;
         $hyperactivityScore    = 0;
@@ -224,7 +135,7 @@ class TdaAnalysisService
         } elseif ($hyperactiveSignificant) {
             $result = 'tda_hiperactivo';
         } elseif ($inattentionSymptoms >= 3 || $hyperactivitySymptoms >= 3) {
-            $result = 'tda_possible';
+            $result = 'tda_posible';
         } else {
             $result = 'no_tda';
         }
@@ -253,11 +164,13 @@ class TdaAnalysisService
      */
     public function generarAnalisis(EncuestaResultado $resultado): AnalisisTda
     {
+        $encuesta = $resultado->encuesta;
+
         // Obtener respuestas ya guardadas
         $respuestasGuardadas = $resultado->obtenerRespuestasArray();
 
         // Realizar el análisis
-        $analisisData = $this->analyze($respuestasGuardadas);
+        $analisisData = $this->analyze($respuestasGuardadas, $encuesta);
         // Guardar el resultado del análisis
         $analisisTda = AnalisisTda::create([
             'encuesta_resultado_id' => $resultado->id,
@@ -297,29 +210,29 @@ class TdaAnalysisService
 
         $descripcion = match ($result) {
             'tda_combinado' => sprintf(
-                'Resultado: TDA Combinado. Se han identificado síntomas significativos de inatención (%d síntomas, puntuación: %d/27) e hiperactividad/impulsividad (%d síntomas, puntuación: %d/27). Se recomienda evaluación profesional detallada.',
+                'TDA Combinado. Se han identificado síntomas significativos de inatención (%d síntomas, puntuación: %d/27) e hiperactividad/impulsividad (%d síntomas, puntuación: %d/27). Se recomienda evaluación profesional detallada.',
                 $inattentionSymptoms,
                 $inattentionScore,
                 $hyperactivitySymptoms,
                 $hyperactivityScore
             ),
             'tda_inatento' => sprintf(
-                'Resultado: TDA Tipo Inatento. Se han identificado %d síntomas significativos de inatención (puntuación: %d/27). Principales dificultades en concentración y atención sostenida. Se recomienda evaluación profesional.',
+                'TDA Tipo Inatento. Se han identificado %d síntomas significativos de inatención (puntuación: %d/27). Principales dificultades en concentración y atención sostenida. Se recomienda evaluación profesional.',
                 $inattentionSymptoms,
                 $inattentionScore
             ),
             'tda_hiperactivo' => sprintf(
-                'Resultado: TDA Tipo Hiperactivo/Impulsivo. Se han identificado %d síntomas significativos de hiperactividad e impulsividad (puntuación: %d/27). Se recomienda evaluación profesional.',
+                'TDA Tipo Hiperactivo/Impulsivo. Se han identificado %d síntomas significativos de hiperactividad e impulsividad (puntuación: %d/27). Se recomienda evaluación profesional.',
                 $hyperactivitySymptoms,
                 $hyperactivityScore
             ),
-            'tda_possible' => sprintf(
-                'Resultado: Posible TDA. Se han identificado síntomas moderados (inatención: %d, hiperactividad: %d). Se recomienda seguimiento y evaluación adicional.',
+            'tda_posible' => sprintf(
+                'Posible TDA. Se han identificado síntomas moderados (inatención: %d, hiperactividad: %d). Se recomienda seguimiento y evaluación adicional.',
                 $inattentionSymptoms,
                 $hyperactivitySymptoms
             ),
             'no_tda' => sprintf(
-                'Resultado: No se detectan síntomas clínicamente significativos de TDA. Puntuaciones de inatención: %d/27, Hiperactividad: %d/27. Perfil dentro de los parámetros típicos.',
+                'No se detectan síntomas clínicamente significativos de TDA. Puntuaciones de inatención: %d/27, Hiperactividad: %d/27. Perfil dentro de los parámetros típicos.',
                 $inattentionScore,
                 $hyperactivityScore
             ),
@@ -378,7 +291,7 @@ class TdaAnalysisService
             'respuestas_count' => $respuestas->count(),
         ];
     }
-    
+
     public function calcularEstadisticas($resultados): array
     {
         if ($resultados->isEmpty()) {
@@ -393,12 +306,12 @@ class TdaAnalysisService
             'distribucion_resultados' => [
                 'tda_combinado'  => $analisisArray->where('resultado', 'tda_combinado')->count(),
                 'tda_inatento'   => $analisisArray->where('resultado', 'tda_inatento')->count(),
-                'tda_hiperactivo'=> $analisisArray->where('resultado', 'tda_hiperactivo')->count(),
-                'tda_possible'   => $analisisArray->where('resultado', 'tda_possible')->count(),
+                'tda_hiperactivo' => $analisisArray->where('resultado', 'tda_hiperactivo')->count(),
+                'tda_posible'   => $analisisArray->where('resultado', 'tda_posible')->count(),
                 'no_tda'         => $analisisArray->where('resultado', 'no_tda')->count(),
             ],
             'promedio_inatención'    => round($analisisArray->avg('puntuacion_inatención'), 2),
-            'promedio_hiperactividad'=> round($analisisArray->avg('puntuacion_hiperactividad'), 2),
+            'promedio_hiperactividad' => round($analisisArray->avg('puntuacion_hiperactividad'), 2),
             'promedio_total'         => round($analisisArray->avg('puntuacion_total'), 2),
             'edad_promedio'          => round($resultados->avg('edad_estudiante'), 1),
             'distribucion_genero'    => [

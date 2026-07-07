@@ -53,9 +53,9 @@
                     class="rounded-2xl border border-yellow-200 bg-yellow-50 p-6 dark:border-yellow-900/30 dark:bg-yellow-900/20">
                     <p class="text-sm font-medium text-yellow-900 dark:text-yellow-200">Posible TDA</p>
                     <p class="mt-2 text-3xl font-bold text-yellow-600 dark:text-yellow-400">
-                        {{ $estadisticas['distribucion_resultados']['tda_possible'] ?? 0 }}</p>
+                        {{ $estadisticas['distribucion_resultados']['tda_posible'] ?? 0 }}</p>
                     <p class="mt-2 text-xs text-yellow-700 dark:text-yellow-300">
-                        {{ round(($estadisticas['distribucion_resultados']['tda_possible'] / ($estadisticas['total_respondientes'] ?: 1)) * 100) }}%
+                        {{ round(($estadisticas['distribucion_resultados']['tda_posible'] / ($estadisticas['total_respondientes'] ?: 1)) * 100) }}%
                     </p>
                 </div>
 
@@ -267,7 +267,7 @@
             'tda_combinado' => 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200',
             'tda_inatento' => 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-200',
             'tda_hiperactivo' => 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-200',
-            'tda_possible' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200',
+            'tda_posible' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200',
             'no_tda' => 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200',
             default => 'bg-gray-100 text-gray-800',
         };
@@ -279,7 +279,7 @@
             'tda_combinado' => 'TDA Combinado',
             'tda_inatento' => 'TDA Inatento',
             'tda_hiperactivo' => 'TDA Hiperactivo',
-            'tda_possible' => 'Posible TDA',
+            'tda_ble' => 'Posible TDA',
             'no_tda' => 'Sin TDA',
             default => 'Desconocido',
         };

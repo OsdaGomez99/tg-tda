@@ -49,7 +49,7 @@ class AnalisisTda extends Model
             'tda_combinado' => 'TDA Combinado (Síntomas de Inatención e Hiperactividad)',
             'tda_inatento' => 'TDA Tipo Inatento (Dificultad de concentración)',
             'tda_hiperactivo' => 'TDA Tipo Hiperactivo/Impulsivo',
-            'tda_possible' => 'Posible TDA (Síntomas moderados)',
+            'tda_posible' => 'Posible TDA (Síntomas moderados)',
             'no_tda' => 'No detectado TDA',
             default => 'Resultado desconocido'
         };

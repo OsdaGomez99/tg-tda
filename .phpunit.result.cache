@@ -1,0 +1,1 @@
+{"version":2,"defects":{"Tests\\Unit\\TdaAnalysisServiceTest::test_generar_analisis_uses_only_questions_assigned_to_the_survey":8},"times":{"Tests\\Unit\\TdaAnalysisServiceTest::test_generar_analisis_uses_only_questions_assigned_to_the_survey":0.04}}

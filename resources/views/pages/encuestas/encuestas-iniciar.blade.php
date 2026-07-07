@@ -2,6 +2,20 @@
 
 @section('content')
     <div class="space-y-6">
+        @if (session('error'))
+            <div id="errorToast" class="fixed inset-x-0 top-20 z-[9999] flex justify-center px-4">
+                <div class="w-full max-w-md">
+                    <div
+                        class="relative rounded-xl border border-red-200 bg-white/95 shadow-xl backdrop-blur-sm dark:border-red-500/30 dark:bg-slate-900/95">
+                        <x-ui.alert variant="error" title="Error" message="{{ session('error') }}" />
+                        <button id="closeErrorToast" type="button"
+                            class="absolute right-3 top-3 rounded-full bg-white/80 px-2 py-1 text-xs font-semibold text-gray-700 shadow-sm hover:bg-white dark:bg-gray-900/90 dark:text-gray-200">
+                            ×
+                        </button>
+                    </div>
+                </div>
+            </div>
+        @endif
         <!-- Header -->
         <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
             <h1 class="text-2xl font-bold text-gray-800 dark:text-white">{{ $encuesta->nombre }}</h1>
@@ -34,7 +48,7 @@
         </div>
 
         <!-- Formulario de Datos del Estudiante -->
-        <form action="{{ route('guardar-datos-encuesta', $encuesta) }}" method="POST"
+        <form action="{{ $formActionUrl ?? route('encuestas.public.guardar-datos', ['codigo_acceso' => $encuesta->codigo_acceso]) }}" method="POST"
             class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
             @csrf
 
@@ -51,6 +65,21 @@
                         value="{{ old('nombre_estudiante') }}" required
                         class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-blue-600 dark:focus:ring-blue-600/20">
                     @error('nombre_estudiante')
+                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Documento de Identidad -->
+                <div>
+                    <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Documento de Identidad <span class="text-red-600">*</span>
+                    </label>
+                    <input type="text" name="documento_estudiante"
+                        placeholder="Ingrese su documento de identidad (Formato: V12345678)"
+                        value="{{ old('documento_estudiante') }}" required
+                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-blue-600 dark:focus:ring-blue-600/20"
+                        maxlength="9" pattern="[VEJPG][0-9]{7,8}">
+                    @error('documento_estudiante')
                         <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                     @enderror
                 </div>
@@ -103,9 +132,10 @@
                     <label class="mb-3 block text-sm font-medium text-gray-700 dark:text-gray-300">
                         Carrera <span class="text-red-600">*</span>
                     </label>
-                    <select name="carrera_id" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300">
+                    <select name="carrera_id"
+                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-blue-600 dark:focus:ring-blue-600/20">
                         <option value="">Seleccione una carrera</option>
-                        @foreach($carreras as $carrera)
+                        @foreach ($carreras as $carrera)
                             <option value="{{ $carrera->id }}" {{ old('carrera_id') == $carrera->id ? 'selected' : '' }}>
                                 {{ $carrera->nombre }}
                             </option>
@@ -119,7 +149,7 @@
 
             <!-- Botones de Acción -->
             <div class="mt-8 flex gap-4">
-                <a href="/encuestas"
+                <a href="{{ $backUrl ?? '/encuestas' }}"
                     class="flex-1 rounded-lg border border-gray-300 bg-white px-6 py-3 text-center font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
                     ← Salir
                 </a>

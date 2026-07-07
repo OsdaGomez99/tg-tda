@@ -1,4 +1,9 @@
-@extends('layouts.app')
+@php
+    $isPublicRoute = request()->routeIs('encuestas.public.detalles');
+    $layout = $isPublicRoute ? 'layouts.encuestas' : 'layouts.app';
+@endphp
+
+@extends($layout)
 
 @section('content')
     <div class="space-y-6">
@@ -123,7 +128,12 @@
 
         <!-- Botones de Acción -->
         <div class="flex gap-4">
-            <a href="/respuestas/{{ $resultado->id }}/resultado"
+            <a href="{{ request()->routeIs('encuestas.public.detalles')
+                ? route('encuestas.public.resultado', [
+                    'codigo_acceso' => $resultado->encuesta->codigo_acceso,
+                    'resultado' => urlencode(base64_encode(encrypt($resultado->id))),
+                ])
+                : route('resultado-encuesta', $resultado) }}"
                 class="flex-1 rounded-lg border border-gray-300 bg-white px-6 py-3 text-center font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
                 ← Volver a Resultado
             </a>

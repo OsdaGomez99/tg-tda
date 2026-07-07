@@ -7,6 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ $title ?? 'Inicio' }} | UNEG</title>
+    <link rel="icon" href="/images/logo/logo.png" type="image/svg+xml">
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])

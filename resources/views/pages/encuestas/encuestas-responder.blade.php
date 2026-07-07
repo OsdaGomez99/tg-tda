@@ -26,7 +26,7 @@
                 <form id="encuestaForm" class="space-y-4">
                     @csrf
                     <input type="hidden" id="resultadoId" value="{{ $resultado->id }}">
-
+                    <input type="hidden" id="resultadoUrl" value="{{ $resultadoUrl }}">
                     <!-- Preguntas -->
                     <div id="questionsContainer" class="space-y-6">
                         <!-- Las preguntas se cargarán con JavaScript -->
@@ -56,7 +56,7 @@
             <div class="w-64 shrink-0 sticky top-6">
                 <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
                     <h3 class="mb-4 text-sm font-semibold text-gray-800 dark:text-white">Progreso de Respuestas</h3>
-                    <div class="grid grid-cols-9 gap-2" id="answeredIndicators">
+                    <div class="grid grid-cols-5 gap-2" id="answeredIndicators">
                         <!-- Indicadores se generarán con JavaScript -->
                     </div>
                 </div>
@@ -85,17 +85,21 @@
     </div>
 
     <!-- Modal de Carga -->
-    <div id="loadingModal" class="hidden fixed inset-0 z-50 flex items-center justify-center" style="background: rgba(0, 0, 0, 0.5);">
-        <div class="rounded-2xl bg-white p-8 dark:bg-gray-900" style="padding: 3rem 4rem; min-width: 320px; text-align: center;">
+    <div id="loadingModal" class="hidden fixed inset-0 z-50 flex items-center justify-center"
+        style="background: rgba(0, 0, 0, 0.5);">
+        <div class="rounded-2xl bg-white p-8 dark:bg-gray-900"
+            style="padding: 3rem 4rem; min-width: 320px; text-align: center;">
             <div class="mb-4 flex justify-center">
-                <div style="
+                <div
+                    style="
                     width: 32px;
                     height: 32px;
                     border-radius: 50%;
                     border: 4px solid #e5e7eb;
                     border-top-color: #2563eb;
                     animation: spin 1s linear infinite;
-                "></div>
+                ">
+                </div>
             </div>
             <p class="text-gray-600 dark:text-gray-400">Analizando respuestas...</p>
         </div>
@@ -108,6 +112,8 @@
         let responses = {};
         let allQuestions = [];
         const resultadoId = document.getElementById('resultadoId').value;
+        const isPublicResultado = {{ Auth::check() ? 'false' : 'true' }};
+        const resultadoUrl = document.getElementById('resultadoUrl').value;
 
         // Opciones de respuesta
         const responseOptions = {
@@ -178,13 +184,13 @@
                             }">
 
                         ${sinResponder ? `
-                            <div class="mb-3 flex items-center gap-2 text-sm font-medium text-red-600 dark:text-red-400">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                                </svg>
-                                Esta pregunta es obligatoria. Por favor selecciona una opción.
-                            </div>
-                        ` : ''}
+                                        <div class="mb-3 flex items-center gap-2 text-sm font-medium text-red-600 dark:text-red-400">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                            </svg>
+                                            Esta pregunta es obligatoria. Por favor selecciona una opción.
+                                        </div>
+                                    ` : ''}
                     <div class="mb-4 flex items-start justify-between">
                         <div class="flex-1">
                             <h3 class="text-sm font-semibold text-gray-600 dark:text-gray-400">
@@ -204,23 +210,23 @@
 
                     <div class="space-y-2">
                         ${[0, 1, 2, 3].map(score => `
-                                <label class="flex cursor-pointer items-center gap-3 rounded-lg border-2 p-4 transition-all ${
-                                    responses[question.id] === score
-                                        ? 'border-blue-500 bg-blue-50 dark:border-blue-600 dark:bg-blue-900/20'
-                                        : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
-                                }">
-                                    <input
-                                        type="radio"
-                                        name="question_${question.id}"
-                                        value="${score}"
-                                        ${responses[question.id] === score ? 'checked' : ''}
-                                        class="h-4 w-4 cursor-pointer"
-                                        onchange="handleResponse(${question.id}, ${score})">
-                                    <span class="flex-1 text-sm font-medium text-gray-700 dark:text-gray-300">
-                                        ${responseOptions[score]}
-                                    </span>
-                                </label>
-                            `).join('')}
+                                            <label class="flex cursor-pointer items-center gap-3 rounded-lg border-2 p-4 transition-all ${
+                                                responses[question.id] === score
+                                                    ? 'border-blue-500 bg-blue-50 dark:border-blue-600 dark:bg-blue-900/20'
+                                                    : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                                            }">
+                                                <input
+                                                    type="radio"
+                                                    name="question_${question.id}"
+                                                    value="${score}"
+                                                    ${responses[question.id] === score ? 'checked' : ''}
+                                                    class="h-4 w-4 cursor-pointer"
+                                                    onchange="handleResponse(${question.id}, ${score})">
+                                                <span class="flex-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    ${responseOptions[score]}
+                                                </span>
+                                            </label>
+                                        `).join('')}
                     </div>
                 </div>
             `;
@@ -308,7 +314,10 @@
                 if (currentPage > 1) {
                     currentPage--;
                     renderPage();
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
                 }
             });
 
@@ -318,7 +327,10 @@
                 if (valido && currentPage * QUESTIONS_PER_PAGE < TOTAL_QUESTIONS) {
                     currentPage++;
                     renderPage();
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
                 }
             });
 
@@ -371,7 +383,7 @@
 
                 // Redirigir a resultados
                 setTimeout(() => {
-                    window.location.href = `/respuestas/${resultadoId}/resultado`;
+                    window.location.href = resultadoUrl;
                 }, 1500);
             } catch (error) {
                 console.error('Error finalizando encuesta:', error);

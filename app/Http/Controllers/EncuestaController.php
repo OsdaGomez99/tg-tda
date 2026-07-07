@@ -6,6 +6,7 @@ use App\Models\Encuesta;
 use App\Models\Pregunta;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Str;
 
 class EncuestaController extends Controller
 {
@@ -55,6 +56,7 @@ class EncuestaController extends Controller
         // Crear encuesta
         $encuesta = Encuesta::create([
             'nombre' => $validated['nombre'],
+            'codigo_acceso' => $this->generarCodigoAcceso(),
             'descripcion' => $validated['descripcion'],
             'usuario_id' => $validated['usuario_id'],
         ]);
@@ -100,7 +102,7 @@ class EncuestaController extends Controller
             'descripcion'   => 'nullable|string',
             'usuario_id'    => 'required|exists:users,id',
             'pregunta_ids'  => 'required|array|min:1',
-            'pregunta_ids.*'=> 'integer|exists:preguntas,id',
+            'pregunta_ids.*' => 'integer|exists:preguntas,id',
         ]);
 
         // Solo actualizar campos de la encuesta, no pregunta_ids
@@ -128,7 +130,41 @@ class EncuestaController extends Controller
     {
         $encuesta->delete();
 
-        return redirect()->route('encuestas')
+        return redirect()->route('encuestas.index', $encuesta)
             ->with('success', 'Encuesta eliminada correctamente.');
+    }
+
+
+    /**
+     * Genera un código aleatorio para una encuesta.
+     * Este método genera un código aleatorio de una longitud especificada, evitando caracteres excluidos.
+     * @return string El código generado.
+     */
+    protected function generarCodigoAcceso()
+    {
+        $longitud = 4; // Longitud del código de acceso
+        $codigo = '';
+        do {
+            $codigo = Str::upper(Str::random($longitud));
+        } while ($this->caracteresExcluidos($codigo));
+
+        return $codigo;
+    }
+
+    /**
+     * Verifica si un código contiene caracteres excluidos.
+     * Este método busca si un código dado contiene alguno de los caracteres especificados en un arreglo.
+     * @param string $codigo El código a verificar.
+     * @return bool `true` si el código contiene al menos un carácter excluido, `false` en caso contrario.
+     */
+    protected function caracteresExcluidos(string $codigo): bool
+    {
+        $caracteres_excluidos = ['I', 'O', '1', '0']; // Caracteres a excluir
+        foreach ($caracteres_excluidos as $caracter) {
+            if (Str::contains($codigo, $caracter)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

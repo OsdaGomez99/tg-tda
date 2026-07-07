@@ -2,6 +2,33 @@
 
 @section('content')
     <div class="space-y-6">
+        @if (session('success'))
+            <div id="successToast" class="fixed inset-x-0 top-20 z-[9999] flex justify-center px-4">
+                <div class="w-full max-w-md">
+                    <div
+                        class="relative rounded-xl border border-green-200 bg-white/95 shadow-xl backdrop-blur-sm dark:border-green-500/30 dark:bg-slate-900/95">
+                        <x-ui.alert variant="success" title="Éxito" message="{{ session('success') }}" />
+                        <button id="closeSuccessToast" type="button"
+                            class="absolute right-3 top-3 rounded-full bg-white/80 px-2 py-1 text-xs font-semibold text-gray-700 shadow-sm hover:bg-white dark:bg-gray-900/90 dark:text-gray-200">
+                            ×
+                        </button>
+                    </div>
+                </div>
+            </div>
+        @elseif (session('error'))
+            <div id="errorToast" class="fixed inset-x-0 top-20 z-[9999] flex justify-center px-4">
+                <div class="w-full max-w-md">
+                    <div
+                        class="relative rounded-xl border border-red-200 bg-white/95 shadow-xl backdrop-blur-sm dark:border-red-500/30 dark:bg-slate-900/95">
+                        <x-ui.alert variant="error" title="Error" message="{{ session('error') }}" />
+                        <button id="closeErrorToast" type="button"
+                            class="absolute right-3 top-3 rounded-full bg-white/80 px-2 py-1 text-xs font-semibold text-gray-700 shadow-sm hover:bg-white dark:bg-gray-900/90 dark:text-gray-200">
+                            ×
+                        </button>
+                    </div>
+                </div>
+            </div>
+        @endif
         <div
             class="overflow-hidden rounded-2xl border border-gray-200 bg-white pt-4 dark:border-gray-800 dark:bg-white/[0.03]">
             <div class="flex flex-col gap-4 px-6 mb-4 sm:flex-row sm:items-center sm:justify-between">
@@ -83,6 +110,11 @@
                             </th>
                             <th class="px-6 py-3">
                                 <div class="flex items-center">
+                                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Ruta de acceso</p>
+                                </div>
+                            </th>
+                            <th class="px-6 py-3">
+                                <div class="flex items-center">
                                     <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Acciones</p>
                                 </div>
                             </th>
@@ -130,19 +162,29 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-3.5">
+                                    <div class="max-w-[420px] overflow-hidden">
+                                        <a href="{{ route('encuestas.public.iniciar', ['codigo_acceso' => $encuesta->codigo_acceso]) }}"
+                                            class="block min-w-0 truncate text-sm font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+                                            target="_blank" rel="noopener noreferrer">
+                                            {{ route('encuestas.public.iniciar', ['codigo_acceso' => $encuesta->codigo_acceso]) }}
+                                        </a>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-3.5">
                                     <div class="flex items-center gap-2">
-                                        <a href={{ route('encuestas.show', $encuesta) }} class="text-blue-600 hover:text-blue-800 text-theme-sm">
+                                        <a href={{ route('encuestas.show', $encuesta) }}
+                                            class="text-blue-600 hover:text-blue-800 text-theme-sm">
                                             <x-ui.button size="xs" variant="outline">Editar</x-ui.button>
                                         </a>
-                                        <form action={{ route('encuestas.destroy', $encuesta) }} method="POST" class="inline">
+                                        <form action="{{ route('encuestas.destroy', $encuesta) }}" method="POST"
+                                            class="inline">
                                             @csrf
                                             @method('DELETE')
-                                            <x-ui.button size="xs" variant="danger">Eliminar</x-ui.button>
+                                            <button type="button" data-delete-trigger
+                                                class="inline-flex items-center justify-center rounded-lg border border-red-300 bg-white px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-50 dark:border-red-700/50 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30">
+                                                Eliminar
+                                            </button>
                                         </form>
-                                        <a href="{{ route('iniciar-encuesta', $encuesta) }}"
-                                            class="rounded-lg bg-blue-600 px-3 py-2 text-xs font-medium text-white hover:bg-blue-700">
-                                            Responder
-                                        </a>
                                         <a href="{{ route('estadisticas-encuesta', $encuesta) }}"
                                             class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400">
                                             Estadísticas
@@ -152,7 +194,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                                <td colspan="6" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
                                     No hay encuestas registradas
                                 </td>
                             </tr>
@@ -162,4 +204,63 @@
             </div>
         </div>
     </div>
+
+    <div id="deleteConfirmModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+        <div class="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
+            <h3 class="text-lg font-bold text-gray-800 dark:text-white">Confirmar eliminación</h3>
+            <p class="mt-2 text-gray-600 dark:text-gray-400">
+                ¿Está seguro de que desea eliminar esta encuesta? Esta acción no se puede deshacer.
+            </p>
+            <div class="mt-6 flex gap-3">
+                <button type="button" id="cancelDeleteBtn"
+                    class="flex-1 rounded-lg border border-gray-300 bg-white px-4 py-2 font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+                    Cancelar
+                </button>
+                <button type="button" id="confirmDeleteBtn"
+                    class="flex-1 rounded-lg bg-red-600 px-4 py-2 font-medium text-white hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800">
+                    Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let deleteFormToSubmit = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('[data-delete-trigger]').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    deleteFormToSubmit = button.closest('form');
+                    document.getElementById('deleteConfirmModal').classList.remove('hidden');
+                });
+            });
+
+            document.getElementById('cancelDeleteBtn').addEventListener('click', () => {
+                document.getElementById('deleteConfirmModal').classList.add('hidden');
+                deleteFormToSubmit = null;
+            });
+
+            document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
+                if (deleteFormToSubmit) {
+                    deleteFormToSubmit.submit();
+                }
+            });
+
+            const successToast = document.getElementById('successToast');
+            const closeSuccessToast = document.getElementById('closeSuccessToast');
+
+            if (successToast) {
+                const hideToast = () => successToast.classList.add('hidden');
+                const timer = setTimeout(hideToast, 5000);
+
+                if (closeSuccessToast) {
+                    closeSuccessToast.addEventListener('click', () => {
+                        clearTimeout(timer);
+                        hideToast();
+                    });
+                }
+            }
+        });
+    </script>
 @endsection

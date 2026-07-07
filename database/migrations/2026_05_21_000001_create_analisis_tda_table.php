@@ -43,7 +43,7 @@ return new class extends Migration
                 'tda_combinado',
                 'tda_inatento',
                 'tda_hiperactivo',
-                'tda_possible',
+                'tda_posible',
                 'no_tda'
             ])->default('no_tda')
                 ->comment('Resultado del análisis: TDA combinado, TDA inatento, TDA hiperactivo, TDA posible, No TDA');
