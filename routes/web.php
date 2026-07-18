@@ -56,16 +56,20 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/{encuesta}', [App\Http\Controllers\EncuestaController::class, 'destroy'])->name('destroy');
     });
 
+    // RUTAS DE USUARIOS
+    Route::prefix('/usuarios')->name('usuarios.')->group(function () {
+        Route::get('/', [App\Http\Controllers\UserController::class, 'index'])->name('index');
+        Route::get('/crear', [App\Http\Controllers\UserController::class, 'create'])->name('create');
+        Route::post('/guardar', [App\Http\Controllers\UserController::class, 'store'])->name('store');
+        Route::get('/{user}/editar', [App\Http\Controllers\UserController::class, 'show'])->name('show');
+        Route::put('/{user}', [App\Http\Controllers\UserController::class, 'update'])->name('update');
+        Route::delete('/{user}', [App\Http\Controllers\UserController::class, 'destroy'])->name('destroy');
+    });
+
     //RUTAS PARA ENCUESTAS - ESTUDIANTE
 
     // Página de estadísticas de encuesta
     Route::get('/encuestas/{encuesta}/estadisticas', [App\Http\Controllers\EncuestaWebController::class, 'estadisticas'])->name('estadisticas-encuesta');
-
-    //Pagina de iniciar encuesta
-    Route::get('/encuestas/{encuesta}/iniciar', [App\Http\Controllers\EncuestaWebController::class, 'iniciar'])->name('iniciar-encuesta');
-
-    // Guardar datos iniciales y redirigir a responder encuesta
-    Route::post('/encuestas/{encuesta}/guardar-datos', [App\Http\Controllers\EncuestaWebController::class, 'store'])->name('guardar-datos-encuesta');
 
     // Página de responder encuesta
     Route::get('/respuestas/{resultado}/responder', [App\Http\Controllers\EncuestaWebController::class, 'responder'])->name('responder-encuesta');
@@ -77,9 +81,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/respuestas/{resultado}/detalles', [App\Http\Controllers\EncuestaWebController::class, 'detalles'])->name('detalles-encuesta');
 
     // dashboard pages
-    Route::get('/', function () {
-        return view('pages.dashboard.ecommerce', ['title' => 'E-commerce Dashboard']);
-    })->name('dashboard');
+    Route::get('/', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
 
     // calender pages
     Route::get('/calendar', function () {
@@ -139,9 +141,4 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/videos', function () {
         return view('pages.ui-elements.videos', ['title' => 'Videos']);
     })->name('videos');
-});
-
-// Fallback route for 404 errors
-Route::fallback(function () {
-    return view('pages.errors.error-404', ['title' => 'Error 404']);
 });

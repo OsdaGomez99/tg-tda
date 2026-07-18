@@ -23,6 +23,11 @@ class MenuHelper
                 'path' => '/encuestas',
             ],
             [
+                'icon' => 'user-profile',
+                'name' => 'Usuarios',
+                'path' => '/usuarios',
+            ],
+            [
                 'icon' => 'calendar',
                 'name' => 'Calendar',
                 'path' => '/calendar',

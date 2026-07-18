@@ -14,19 +14,6 @@ class ApiEncuestaController extends Controller
     public function __construct(private TdaAnalysisService $tdaService) {}
 
     /**
-     * Obtiene todas las encuestas disponibles
-     */
-    public function index(): JsonResponse
-    {
-        $encuestas = Encuesta::with('usuario')->get();
-
-        return response()->json([
-            'success' => true,
-            'data' => $encuestas,
-        ]);
-    }
-
-    /**
      * Obtiene una encuesta específica con sus preguntas asignadas
      */
     public function show(Encuesta $encuesta): JsonResponse
@@ -41,35 +28,6 @@ class ApiEncuestaController extends Controller
             'opciones_respuesta' => $opciones,
             'total_preguntas' => count($preguntas),
         ]);
-    }
-
-    /**
-     * Inicia una nueva respuesta de encuesta
-     */
-    public function iniciar(Request $request, Encuesta $encuesta): JsonResponse
-    {
-        $validated = $request->validate([
-            'nombre_estudiante' => 'required|string|max:255',
-            'edad_estudiante' => 'required|integer|min:5|max:100',
-            'sexo_estudiante' => 'required|in:M,F,O',
-        ]);
-
-        $resultado = EncuestaResultado::create(array_merge($validated, [
-            'encuesta_id' => $encuesta->id,
-        ]));
-
-        $encuesta = Encuesta::findOrFail($resultado->encuesta_id);
-        $preguntas = $encuesta->getPreguntasDisponibles();
-        $opciones = $this->tdaService->getResponseOptions();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Encuesta iniciada correctamente',
-            'resultado_id' => $resultado->id,
-            'encuesta' => $encuesta,
-            'preguntas' => $preguntas,
-            'opciones_respuesta' => $opciones,
-        ], 201);
     }
 
     /**
@@ -120,56 +78,6 @@ class ApiEncuestaController extends Controller
     }
 
     /**
-     * Guarda múltiples respuestas a la vez
-     */
-    public function guardarRespuestas(Request $request, EncuestaResultado $resultado): JsonResponse
-    {
-        $validated = $request->validate([
-            'respuestas' => 'required|array',
-            'respuestas.*.pregunta_id' => 'required|integer|exists:preguntas,id',
-            'respuestas.*.puntuacion' => 'required|integer|min:0|max:3',
-        ]);
-
-        try {
-            $encuesta = $resultado->encuesta;
-            $preguntasEncuesta = collect($encuesta->getPreguntasDisponibles())->pluck('id');
-
-            // Validar que todas las preguntas pertenecen a la encuesta
-            foreach ($validated['respuestas'] as $respuestaData) {
-                if (!$preguntasEncuesta->contains($respuestaData['pregunta_id'])) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Una o más preguntas no pertenecen a esta encuesta',
-                    ], 400);
-                }
-            }
-
-            // Guardar respuestas
-            foreach ($validated['respuestas'] as $respuestaData) {
-                RespuestaEncuesta::updateOrCreate(
-                    [
-                        'encuesta_resultado_id' => $resultado->id,
-                        'pregunta_id' => $respuestaData['pregunta_id'],
-                    ],
-                    ['puntuacion' => $respuestaData['puntuacion']]
-                );
-            }
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Respuestas guardadas correctamente',
-                'respuestas_guardadas' => count($validated['respuestas']),
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al guardar las respuestas',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
-    }
-
-    /**
      * Finaliza la encuesta y genera el análisis de TDA
      */
     public function finalizar(EncuestaResultado $resultado): JsonResponse
@@ -204,62 +112,5 @@ class ApiEncuestaController extends Controller
                 'error' => $e->getMessage(),
             ], 500);
         }
-    }
-
-    /**
-     * Obtiene el resultado y análisis de una encuesta específica
-     */
-    public function obtenerResultado(EncuestaResultado $resultado): JsonResponse
-    {
-        $analisis = $this->tdaService->obtenerAnalisis($resultado);
-
-        if (!$analisis) {
-            return response()->json([
-                'success' => false,
-                'message' => 'No se ha completado el análisis para esta encuesta',
-            ], 404);
-        }
-
-        $resultadoExportado = $this->tdaService->exportarResultado($resultado);
-
-        return response()->json([
-            'success' => true,
-            'data' => $resultadoExportado,
-        ]);
-    }
-
-    /**
-     * Obtiene todos los resultados de una encuesta
-     */
-    public function obtenerResultados(Encuesta $encuesta): JsonResponse
-    {
-        $resultados = $encuesta->resultados()
-            ->with(['analisisTda', 'respuestas'])
-            ->get()
-            ->map(function ($resultado) {
-                return $this->tdaService->exportarResultado($resultado);
-            });
-
-        return response()->json([
-            'success' => true,
-            'encuesta' => $encuesta->only(['id', 'nombre']),
-            'total_respondientes' => $resultados->count(),
-            'resultados' => $resultados,
-        ]);
-    }
-
-    /**
-     * Obtiene estadísticas de una encuesta
-     */
-    public function estadisticas(Encuesta $encuesta): JsonResponse
-    {
-        $resultados = $encuesta->resultados()->with('analisisTda')->get();
-        $estadisticas = $this->tdaService->calcularEstadisticas($resultados);
-
-        return response()->json([
-            'success'     => true,
-            'encuesta'    => $encuesta->only(['id', 'nombre']),
-            'estadisticas'=> $estadisticas,
-        ]);
     }
 }

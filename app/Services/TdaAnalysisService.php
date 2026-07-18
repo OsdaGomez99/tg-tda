@@ -5,54 +5,9 @@ namespace App\Services;
 use App\Models\AnalisisTda;
 use App\Models\Encuesta;
 use App\Models\EncuestaResultado;
-use App\Models\Pregunta;
-use App\Models\RespuestaEncuesta;
-use Illuminate\Database\Eloquent\Collection;
 
 class TdaAnalysisService
 {
-    /**
-     * Obtiene las preguntas del cuestionario desde la BD
-     * Las preguntas deben estar marcadas con tipo_tda (I o H)
-     */
-    public function getQuestions(): array
-    {
-        $preguntas = Pregunta::where('estado', true)
-            ->whereNotNull('tipo_tda')
-            ->orderBy('id')
-            ->get();
-
-        return $preguntas->map(function ($pregunta) {
-            return [
-                'id'       => $pregunta->id,
-                'category' => $pregunta->tipo_tda,
-                'text'     => $pregunta->nombre,
-                'example'  => $pregunta->descripcion,
-            ];
-        })->toArray();
-    }
-
-
-    /**
-     * Obtiene preguntas para una encuesta específica.
-     */
-    public function getQuestionsForSurvey(?Encuesta $encuesta = null): array
-    {
-        if (! $encuesta) {
-            return [];
-        }
-
-        return $encuesta->obtenerPreguntasTda();
-    }
-
-    /**
-     * Obtiene preguntas, usando BD si está disponible o defaults si no
-     */
-    public function getAvailableQuestions(): array
-    {
-        return $this->getQuestions();
-    }
-
     /**
      * Opciones de respuesta con puntuación (escala Likert 0-3).
      */
@@ -71,14 +26,12 @@ class TdaAnalysisService
      * Umbral clínico: ≥6 síntomas con puntuación ≥2 en cada categoría.
      *
      * @param  array $answers  [question_id => score (0-3)]
-     * @param  Encuesta|null $encuesta
+     * @param  Encuesta $encuesta
      * @return array
      */
-    public function analyze(array $answers, ?Encuesta $encuesta = null): array
+    public function analyze(array $answers, Encuesta $encuesta): array
     {
-        $questions = $encuesta
-            ? collect($this->getQuestionsForSurvey($encuesta))->keyBy('id')
-            : collect($this->getAvailableQuestions())->keyBy('id');
+        $questions = collect($encuesta->obtenerPreguntasTda())->keyBy('id');
 
         if ($questions->isEmpty()) {
             return [
@@ -189,15 +142,6 @@ class TdaAnalysisService
     }
 
     /**
-     * Alias del método generarAnalisis para compatibilidad
-     * @deprecated Use generarAnalisis() instead
-     */
-    public function guardarRespuestasYAnalizar(EncuestaResultado $resultado, array $answers = []): AnalisisTda
-    {
-        return $this->generarAnalisis($resultado);
-    }
-
-    /**
      * Genera una descripción textual del resultado
      */
     private function generarDescripcion(array $analisisData): string
@@ -240,56 +184,6 @@ class TdaAnalysisService
         };
 
         return $descripcion;
-    }
-
-    /**
-     * Obtiene todas las respuestas de un resultado de encuesta
-     */
-    public function obtenerRespuestas(EncuestaResultado $resultado): Collection
-    {
-        return $resultado->respuestas()
-            ->with('pregunta')
-            ->get();
-    }
-
-    /**
-     * Obtiene el análisis de un resultado
-     */
-    public function obtenerAnalisis(EncuestaResultado $resultado): ?AnalisisTda
-    {
-        return $resultado->analisisTda;
-    }
-
-    /**
-     * Exporta los resultados en formato array para API
-     */
-    public function exportarResultado(EncuestaResultado $resultado): array
-    {
-        $analisis = $this->obtenerAnalisis($resultado);
-        $respuestas = $this->obtenerRespuestas($resultado);
-
-        return [
-            'resultado' => [
-                'id' => $resultado->id,
-                'nombre_estudiante' => $resultado->nombre_estudiante,
-                'edad_estudiante' => $resultado->edad_estudiante,
-                'sexo_estudiante' => $resultado->sexo_estudiante,
-                'created_at' => $resultado->created_at,
-            ],
-            'analisis' => $analisis ? [
-                'resultado' => $analisis->resultado,
-                'puntuacion_inatención' => $analisis->puntuacion_inatención,
-                'puntuacion_hiperactividad' => $analisis->puntuacion_hiperactividad,
-                'puntuacion_total' => $analisis->puntuacion_total,
-                'sintomas_inatención' => $analisis->sintomas_inatención,
-                'sintomas_hiperactividad' => $analisis->sintomas_hiperactividad,
-                'porcentaje_inatención' => $analisis->porcentaje_inatención,
-                'porcentaje_hiperactividad' => $analisis->porcentaje_hiperactividad,
-                'descripcion' => $analisis->descripcion,
-                'descripcion_resultado' => $analisis->getResultadoDescripcion(),
-            ] : null,
-            'respuestas_count' => $respuestas->count(),
-        ];
     }
 
     public function calcularEstadisticas($resultados): array

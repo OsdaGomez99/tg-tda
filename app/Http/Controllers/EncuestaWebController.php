@@ -8,27 +8,12 @@ use App\Models\EncuestaResultado;
 use App\Services\TdaAnalysisService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Illuminate\Validation\Rule;
 
 class EncuestaWebController extends Controller
 {
     public function __construct(private TdaAnalysisService $tdaService) {}
-
-    /**
-     * Mostrar lista de encuestas disponibles
-     */
-    public function index(): View
-    {
-        $encuestas = Encuesta::with('usuario')->get();
-
-        return view('pages.encuestas.encuestas-index', [
-            'title' => 'Encuestas',
-            'encuestas' => $encuestas
-        ]);
-    }
 
     /**
      * Mostrar formulario para iniciar encuesta
@@ -67,6 +52,14 @@ class EncuestaWebController extends Controller
     }
 
     /**
+     * Mostrar formulario de respuestas (usuario autenticado)
+     */
+    public function responder(EncuestaResultado $resultado): View
+    {
+        return $this->mostrarFormularioRespuesta($resultado);
+    }
+
+    /**
      * Mostrar resultado y análisis
      */
     public function resultado(EncuestaResultado $resultado): View
@@ -74,6 +67,9 @@ class EncuestaWebController extends Controller
         return $this->mostrarResultado($resultado);
     }
 
+    /**
+     * Mostrar resultado y análisis (acceso público por código)
+     */
     public function resultadoPublic(string $codigo_acceso, string $resultado): View
     {
         $encuesta = $this->obtenerEncuestaPorCodigo($codigo_acceso);
@@ -95,6 +91,9 @@ class EncuestaWebController extends Controller
         return $this->mostrarDetalles($resultado);
     }
 
+    /**
+     * Mostrar detalles de respuestas (acceso público por código)
+     */
     public function detallesPublic(string $codigo_acceso, string $resultado): View
     {
         $encuesta = $this->obtenerEncuestaPorCodigo($codigo_acceso);
@@ -128,6 +127,9 @@ class EncuestaWebController extends Controller
         ]);
     }
 
+    /**
+     * Construir la vista del formulario inicial con la lista de carreras y las URLs de acción/retorno
+     */
     private function mostrarFormularioInicio(Encuesta $encuesta): View
     {
         $carreras = Carrera::orderBy('nombre')->get();
@@ -143,6 +145,9 @@ class EncuestaWebController extends Controller
         ]);
     }
 
+    /**
+     * Validar y crear el resultado inicial del estudiante, luego redirigir a responder
+     */
     private function guardarDatosIniciales(Request $request, Encuesta $encuesta)
     {
         $validated = $request->validate([
@@ -173,6 +178,9 @@ class EncuestaWebController extends Controller
         ]);
     }
 
+    /**
+     * Construir la vista para responder la encuesta, generando la URL de resultado (pública o privada)
+     */
     private function mostrarFormularioRespuesta(EncuestaResultado $resultado): View
     {
         $encuesta = $resultado->encuesta;
@@ -186,10 +194,13 @@ class EncuestaWebController extends Controller
                     'codigo_acceso' => $encuesta->codigo_acceso,
                     'resultado'     => urlencode(base64_encode(encrypt($resultado->id)))
                 ])
-                : route('resultado', $resultado), // tu ruta privada
+                : route('resultado-encuesta', $resultado),
         ]);
     }
 
+    /**
+     * Construir la vista de resultado con el análisis TDA asociado
+     */
     private function mostrarResultado(EncuestaResultado $resultado): View
     {
         $analisis = $resultado->analisisTda;
@@ -201,6 +212,9 @@ class EncuestaWebController extends Controller
         ]);
     }
 
+    /**
+     * Construir la vista de detalles con las respuestas (y sus preguntas) y el análisis TDA
+     */
     private function mostrarDetalles(EncuestaResultado $resultado): View
     {
         $respuestas = $resultado->respuestas()->with('pregunta')->get();
@@ -215,16 +229,25 @@ class EncuestaWebController extends Controller
         ]);
     }
 
+    /**
+     * Buscar la encuesta asociada a un código de acceso público (404 si no existe)
+     */
     private function obtenerEncuestaPorCodigo(string $codigo_acceso): Encuesta
     {
         return Encuesta::where('codigo_acceso', $codigo_acceso)->firstOrFail();
     }
 
+    /**
+     * Cifrar y codificar en base64 el ID de un resultado para usarlo en URLs públicas
+     */
     private function encodeResultadoId(int $id): string
     {
         return base64_encode(encrypt($id));
     }
 
+    /**
+     * Revertir encodeResultadoId: decodificar y descifrar el token para obtener el ID del resultado
+     */
     private function decodeResultadoId(string $token): int
     {
         return (int) decrypt(base64_decode(urldecode($token)));
