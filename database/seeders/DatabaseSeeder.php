@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UsuariosSeeder::class,
             CarrerasSeeder::class,
+            SemestreSeeder::class,
             PreguntasSeeder::class,
             EncuestasSeeder::class,
         ]);

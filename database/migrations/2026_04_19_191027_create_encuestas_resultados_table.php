@@ -17,6 +17,11 @@ return new class extends Migration
                 ->constrained('encuestas')
                 ->onDelete('cascade')
                 ->comment('ID de la encuesta realizada');
+            $table->foreignId('semestre_id')
+                ->nullable()
+                ->constrained('semestres')
+                ->onDelete('restrict')
+                ->comment('Semestre en el que se respondió la encuesta');
             $table->string('nombre_estudiante')
                 ->comment('Nombre completo del estudiante');
             $table->string('documento_estudiante')
@@ -30,6 +35,10 @@ return new class extends Migration
                 ->constrained('carreras')
                 ->onDelete('set null')
                 ->comment('ID de la carrera del estudiante');
+            $table->unique(
+                ['encuesta_id', 'documento_estudiante', 'semestre_id'],
+                'encuestas_resultados_encuesta_doc_semestre_unique'
+            );
             $table->timestamps();
         });
     }

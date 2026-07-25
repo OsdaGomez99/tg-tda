@@ -23,6 +23,11 @@ class MenuHelper
                 'path' => '/encuestas',
             ],
             [
+                'icon' => 'calendar',
+                'name' => 'Semestres',
+                'path' => '/semestres',
+            ],
+            [
                 'icon' => 'user-profile',
                 'name' => 'Usuarios',
                 'path' => '/usuarios',

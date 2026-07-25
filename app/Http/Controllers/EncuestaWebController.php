@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Carrera;
 use App\Models\Encuesta;
 use App\Models\EncuestaResultado;
+use App\Models\Semestre;
 use App\Services\TdaAnalysisService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -138,6 +139,7 @@ class EncuestaWebController extends Controller
             'title' => 'Iniciar Encuesta',
             'encuesta' => $encuesta,
             'carreras' => $carreras,
+            'semestre' => Semestre::actual(),
             'formActionUrl' => route('encuestas.public.guardar-datos', ['codigo_acceso' => $encuesta->codigo_acceso]),
             'backUrl' => Auth::check()
                 ? route('encuestas.index')
@@ -150,6 +152,13 @@ class EncuestaWebController extends Controller
      */
     private function guardarDatosIniciales(Request $request, Encuesta $encuesta)
     {
+        $semestre = Semestre::actual();
+
+        if (!$semestre) {
+            return back()->withInput()
+                ->with('error', 'No hay un semestre activo configurado. Contacte al administrador antes de responder esta encuesta.');
+        }
+
         $validated = $request->validate([
             'nombre_estudiante' => 'required|string|max:255',
             'documento_estudiante' => [
@@ -157,7 +166,8 @@ class EncuestaWebController extends Controller
                 'string',
                 'regex:/^[A-Za-z]\d{8}$/',
                 Rule::unique('encuestas_resultados', 'documento_estudiante')
-                    ->where(fn($query) => $query->where('encuesta_id', $encuesta->id)),
+                    ->where(fn($query) => $query->where('encuesta_id', $encuesta->id)
+                        ->where('semestre_id', $semestre->id)),
             ],
             'edad_estudiante' => 'required|integer|min:5|max:100',
             'sexo_estudiante' => 'required|in:M,F,O',
@@ -170,6 +180,7 @@ class EncuestaWebController extends Controller
 
         $resultado = EncuestaResultado::create(array_merge($validated, [
             'encuesta_id' => $encuesta->id,
+            'semestre_id' => $semestre->id,
         ]));
 
         return redirect()->route('encuestas.public.responder', [

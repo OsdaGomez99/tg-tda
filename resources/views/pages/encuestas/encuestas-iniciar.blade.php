@@ -44,13 +44,20 @@
                     <span class="mt-0.5 inline-block h-2 w-2 rounded-full bg-blue-600"></span>
                     <span>Responda con sinceridad para obtener un análisis preciso</span>
                 </li>
+                @if ($semestre)
+                    <li class="flex items-start gap-3">
+                        <span class="mt-0.5 inline-block h-2 w-2 rounded-full bg-blue-600"></span>
+                        <span>Esta respuesta será registrada en el semestre <strong>{{ $semestre->nombre }}</strong></span>
+                    </li>
+                @endif
             </ul>
         </div>
 
-        <!-- Formulario de Datos del Estudiante -->
-        <form action="{{ $formActionUrl ?? route('encuestas.public.guardar-datos', ['codigo_acceso' => $encuesta->codigo_acceso]) }}" method="POST"
-            class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-            @csrf
+        @if ($semestre)
+            <!-- Formulario de Datos del Estudiante -->
+            <form action="{{ $formActionUrl ?? route('encuestas.public.guardar-datos', ['codigo_acceso' => $encuesta->codigo_acceso]) }}" method="POST"
+                class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
+                @csrf
 
             <h2 class="text-lg font-bold text-gray-800 dark:text-white">Datos Personales</h2>
             <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Por favor complete la siguiente información</p>
@@ -159,6 +166,16 @@
                 </button>
             </div>
         </form>
+        @else
+            <div class="rounded-2xl border border-yellow-200 bg-yellow-50 p-6 text-center dark:border-yellow-900/30 dark:bg-yellow-900/20">
+                <p class="font-medium text-yellow-900 dark:text-yellow-200">
+                    No hay un semestre activo configurado actualmente.
+                </p>
+                <p class="mt-2 text-sm text-yellow-800 dark:text-yellow-300">
+                    Por favor contacte al administrador antes de responder esta encuesta.
+                </p>
+            </div>
+        @endif
 
         <!-- Preguntas Frecuentes -->
         <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">

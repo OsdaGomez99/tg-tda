@@ -13,6 +13,7 @@ class EncuestaResultado extends Model
 
     protected $fillable = [
         'encuesta_id',
+        'semestre_id',
         'nombre_estudiante',
         'documento_estudiante',
         'edad_estudiante',
@@ -30,6 +31,14 @@ class EncuestaResultado extends Model
     public function encuesta(): BelongsTo
     {
         return $this->belongsTo(Encuesta::class);
+    }
+
+    /**
+     * Relación con Semestre
+     */
+    public function semestre(): BelongsTo
+    {
+        return $this->belongsTo(Semestre::class);
     }
 
     /**

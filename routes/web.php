@@ -66,6 +66,14 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/{user}', [App\Http\Controllers\UserController::class, 'destroy'])->name('destroy');
     });
 
+    // RUTAS DE SEMESTRES
+    Route::prefix('/semestres')->name('semestres.')->group(function () {
+        Route::get('/', [App\Http\Controllers\SemestreController::class, 'index'])->name('index');
+        Route::post('/guardar', [App\Http\Controllers\SemestreController::class, 'store'])->name('store');
+        Route::post('/{semestre}/activar', [App\Http\Controllers\SemestreController::class, 'activar'])->name('activar');
+        Route::delete('/{semestre}', [App\Http\Controllers\SemestreController::class, 'destroy'])->name('destroy');
+    });
+
     //RUTAS PARA ENCUESTAS - ESTUDIANTE
 
     // Página de estadísticas de encuesta

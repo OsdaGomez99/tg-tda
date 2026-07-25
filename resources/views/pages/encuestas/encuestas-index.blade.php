@@ -186,7 +186,7 @@
                                             </button>
                                         </form>
                                         <a href="{{ route('estadisticas-encuesta', $encuesta) }}"
-                                            class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400">
+                                            class="rounded-lg border border-blue-300 bg-white px-3 py-2 text-xs font-medium text-blue-700 hover:bg-gray-50 dark:border-blue-700 dark:bg-blue-800 dark:text-blue-400">
                                             Estadísticas
                                         </a>
                                     </div>
