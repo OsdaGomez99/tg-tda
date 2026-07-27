@@ -2,6 +2,20 @@
 
 @section('content')
     <div class="space-y-6">
+        @if (session('warning'))
+            <div id="warningToast" class="fixed inset-x-0 top-20 z-[9999] flex justify-center px-4">
+                <div class="w-full max-w-md">
+                    <div
+                        class="relative rounded-xl border border-yellow-200 bg-white/95 shadow-xl backdrop-blur-sm dark:border-yellow-500/30 dark:bg-slate-900/95">
+                        <x-ui.alert variant="warning" title="Aviso" message="{{ session('warning') }}" />
+                        <button id="closeWarningToast" type="button"
+                            class="absolute right-3 top-3 rounded-full bg-white/80 px-2 py-1 text-xs font-semibold text-gray-700 shadow-sm hover:bg-white dark:bg-gray-900/90 dark:text-gray-200">
+                            ×
+                        </button>
+                    </div>
+                </div>
+            </div>
+        @endif
         <!-- Header -->
         <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
             <div class="flex items-center justify-between">
@@ -164,8 +178,48 @@
 
             <!-- Tabla de Respondientes -->
             <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-                <div class="border-b border-gray-200 p-6 dark:border-gray-800">
-                    <h3 class="text-lg font-bold text-gray-800 dark:text-white">Listado de Respondientes</h3>
+                <div
+                    class="flex flex-col gap-4 border-b border-gray-200 p-6 dark:border-gray-800 lg:flex-row lg:items-center lg:justify-between">
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-800 dark:text-white">Listado de Respondientes</h3>
+                        <p class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+                            {{ $resultados->total() }} respondiente(s) {{ $search !== '' || $resultadoFiltro !== '' ? 'encontrado(s)' : 'en total' }}
+                        </p>
+                    </div>
+                    <form method="GET" action="{{ route('estadisticas-encuesta', $encuesta) }}"
+                        class="flex flex-col gap-2 sm:flex-row sm:items-center">
+                        <input type="text" name="search" value="{{ $search }}"
+                            placeholder="Buscar por nombre o documento..."
+                            class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white sm:w-64">
+                        <select name="resultado" onchange="this.form.submit()"
+                            class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white sm:w-48">
+                            <option value="">Todos los resultados</option>
+                            <option value="tda_combinado" {{ $resultadoFiltro === 'tda_combinado' ? 'selected' : '' }}>
+                                TDA Combinado</option>
+                            <option value="tda_inatento" {{ $resultadoFiltro === 'tda_inatento' ? 'selected' : '' }}>
+                                TDA Inatento</option>
+                            <option value="tda_hiperactivo" {{ $resultadoFiltro === 'tda_hiperactivo' ? 'selected' : '' }}>
+                                TDA Hiperactivo</option>
+                            <option value="tda_posible" {{ $resultadoFiltro === 'tda_posible' ? 'selected' : '' }}>
+                                Posible TDA</option>
+                            <option value="no_tda" {{ $resultadoFiltro === 'no_tda' ? 'selected' : '' }}>Sin TDA
+                            </option>
+                            <option value="pendiente" {{ $resultadoFiltro === 'pendiente' ? 'selected' : '' }}>Pendiente
+                            </option>
+                        </select>
+                        <div class="flex gap-2">
+                            <button type="submit"
+                                class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800">
+                                Buscar
+                            </button>
+                            @if ($search !== '' || $resultadoFiltro !== '')
+                                <a href="{{ route('estadisticas-encuesta', $encuesta) }}"
+                                    class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400">
+                                    Limpiar
+                                </a>
+                            @endif
+                        </div>
+                    </form>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full">
@@ -181,6 +235,8 @@
                                     Resultado</th>
                                 <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
                                     Puntuación Total</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                    Fecha de respuesta</th>
                                 <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
                                     Acción</th>
                             </tr>
@@ -220,6 +276,13 @@
                                             <span class="text-sm text-gray-600 dark:text-gray-400">-</span>
                                         @endif
                                     </td>
+                                    <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
+                                        @if ($resultado->analisisTda)
+                                            {{ Carbon\Carbon::parse($resultado->analisisTda->created_at)->format('d/m/Y h:i A') }}
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
                                     <td class="px-6 py-4">
                                         <a href="/respuestas/{{ $resultado->id }}/resultado"
                                             class="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
@@ -229,14 +292,23 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="px-6 py-8 text-center text-gray-600 dark:text-gray-400">
-                                        No hay respondientes aún
+                                    <td colspan="7" class="px-6 py-8 text-center text-gray-600 dark:text-gray-400">
+                                        @if ($search !== '' || $resultadoFiltro !== '')
+                                            No se encontraron respondientes con esos criterios de búsqueda
+                                        @else
+                                            No hay respondientes aún
+                                        @endif
                                     </td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
+                @if ($resultados->hasPages())
+                    <div class="border-t border-gray-200 px-6 py-4 dark:border-gray-800">
+                        {{ $resultados->links() }}
+                    </div>
+                @endif
             </div>
         @else
             <div
@@ -253,10 +325,17 @@
                 class="flex-1 rounded-lg border border-gray-300 bg-white px-6 py-3 text-center font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
                 ← Volver a Encuestas
             </a>
-            <button onclick="window.print()"
-                class="flex-1 rounded-lg border border-gray-300 bg-white px-6 py-3 text-center font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
-                📊 Exportar Estadísticas
-            </button>
+            @if ($estadisticas && count($estadisticas) > 0)
+                <a href="{{ route('estadisticas-encuesta.pdf', $encuesta) }}" target="_blank"
+                    class="flex-1 rounded-lg border border-gray-300 bg-white px-6 py-3 text-center font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+                    📊 Exportar estadísticas en PDF
+                </a>
+            @else
+                <button type="button" disabled title="No hay estadísticas disponibles para esta encuesta aún"
+                    class="flex-1 cursor-not-allowed rounded-lg border border-gray-200 bg-gray-100 px-6 py-3 text-center font-medium text-gray-400 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-600">
+                    📊 Exportar estadísticas en PDF
+                </button>
+            @endif
         </div>
     </div>
 
@@ -279,10 +358,29 @@
             'tda_combinado' => 'TDA Combinado',
             'tda_inatento' => 'TDA Inatento',
             'tda_hiperactivo' => 'TDA Hiperactivo',
-            'tda_ble' => 'Posible TDA',
+            'tda_posible' => 'Posible TDA',
             'no_tda' => 'Sin TDA',
             default => 'Desconocido',
         };
     }
     ?>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const warningToast = document.getElementById('warningToast');
+            const closeWarningToast = document.getElementById('closeWarningToast');
+
+            if (warningToast) {
+                const hideToast = () => warningToast.classList.add('hidden');
+                const timer = setTimeout(hideToast, 5000);
+
+                if (closeWarningToast) {
+                    closeWarningToast.addEventListener('click', () => {
+                        clearTimeout(timer);
+                        hideToast();
+                    });
+                }
+            }
+        });
+    </script>
 @endsection

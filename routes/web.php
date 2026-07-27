@@ -28,6 +28,7 @@ Route::get('/encuestas/acceso/{codigo_acceso}/iniciar', [App\Http\Controllers\En
 Route::post('/encuestas/acceso/{codigo_acceso}/guardar-datos', [App\Http\Controllers\EncuestaWebController::class, 'storePublic'])->name('encuestas.public.guardar-datos');
 Route::get('/encuestas/acceso/{codigo_acceso}/responder/{resultado}', [App\Http\Controllers\EncuestaWebController::class, 'responderPublic'])->name('encuestas.public.responder');
 Route::get('/encuestas/acceso/{codigo_acceso}/resultado/{resultado}', [App\Http\Controllers\EncuestaWebController::class, 'resultadoPublic'])->name('encuestas.public.resultado');
+Route::get('/encuestas/acceso/{codigo_acceso}/resultado/{resultado}/pdf', [App\Http\Controllers\EncuestaWebController::class, 'resultadoPdfPublic'])->name('encuestas.public.resultado.pdf');
 Route::get('/encuestas/acceso/{codigo_acceso}/detalles/{resultado}', [App\Http\Controllers\EncuestaWebController::class, 'detallesPublic'])->name('encuestas.public.detalles');
 
 // ===== RUTAS PROTEGIDAS (REQUIEREN AUTENTICACIÓN) =====
@@ -79,11 +80,17 @@ Route::middleware(['auth'])->group(function () {
     // Página de estadísticas de encuesta
     Route::get('/encuestas/{encuesta}/estadisticas', [App\Http\Controllers\EncuestaWebController::class, 'estadisticas'])->name('estadisticas-encuesta');
 
+    // PDF de estadísticas de encuesta
+    Route::get('/encuestas/{encuesta}/estadisticas/pdf', [App\Http\Controllers\EncuestaWebController::class, 'estadisticasPdf'])->name('estadisticas-encuesta.pdf');
+
     // Página de responder encuesta
     Route::get('/respuestas/{resultado}/responder', [App\Http\Controllers\EncuestaWebController::class, 'responder'])->name('responder-encuesta');
 
     // Página de resultado de encuesta en estudiante
     Route::get('/respuestas/{resultado}/resultado', [App\Http\Controllers\EncuestaWebController::class, 'resultado'])->name('resultado-encuesta');
+
+    // PDF de resultado de encuesta en estudiante
+    Route::get('/respuestas/{resultado}/resultado/pdf', [App\Http\Controllers\EncuestaWebController::class, 'resultadoPdf'])->name('resultado-encuesta.pdf');
 
     // Página de detalles de resultado de encuesta en estudiante
     Route::get('/respuestas/{resultado}/detalles', [App\Http\Controllers\EncuestaWebController::class, 'detalles'])->name('detalles-encuesta');

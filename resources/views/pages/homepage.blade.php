@@ -226,7 +226,9 @@
                                 <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
                                     Resultado</th>
                                 <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-                                    Puntuación Total</th>
+                                    Puntuación total</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                    Fecha de respuesta</th>
                                 <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
                                     Acción</th>
                             </tr>
@@ -246,6 +248,8 @@
                                     </td>
                                     <td class="px-6 py-4 text-sm font-bold text-gray-800 dark:text-white">
                                         {{ $resultado->analisisTda->puntuacion_total }}/54</td>
+                                    <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
+                                        {{ Carbon\Carbon::parse($resultado->analisisTda->created_at)->format('d/m/Y h:i A') }}</td>
                                     <td class="px-6 py-4">
                                         <a href="{{ route('resultado-encuesta', $resultado) }}"
                                             class="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
@@ -255,7 +259,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="px-6 py-8 text-center text-gray-600 dark:text-gray-400">
+                                    <td colspan="6" class="px-6 py-8 text-center text-gray-600 dark:text-gray-400">
                                         No hay casos prioritarios por el momento
                                     </td>
                                 </tr>

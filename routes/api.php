@@ -4,7 +4,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiEncuestaController;
 
 
-Route::middleware(['web', 'auth'])->group(function () {
+// Nota: sin 'auth' porque estos endpoints también los usa el flujo público por
+// código de acceso. Para peticiones no autenticadas, el controlador exige que
+// el código de acceso de la encuesta coincida (ver ApiEncuestaController).
+Route::middleware(['web'])->group(function () {
     // Encuestas y TDA Analysis routes
     Route::prefix('encuestas')->name('api.encuestas.')->group(function () {
         // Obtener una encuesta específica con sus preguntas

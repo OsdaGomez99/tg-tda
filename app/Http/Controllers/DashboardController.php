@@ -25,7 +25,7 @@ class DashboardController extends Controller
             ->sortByDesc(fn (EncuestaResultado $resultado) => $resultado->analisisTda->puntuacion_total)
             ->take(10);
 
-        return view('pages.dashboard.ecommerce', [
+        return view('pages.homepage', [
             'title' => 'Inicio',
             'totalEncuestas' => Encuesta::count(),
             'estadisticas' => $estadisticas,

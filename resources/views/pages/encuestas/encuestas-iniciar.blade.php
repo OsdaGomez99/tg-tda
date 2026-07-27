@@ -112,19 +112,19 @@
                     <div class="space-y-3">
                         <label
                             class="flex cursor-pointer items-center gap-3 rounded-lg border-2 border-gray-300 p-4 transition-all hover:border-gray-400 dark:border-gray-700 dark:hover:border-gray-600">
-                            <input type="radio" name="sexo_estudiante" value="M"
+                            <input type="radio" name="sexo_estudiante" value="M" required
                                 {{ old('sexo_estudiante') === 'M' ? 'checked' : '' }} class="h-4 w-4 cursor-pointer">
                             <span class="flex-1 text-sm font-medium text-gray-700 dark:text-gray-300">Masculino</span>
                         </label>
                         <label
                             class="flex cursor-pointer items-center gap-3 rounded-lg border-2 border-gray-300 p-4 transition-all hover:border-gray-400 dark:border-gray-700 dark:hover:border-gray-600">
-                            <input type="radio" name="sexo_estudiante" value="F"
+                            <input type="radio" name="sexo_estudiante" value="F" required
                                 {{ old('sexo_estudiante') === 'F' ? 'checked' : '' }} class="h-4 w-4 cursor-pointer">
                             <span class="flex-1 text-sm font-medium text-gray-700 dark:text-gray-300">Femenino</span>
                         </label>
                         <label
                             class="flex cursor-pointer items-center gap-3 rounded-lg border-2 border-gray-300 p-4 transition-all hover:border-gray-400 dark:border-gray-700 dark:hover:border-gray-600">
-                            <input type="radio" name="sexo_estudiante" value="O"
+                            <input type="radio" name="sexo_estudiante" value="O" required
                                 {{ old('sexo_estudiante') === 'O' ? 'checked' : '' }} class="h-4 w-4 cursor-pointer">
                             <span class="flex-1 text-sm font-medium text-gray-700 dark:text-gray-300">Otro</span>
                         </label>
@@ -139,7 +139,7 @@
                     <label class="mb-3 block text-sm font-medium text-gray-700 dark:text-gray-300">
                         Carrera <span class="text-red-600">*</span>
                     </label>
-                    <select name="carrera_id"
+                    <select name="carrera_id" required
                         class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-blue-600 dark:focus:ring-blue-600/20">
                         <option value="">Seleccione una carrera</option>
                         @foreach ($carreras as $carrera)

@@ -17,6 +17,7 @@
                             <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Resultado del Análisis</h1>
                             <p class="mt-2 text-gray-600 dark:text-gray-400">{{ $resultado->nombre_estudiante }},
                                 {{ $resultado->edad_estudiante }} años</p>
+                            <p class="mt-2 text-gray-600 dark:text-gray-400">{{ $resultado->carrera->nombre }}</p>
                         </div>
                         <div class="text-right">
                             <span
@@ -208,7 +209,8 @@
             <!-- Botones de Acción -->
             <div class="flex gap-4">
                 @if (request()->routeIs('encuestas.public.resultado'))
-                    <button onclick="window.close()"
+                    <button
+                        onclick="window.close(); setTimeout(() => alert('Ya puede cerrar esta pestaña.'), 100)"
                         class="flex-1 rounded-lg border border-gray-300 bg-white px-6 py-3 text-center font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
                         ← Salir
                     </button>
@@ -218,10 +220,16 @@
                         ← Volver a Estadísticas
                     </a>
                 @endif
-                <button onclick="window.print()"
+                <a href="{{ request()->routeIs('encuestas.public.resultado')
+                    ? route('encuestas.public.resultado.pdf', [
+                        'codigo_acceso' => $resultado->encuesta->codigo_acceso,
+                        'resultado' => urlencode(base64_encode(encrypt($resultado->id))),
+                    ])
+                    : route('resultado-encuesta.pdf', $resultado) }}"
+                    target="_blank"
                     class="flex-1 rounded-lg border border-gray-300 bg-white px-6 py-3 text-center font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
-                    📄 Imprimir Resultado
-                </button>
+                    📄 Descargar resultados en PDF
+                </a>
                 <a href="{{ request()->routeIs('encuestas.public.resultado')
                     ? route('encuestas.public.detalles', [
                         'codigo_acceso' => $resultado->encuesta->codigo_acceso,

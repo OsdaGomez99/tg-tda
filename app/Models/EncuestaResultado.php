@@ -42,6 +42,14 @@ class EncuestaResultado extends Model
     }
 
     /**
+     * Relación con Carrera
+     */
+    public function carrera(): BelongsTo
+    {
+        return $this->belongsTo(Carrera::class);
+    }
+
+    /**
      * Relación con respuestas
      */
     public function respuestas(): HasMany

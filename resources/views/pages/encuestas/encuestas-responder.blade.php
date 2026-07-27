@@ -114,6 +114,7 @@
         const resultadoId = document.getElementById('resultadoId').value;
         const isPublicResultado = {{ Auth::check() ? 'false' : 'true' }};
         const resultadoUrl = document.getElementById('resultadoUrl').value;
+        const codigoAcceso = {!! json_encode($encuesta->codigo_acceso) !!};
 
         // Opciones de respuesta
         const responseOptions = {
@@ -141,7 +142,7 @@
 
         async function loadQuestions() {
             try {
-                const response = await fetch(`/api/encuestas/{{ $encuesta->id }}`);
+                const response = await fetch(`/api/encuestas/{{ $encuesta->id }}?codigo_acceso=${encodeURIComponent(codigoAcceso ?? '')}`);
                 const data = await response.json();
 
                 if (!data.success) {
@@ -253,7 +254,8 @@
                     },
                     body: JSON.stringify({
                         pregunta_id: questionId,
-                        puntuacion: score
+                        puntuacion: score,
+                        codigo_acceso: codigoAcceso
                     })
                 });
             } catch (error) {
@@ -374,7 +376,10 @@
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                    }
+                    },
+                    body: JSON.stringify({
+                        codigo_acceso: codigoAcceso
+                    })
                 });
 
                 if (!response.ok) throw new Error('Error al finalizar');

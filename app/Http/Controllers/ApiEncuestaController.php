@@ -8,16 +8,35 @@ use App\Models\RespuestaEncuesta;
 use App\Services\TdaAnalysisService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
 class ApiEncuestaController extends Controller
 {
     public function __construct(private TdaAnalysisService $tdaService) {}
 
     /**
+     * Verifica el código de acceso para peticiones no autenticadas del flujo público.
+     */
+    private function verificarAccesoPublico(Request $request, Encuesta $encuesta): void
+    {
+        if (Auth::check()) {
+            return;
+        }
+
+        $codigoAcceso = $request->input('codigo_acceso');
+
+        if (!$codigoAcceso || $codigoAcceso !== $encuesta->codigo_acceso) {
+            abort(403, 'Código de acceso inválido.');
+        }
+    }
+
+    /**
      * Obtiene una encuesta específica con sus preguntas asignadas
      */
-    public function show(Encuesta $encuesta): JsonResponse
+    public function show(Request $request, Encuesta $encuesta): JsonResponse
     {
+        $this->verificarAccesoPublico($request, $encuesta);
+
         $preguntas = $encuesta->getPreguntasDisponibles();
         $opciones = $this->tdaService->getResponseOptions();
 
@@ -35,13 +54,15 @@ class ApiEncuestaController extends Controller
      */
     public function guardarRespuesta(Request $request, EncuestaResultado $resultado): JsonResponse
     {
+        $encuesta = $resultado->encuesta;
+        $this->verificarAccesoPublico($request, $encuesta);
+
         $validated = $request->validate([
             'pregunta_id' => 'required|integer|exists:preguntas,id',
             'puntuacion' => 'required|integer|min:0|max:3',
         ]);
 
         // Validar que la pregunta pertenece a esta encuesta
-        $encuesta = $resultado->encuesta;
         $preguntasEncuesta = collect($encuesta->getPreguntasDisponibles())->pluck('id');
 
         if (!$preguntasEncuesta->contains($validated['pregunta_id'])) {
@@ -80,10 +101,11 @@ class ApiEncuestaController extends Controller
     /**
      * Finaliza la encuesta y genera el análisis de TDA
      */
-    public function finalizar(EncuestaResultado $resultado): JsonResponse
+    public function finalizar(Request $request, EncuestaResultado $resultado): JsonResponse
     {
         try {
             $encuesta = $resultado->encuesta;
+            $this->verificarAccesoPublico($request, $encuesta);
 
             // Obtener respuestas
             $respuestas = $resultado->obtenerRespuestasArray();

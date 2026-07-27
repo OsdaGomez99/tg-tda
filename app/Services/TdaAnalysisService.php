@@ -154,24 +154,24 @@ class TdaAnalysisService
 
         $descripcion = match ($result) {
             'tda_combinado' => sprintf(
-                'TDA Combinado. Se han identificado síntomas significativos de inatención (%d síntomas, puntuación: %d/27) e hiperactividad/impulsividad (%d síntomas, puntuación: %d/27). Se recomienda evaluación profesional detallada.',
+                'Se han identificado síntomas significativos de inatención (%d síntomas, puntuación: %d/27) e hiperactividad/impulsividad (%d síntomas, puntuación: %d/27). Se recomienda evaluación profesional detallada.',
                 $inattentionSymptoms,
                 $inattentionScore,
                 $hyperactivitySymptoms,
                 $hyperactivityScore
             ),
             'tda_inatento' => sprintf(
-                'TDA Tipo Inatento. Se han identificado %d síntomas significativos de inatención (puntuación: %d/27). Principales dificultades en concentración y atención sostenida. Se recomienda evaluación profesional.',
+                'Se han identificado %d síntomas significativos de inatención (puntuación: %d/27). Principales dificultades en concentración y atención sostenida. Se recomienda evaluación profesional.',
                 $inattentionSymptoms,
                 $inattentionScore
             ),
             'tda_hiperactivo' => sprintf(
-                'TDA Tipo Hiperactivo/Impulsivo. Se han identificado %d síntomas significativos de hiperactividad e impulsividad (puntuación: %d/27). Se recomienda evaluación profesional.',
+                'Se han identificado %d síntomas significativos de hiperactividad e impulsividad (puntuación: %d/27). Se recomienda evaluación profesional.',
                 $hyperactivitySymptoms,
                 $hyperactivityScore
             ),
             'tda_posible' => sprintf(
-                'Posible TDA. Se han identificado síntomas moderados (inatención: %d, hiperactividad: %d). Se recomienda seguimiento y evaluación adicional.',
+                'Se han identificado síntomas moderados (inatención: %d, hiperactividad: %d). Se recomienda seguimiento y evaluación adicional.',
                 $inattentionSymptoms,
                 $hyperactivitySymptoms
             ),

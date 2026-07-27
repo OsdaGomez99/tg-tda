@@ -7,8 +7,12 @@ use App\Models\Encuesta;
 use App\Models\EncuestaResultado;
 use App\Models\Semestre;
 use App\Services\TdaAnalysisService;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Illuminate\Validation\Rule;
 
@@ -85,6 +89,30 @@ class EncuestaWebController extends Controller
     }
 
     /**
+     * Descargar el resultado y análisis en PDF
+     */
+    public function resultadoPdf(EncuestaResultado $resultado): Response
+    {
+        return $this->generarPdfResultado($resultado);
+    }
+
+    /**
+     * Descargar el resultado y análisis en PDF (acceso público por código)
+     */
+    public function resultadoPdfPublic(string $codigo_acceso, string $resultado): Response
+    {
+        $encuesta = $this->obtenerEncuestaPorCodigo($codigo_acceso);
+        $resultadoId = $this->decodeResultadoId($resultado);
+        $resultado = EncuestaResultado::findOrFail($resultadoId);
+
+        if ($resultado->encuesta_id !== $encuesta->id) {
+            abort(404);
+        }
+
+        return $this->generarPdfResultado($resultado);
+    }
+
+    /**
      * Mostrar detalles de respuestas
      */
     public function detalles(EncuestaResultado $resultado): View
@@ -111,21 +139,74 @@ class EncuestaWebController extends Controller
     /**
      * Mostrar estadísticas de una encuesta
      */
-    public function estadisticas(Encuesta $encuesta): View
+    public function estadisticas(Encuesta $encuesta, Request $request): View
     {
-        $resultados = $encuesta->resultados()
-            ->with(['analisisTda', 'respuestas'])
+        // Estadísticas agregadas: siempre sobre el total de la encuesta, sin filtrar
+        $todosLosResultados = $encuesta->resultados()
+            ->with('analisisTda')
             ->get();
 
         // Delegar cálculo al servicio, igual que ApiEncuestaController
-        $estadisticas = $this->tdaService->calcularEstadisticas($resultados);
+        $estadisticas = $this->tdaService->calcularEstadisticas($todosLosResultados);
+
+        // Listado paginado y filtrable de respondientes
+        $search = trim((string) $request->query('search', ''));
+        $resultadoFiltro = (string) $request->query('resultado', '');
+
+        $query = $encuesta->resultados()->with('analisisTda');
+
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('nombre_estudiante', 'like', "%{$search}%")
+                    ->orWhere('documento_estudiante', 'like', "%{$search}%");
+            });
+        }
+
+        if ($resultadoFiltro === 'pendiente') {
+            $query->whereDoesntHave('analisisTda');
+        } elseif ($resultadoFiltro !== '') {
+            $query->whereHas('analisisTda', fn($q) => $q->where('resultado', $resultadoFiltro));
+        }
+
+        $resultados = $query->orderByDesc('created_at')
+            ->paginate(15)
+            ->withQueryString();
 
         return view('pages.encuestas.encuestas-estadisticas', [
             'title'       => 'Estadísticas de Encuesta',
             'encuesta'    => $encuesta,
             'resultados'  => $resultados,
             'estadisticas' => $estadisticas,
+            'search' => $search,
+            'resultadoFiltro' => $resultadoFiltro,
         ]);
+    }
+
+    /**
+     * Descargar las estadísticas consolidadas de una encuesta en PDF
+     */
+    public function estadisticasPdf(Encuesta $encuesta): Response|RedirectResponse
+    {
+        $resultados = $encuesta->resultados()
+            ->with(['analisisTda', 'respuestas'])
+            ->get();
+
+        if ($resultados->isEmpty()) {
+            return redirect()->route('estadisticas-encuesta', $encuesta)
+                ->with('warning', 'No hay estadísticas disponibles para esta encuesta aún.');
+        }
+
+        $estadisticas = $this->tdaService->calcularEstadisticas($resultados);
+
+        $pdf = Pdf::loadView('pages.encuestas.pdf.estadisticas-pdf', [
+            'encuesta' => $encuesta,
+            'resultados' => $resultados,
+            'estadisticas' => $estadisticas,
+        ]);
+
+        $nombreArchivo = 'estadisticas-' . Str::slug($encuesta->nombre) . '.pdf';
+
+        return $pdf->stream($nombreArchivo);
     }
 
     /**
@@ -171,7 +252,7 @@ class EncuestaWebController extends Controller
             ],
             'edad_estudiante' => 'required|integer|min:5|max:100',
             'sexo_estudiante' => 'required|in:M,F,O',
-            'carrera_id' => 'nullable|exists:carreras,id',
+            'carrera_id' => 'required|exists:carreras,id',
         ]);
 
         $request->merge([
@@ -221,6 +302,46 @@ class EncuestaWebController extends Controller
             'resultado' => $resultado,
             'analisis' => $analisis
         ]);
+    }
+
+    /**
+     * Generar el PDF de resultado y análisis para un estudiante
+     */
+    private function generarPdfResultado(EncuestaResultado $resultado): Response
+    {
+        $analisis = $resultado->analisisTda;
+
+        if (!$analisis) {
+            abort(404, 'El análisis de esta encuesta aún no está disponible.');
+        }
+
+        $badgeColors = [
+            'tda_combinado' => '#dc2626',
+            'tda_inatento' => '#d97706',
+            'tda_hiperactivo' => '#ea580c',
+            'tda_posible' => '#ca8a04',
+            'no_tda' => '#16a34a',
+        ];
+
+        $resultadoLabels = [
+            'tda_combinado' => 'TDA Combinado',
+            'tda_inatento' => 'TDA Inatento',
+            'tda_hiperactivo' => 'TDA Hiperactivo',
+            'tda_posible' => 'Posible TDA',
+            'no_tda' => 'Sin TDA',
+        ];
+
+        $pdf = Pdf::loadView('pages.encuestas.pdf.resultado-pdf', [
+            'resultado' => $resultado,
+            'analisis' => $analisis,
+            'recomendaciones' => $analisis->getRecomendaciones(),
+            'badgeColor' => $badgeColors[$analisis->resultado] ?? '#6b7280',
+            'resultadoLabel' => $resultadoLabels[$analisis->resultado] ?? 'Desconocido',
+        ]);
+
+        $nombreArchivo = 'resultado-' . Str::slug($resultado->nombre_estudiante) . '.pdf';
+
+        return $pdf->stream($nombreArchivo);
     }
 
     /**
