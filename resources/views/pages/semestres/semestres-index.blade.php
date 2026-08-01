@@ -129,17 +129,15 @@
                                                 </button>
                                             </form>
                                         @endunless
-                                        @if ($semestre->encuesta_resultados_count === 0)
-                                            <form action="{{ route('semestres.destroy', $semestre) }}" method="POST"
-                                                class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="button" data-delete-trigger
-                                                    class="inline-flex items-center justify-center rounded-lg border border-red-300 bg-white px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-50 dark:border-red-700/50 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30">
-                                                    Eliminar
-                                                </button>
-                                            </form>
-                                        @endif
+                                        <form action="{{ route('semestres.destroy', $semestre) }}" method="POST"
+                                            class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" data-delete-trigger
+                                                class="inline-flex items-center justify-center rounded-lg border border-red-300 bg-white px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-50 dark:border-red-700/50 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30">
+                                                Eliminar
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
@@ -198,20 +196,25 @@
                 }
             });
 
-            const successToast = document.getElementById('successToast');
-            const closeSuccessToast = document.getElementById('closeSuccessToast');
+            const setupToast = (toastId, closeButtonId) => {
+                const toast = document.getElementById(toastId);
+                const closeButton = document.getElementById(closeButtonId);
 
-            if (successToast) {
-                const hideToast = () => successToast.classList.add('hidden');
+                if (!toast) return;
+
+                const hideToast = () => toast.classList.add('hidden');
                 const timer = setTimeout(hideToast, 5000);
 
-                if (closeSuccessToast) {
-                    closeSuccessToast.addEventListener('click', () => {
+                if (closeButton) {
+                    closeButton.addEventListener('click', () => {
                         clearTimeout(timer);
                         hideToast();
                     });
                 }
-            }
+            };
+
+            setupToast('successToast', 'closeSuccessToast');
+            setupToast('errorToast', 'closeErrorToast');
         });
     </script>
 @endsection

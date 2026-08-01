@@ -1,5 +1,13 @@
 <?php
 
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\SemestreController;
+use App\Http\Controllers\PreguntaController;
+use App\Http\Controllers\EncuestaController;
+use App\Http\Controllers\ApiEncuestaController;
+use App\Http\Controllers\EncuestaWebController;
+use App\Http\Controllers\ResumenController;
 use Illuminate\Support\Facades\Route;
 
 // ===== RUTAS PÚBLICAS (SIN AUTENTICACIÓN) =====
@@ -13,9 +21,9 @@ Route::get('/signup', function () {
     return view('pages.auth.signup', ['title' => 'Registrarse']);
 })->name('signup');
 
-Route::post('/login', [App\Http\Controllers\AuthController::class, 'login'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login');
 
-Route::post('/register', [App\Http\Controllers\AuthController::class, 'register'])->name('register');
+Route::post('/register', [AuthController::class, 'register'])->name('register');
 
 // Página de error 404
 Route::fallback(function () {
@@ -24,136 +32,96 @@ Route::fallback(function () {
 
 
 // ===== RUTAS PÚBLICAS DE ENCUESTA POR CÓDIGO DE ACCESO =====
-Route::get('/encuestas/acceso/{codigo_acceso}/iniciar', [App\Http\Controllers\EncuestaWebController::class, 'iniciarPublic'])->name('encuestas.public.iniciar');
-Route::post('/encuestas/acceso/{codigo_acceso}/guardar-datos', [App\Http\Controllers\EncuestaWebController::class, 'storePublic'])->name('encuestas.public.guardar-datos');
-Route::get('/encuestas/acceso/{codigo_acceso}/responder/{resultado}', [App\Http\Controllers\EncuestaWebController::class, 'responderPublic'])->name('encuestas.public.responder');
-Route::get('/encuestas/acceso/{codigo_acceso}/resultado/{resultado}', [App\Http\Controllers\EncuestaWebController::class, 'resultadoPublic'])->name('encuestas.public.resultado');
-Route::get('/encuestas/acceso/{codigo_acceso}/resultado/{resultado}/pdf', [App\Http\Controllers\EncuestaWebController::class, 'resultadoPdfPublic'])->name('encuestas.public.resultado.pdf');
-Route::get('/encuestas/acceso/{codigo_acceso}/detalles/{resultado}', [App\Http\Controllers\EncuestaWebController::class, 'detallesPublic'])->name('encuestas.public.detalles');
+Route::get('/encuestas/acceso/{codigo_acceso}/iniciar', [EncuestaWebController::class, 'iniciarPublic'])->name('encuestas.public.iniciar');
+Route::post('/encuestas/acceso/{codigo_acceso}/guardar-datos', [EncuestaWebController::class, 'storePublic'])->name('encuestas.public.guardar-datos');
+Route::get('/encuestas/acceso/{codigo_acceso}/responder/{resultado}', [EncuestaWebController::class, 'responderPublic'])->name('encuestas.public.responder');
+Route::get('/encuestas/acceso/{codigo_acceso}/resultado/{resultado}', [EncuestaWebController::class, 'resultadoPublic'])->name('encuestas.public.resultado');
+Route::get('/encuestas/acceso/{codigo_acceso}/resultado/{resultado}/pdf', [EncuestaWebController::class, 'resultadoPdfPublic'])->name('encuestas.public.resultado.pdf');
+Route::get('/encuestas/acceso/{codigo_acceso}/detalles/{resultado}', [EncuestaWebController::class, 'detallesPublic'])->name('encuestas.public.detalles');
+
+// ===== RUTAS DE API INTERNA (usadas por fetch() en el flujo de encuestas) =====
+// Sin 'auth' porque también las usa el flujo público por código de acceso; el
+// propio controlador exige que el código de acceso coincida cuando no hay sesión.
+Route::prefix('api')->group(function () {
+    Route::prefix('encuestas')->name('api.encuestas.')->group(function () {
+        // Obtener una encuesta específica con sus preguntas
+        Route::get('/{encuesta}', [ApiEncuestaController::class, 'show'])->name('encuestas.show');
+    });
+
+    Route::prefix('respuestas')->group(function () {
+        // Guardar una respuesta individual
+        Route::post('/{resultado}', [ApiEncuestaController::class, 'guardarRespuesta'])->name('respuestas.store');
+
+        // Finalizar encuesta y generar análisis
+        Route::post('/{resultado}/finalizar', [ApiEncuestaController::class, 'finalizar'])->name('respuestas.finalizar');
+    });
+});
 
 // ===== RUTAS PROTEGIDAS (REQUIEREN AUTENTICACIÓN) =====
 Route::middleware(['auth'])->group(function () {
 
+    // Ruta de resumen general
+    Route::get('/', [ResumenController::class, 'index'])->name('resumen');
+
     // Ruta de logout (protegida)
-    Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('logout');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     // RUTAS DE PREGUNTAS
-    Route::prefix('/preguntas')->name('preguntas.')->group(function () {
-        Route::get('/', [App\Http\Controllers\PreguntaController::class, 'index'])->name('index');
-        Route::get('/crear', [App\Http\Controllers\PreguntaController::class, 'create'])->name('create');
-        Route::post('/guardar', [App\Http\Controllers\PreguntaController::class, 'store'])->name('store');
-        Route::get('/{pregunta}/editar', [App\Http\Controllers\PreguntaController::class, 'show'])->name('show');
-        Route::put('/{pregunta}', [App\Http\Controllers\PreguntaController::class, 'update'])->name('update');
-        Route::delete('/{pregunta}', [App\Http\Controllers\PreguntaController::class, 'destroy'])->name('destroy');
+    Route::prefix('/preguntas')->name('preguntas.')->middleware('permission:preguntas')->group(function () {
+        Route::get('/', [PreguntaController::class, 'index'])->name('index');
+        Route::get('/crear', [PreguntaController::class, 'create'])->name('create');
+        Route::post('/guardar', [PreguntaController::class, 'store'])->name('store');
+        Route::get('/{pregunta}/editar', [PreguntaController::class, 'show'])->name('show');
+        Route::put('/{pregunta}', [PreguntaController::class, 'update'])->name('update');
+        Route::delete('/{pregunta}', [PreguntaController::class, 'destroy'])->name('destroy');
     });
 
     // RUTAS DE DE ENCUESTAS
-    Route::prefix('/encuestas')->name('encuestas.')->group(function () {
-        Route::get('/', [App\Http\Controllers\EncuestaController::class, 'index'])->name('index');
-        Route::get('/crear', [App\Http\Controllers\EncuestaController::class, 'create'])->name('create');
-        Route::post('/guardar', [App\Http\Controllers\EncuestaController::class, 'store'])->name('store');
-        Route::get('/{encuesta}/editar', [App\Http\Controllers\EncuestaController::class, 'show'])->name('show');
-        Route::put('/{encuesta}', [App\Http\Controllers\EncuestaController::class, 'update'])->name('update');
-        Route::delete('/{encuesta}', [App\Http\Controllers\EncuestaController::class, 'destroy'])->name('destroy');
+    Route::prefix('/encuestas')->name('encuestas.')->middleware('permission:encuestas')->group(function () {
+        Route::get('/', [EncuestaController::class, 'index'])->name('index');
+        Route::get('/crear', [EncuestaController::class, 'create'])->name('create');
+        Route::post('/guardar', [EncuestaController::class, 'store'])->name('store');
+        Route::get('/{encuesta}/editar', [EncuestaController::class, 'show'])->name('show');
+        Route::put('/{encuesta}', [EncuestaController::class, 'update'])->name('update');
+        Route::delete('/{encuesta}', [EncuestaController::class, 'destroy'])->name('destroy');
     });
 
     // RUTAS DE USUARIOS
-    Route::prefix('/usuarios')->name('usuarios.')->group(function () {
-        Route::get('/', [App\Http\Controllers\UserController::class, 'index'])->name('index');
-        Route::get('/crear', [App\Http\Controllers\UserController::class, 'create'])->name('create');
-        Route::post('/guardar', [App\Http\Controllers\UserController::class, 'store'])->name('store');
-        Route::get('/{user}/editar', [App\Http\Controllers\UserController::class, 'show'])->name('show');
-        Route::put('/{user}', [App\Http\Controllers\UserController::class, 'update'])->name('update');
-        Route::delete('/{user}', [App\Http\Controllers\UserController::class, 'destroy'])->name('destroy');
+    Route::prefix('/usuarios')->name('usuarios.')->middleware('permission:usuarios')->group(function () {
+        Route::get('/', [UserController::class, 'index'])->name('index');
+        Route::get('/crear', [UserController::class, 'create'])->name('create');
+        Route::post('/guardar', [UserController::class, 'store'])->name('store');
+        Route::get('/{user}/editar', [UserController::class, 'show'])->name('show');
+        Route::put('/{user}', [UserController::class, 'update'])->name('update');
+        Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
     });
 
     // RUTAS DE SEMESTRES
-    Route::prefix('/semestres')->name('semestres.')->group(function () {
-        Route::get('/', [App\Http\Controllers\SemestreController::class, 'index'])->name('index');
-        Route::post('/guardar', [App\Http\Controllers\SemestreController::class, 'store'])->name('store');
-        Route::post('/{semestre}/activar', [App\Http\Controllers\SemestreController::class, 'activar'])->name('activar');
-        Route::delete('/{semestre}', [App\Http\Controllers\SemestreController::class, 'destroy'])->name('destroy');
+    Route::prefix('/semestres')->name('semestres.')->middleware('permission:semestres')->group(function () {
+        Route::get('/', [SemestreController::class, 'index'])->name('index');
+        Route::post('/guardar', [SemestreController::class, 'store'])->name('store');
+        Route::post('/{semestre}/activar', [SemestreController::class, 'activar'])->name('activar');
+        Route::delete('/{semestre}', [SemestreController::class, 'destroy'])->name('destroy');
     });
 
     //RUTAS PARA ENCUESTAS - ESTUDIANTE
+    Route::middleware('permission:encuestas')->group(function () {
+        // Página de estadísticas de encuesta
+        Route::get('/encuestas/{encuesta}/estadisticas', [EncuestaWebController::class, 'estadisticas'])->name('estadisticas-encuesta');
 
-    // Página de estadísticas de encuesta
-    Route::get('/encuestas/{encuesta}/estadisticas', [App\Http\Controllers\EncuestaWebController::class, 'estadisticas'])->name('estadisticas-encuesta');
+        // PDF de estadísticas de encuesta
+        Route::get('/encuestas/{encuesta}/estadisticas/pdf', [EncuestaWebController::class, 'estadisticasPdf'])->name('estadisticas-encuesta.pdf');
 
-    // PDF de estadísticas de encuesta
-    Route::get('/encuestas/{encuesta}/estadisticas/pdf', [App\Http\Controllers\EncuestaWebController::class, 'estadisticasPdf'])->name('estadisticas-encuesta.pdf');
+        // Página de responder encuesta
+        Route::get('/respuestas/{resultado}/responder', [EncuestaWebController::class, 'responder'])->name('responder-encuesta');
 
-    // Página de responder encuesta
-    Route::get('/respuestas/{resultado}/responder', [App\Http\Controllers\EncuestaWebController::class, 'responder'])->name('responder-encuesta');
+        // Página de resultado de encuesta en estudiante
+        Route::get('/respuestas/{resultado}/resultado', [EncuestaWebController::class, 'resultado'])->name('resultado-encuesta');
 
-    // Página de resultado de encuesta en estudiante
-    Route::get('/respuestas/{resultado}/resultado', [App\Http\Controllers\EncuestaWebController::class, 'resultado'])->name('resultado-encuesta');
+        // PDF de resultado de encuesta en estudiante
+        Route::get('/respuestas/{resultado}/resultado/pdf', [EncuestaWebController::class, 'resultadoPdf'])->name('resultado-encuesta.pdf');
 
-    // PDF de resultado de encuesta en estudiante
-    Route::get('/respuestas/{resultado}/resultado/pdf', [App\Http\Controllers\EncuestaWebController::class, 'resultadoPdf'])->name('resultado-encuesta.pdf');
-
-    // Página de detalles de resultado de encuesta en estudiante
-    Route::get('/respuestas/{resultado}/detalles', [App\Http\Controllers\EncuestaWebController::class, 'detalles'])->name('detalles-encuesta');
-
-    // dashboard pages
-    Route::get('/', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
-
-    // calender pages
-    Route::get('/calendar', function () {
-        return view('pages.calender', ['title' => 'Calendar']);
-    })->name('calendar');
-
-    // profile pages
-    Route::get('/profile', function () {
-        return view('pages.profile', ['title' => 'Profile']);
-    })->name('profile');
-
-    // form pages
-    Route::get('/form-elements', function () {
-        return view('pages.form.form-elements', ['title' => 'Form Elements']);
-    })->name('form-elements');
-
-    // tables pages
-    Route::get('/basic-tables', function () {
-        return view('pages.tables.basic-tables', ['title' => 'Basic Tables']);
-    })->name('basic-tables');
-
-    // pages
-    Route::get('/blank', function () {
-        return view('pages.blank', ['title' => 'Blank']);
-    })->name('blank');
-
-    // chart pages
-    Route::get('/line-chart', function () {
-        return view('pages.chart.line-chart', ['title' => 'Line Chart']);
-    })->name('line-chart');
-
-    Route::get('/bar-chart', function () {
-        return view('pages.chart.bar-chart', ['title' => 'Bar Chart']);
-    })->name('bar-chart');
-
-    // ui elements pages
-    Route::get('/alerts', function () {
-        return view('pages.ui-elements.alerts', ['title' => 'Alerts']);
-    })->name('alerts');
-
-    Route::get('/avatars', function () {
-        return view('pages.ui-elements.avatars', ['title' => 'Avatars']);
-    })->name('avatars');
-
-    Route::get('/badge', function () {
-        return view('pages.ui-elements.badges', ['title' => 'Badges']);
-    })->name('badges');
-
-    Route::get('/buttons', function () {
-        return view('pages.ui-elements.buttons', ['title' => 'Buttons']);
-    })->name('buttons');
-
-    Route::get('/image', function () {
-        return view('pages.ui-elements.images', ['title' => 'Images']);
-    })->name('images');
-
-    Route::get('/videos', function () {
-        return view('pages.ui-elements.videos', ['title' => 'Videos']);
-    })->name('videos');
+        // Página de detalles de resultado de encuesta en estudiante
+        Route::get('/respuestas/{resultado}/detalles', [EncuestaWebController::class, 'detalles'])->name('detalles-encuesta');
+    });
 });

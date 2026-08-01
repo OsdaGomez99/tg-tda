@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\MenuHelper;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -31,6 +32,7 @@ class UserController extends Controller
     {
         return view('pages.usuarios.usuarios-create', [
             'title' => 'Nuevo Usuario',
+            'modulosPermisos' => MenuHelper::getPermissionModules(),
         ]);
     }
 
@@ -41,15 +43,19 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email',
+            'email' => 'required|email:rfc,filter|max:255|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
+            'permisos' => 'array',
+            'permisos.*' => Rule::in(array_keys(MenuHelper::getPermissionModules())),
         ]);
 
-        User::create([
+        $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);
+
+        $user->syncPermissions($validated['permisos'] ?? []);
 
         return redirect()->route('usuarios.index')
             ->with('success', 'Usuario creado correctamente.');
@@ -63,6 +69,9 @@ class UserController extends Controller
         return view('pages.usuarios.usuarios-show', [
             'title' => 'Editar Usuario',
             'usuario' => $user,
+            'modulosPermisos' => MenuHelper::getPermissionModules(),
+            'permisosUsuario' => $user->getPermissionNames()->toArray(),
+            'esAdministrador' => $user->hasRole('Administrador'),
         ]);
     }
 
@@ -75,11 +84,13 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => [
                 'required',
-                'email',
+                'email:rfc,filter',
                 'max:255',
                 Rule::unique('users', 'email')->ignore($user->id),
             ],
             'password' => 'nullable|string|min:6|confirmed',
+            'permisos' => 'array',
+            'permisos.*' => Rule::in(array_keys(MenuHelper::getPermissionModules())),
         ]);
 
         $user->name = $validated['name'];
@@ -90,6 +101,11 @@ class UserController extends Controller
         }
 
         $user->save();
+
+        // El rol Administrador siempre conserva acceso total; sus permisos no se tocan aquí.
+        if (! $user->hasRole('Administrador')) {
+            $user->syncPermissions($validated['permisos'] ?? []);
+        }
 
         return redirect()->route('usuarios.index')
             ->with('success', 'Usuario actualizado correctamente.');

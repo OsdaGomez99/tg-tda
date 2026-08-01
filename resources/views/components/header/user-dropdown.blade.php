@@ -60,7 +60,7 @@
                             fill="currentColor"
                         />
                         </svg>',
-                        'path' => 'chat',
+                        'path' => route('usuarios.show', auth()->id()),
                     ],
                 ];
             @endphp

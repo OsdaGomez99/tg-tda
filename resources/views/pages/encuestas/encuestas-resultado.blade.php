@@ -103,26 +103,27 @@
             </div>
 
             <!-- Recomendaciones -->
-            <!-- Contenedor Principal (Bloque verde de image_62dd23.png) -->
-            <div class="rounded-2xl border p-6 dark-card-emerald" style="border-color: #6ee7b7; background-color: #ecfdf5;">
+            <div
+                class="rounded-2xl border border-emerald-300 bg-emerald-50 p-6 dark:border-emerald-800 dark:bg-emerald-900/20">
 
                 <div class="flex items-center space-x-2 mb-4">
-                    <svg class="w-6 h-6" style="color: #059669;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-6 h-6 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z">
                         </path>
                     </svg>
-                    <h3 class="text-lg font-bold dark-text-emerald-title" style="color: #064e3b;">Orientación y Pautas de
+                    <h3 class="text-lg font-bold text-emerald-950 dark:text-emerald-100">Orientación y Pautas de
                         Organización Académica</h3>
                 </div>
 
-                <div class="space-y-4 text-sm leading-relaxed dark-text-emerald-body" style="color: #065f46;">
+                <div class="space-y-4 text-sm leading-relaxed text-emerald-800 dark:text-emerald-200">
 
                     {{-- CASO 1: SIN TDA --}}
                     @if ($analisis->resultado == 'no_tda')
                         <p>Tus hábitos de organización e indicadores atencionales se encuentran dentro de los parámetros
                             típicos. Para mantener tu rendimiento académico en la UNEG, te sugerimos:</p>
-                        <ul class="list-disc pl-6 space-y-2 dark-text-emerald-list" style="color: #064e3b;">
+                        <ul class="list-disc pl-6 space-y-2 text-emerald-950 dark:text-emerald-100">
                             <li><strong>Planificación Semanal:</strong> Dedica 15 minutos al inicio de la semana para
                                 calendarizar tus entregas.</li>
                             <li><strong>Descansos Activos:</strong> Implementa pausas de 5 minutos por cada hora de estudio
@@ -133,7 +134,7 @@
                     @elseif($analisis->resultado == 'tda_inatento')
                         <p>Se identificaron indicadores significativos en la dimensión de desatención. El principal desafío
                             es el enfoque prolongado y la gestión del tiempo. Te sugerimos aplicar:</p>
-                        <ul class="list-disc pl-5 space-y-2 dark-text-emerald-list" style="color: #064e3b;">
+                        <ul class="list-disc pl-5 space-y-2 text-emerald-950 dark:text-emerald-100">
                             <li><strong>Método Pomodoro (25/5):</strong> Estudia en bloques cerrados de 25 minutos con
                                 temporizador y descansa 5 minutos. Evita las jornadas maratónicas.</li>
                             <li><strong>Control Estricto de Estímulos:</strong> Retira el teléfono de tu campo visual y usa
@@ -147,7 +148,7 @@
                         <p>Se identificaron indicadores significativos en la dimensión de hiperactividad e impulsividad. Tu
                             perfil requiere canalizar la energía física y mitigar la procrastinación por aburrimiento. Te
                             sugerimos:</p>
-                        <ul class="list-disc pl-5 space-y-2 dark-text-emerald-list" style="color: #064e3b;">
+                        <ul class="list-disc pl-5 space-y-2 text-emerald-950 dark:text-emerald-100">
                             <li><strong>Estudio en Movimiento / Cambios de Entorno:</strong> Incorpora el uso de escritorios
                                 de pie si es posible, o alterna tus lugares de estudio.</li>
                             <li><strong>Canalización Física Previa:</strong> Realiza una actividad física ligera o caminata
@@ -161,7 +162,7 @@
                         <p>Se identificaron indicadores concurrentes tanto en desatención como en hiperactividad. Es el
                             perfil que requiere mayor estructura externa para evitar la sobrecarga cognitiva. Te sugerimos:
                         </p>
-                        <ul class="list-disc pl-5 space-y-2 dark-text-emerald-list" style="color: #064e3b;">
+                        <ul class="list-disc pl-5 space-y-2 text-emerald-950 dark:text-emerald-100">
                             <li><strong>Listas de Tareas Prioritarias (Regla de 3):</strong> Anota solo 3 actividades
                                 cruciales al inicio del día.</li>
                             <li><strong>Asistentes Visuales y Recordatorios:</strong> Utiliza alarmas sonoras o tableros
@@ -174,7 +175,7 @@
                     @elseif($analisis->resultado == 'tda_posible')
                         <p>Se identificaron algunos indicadores de dispersión o dificultades atencionales aisladas que
                             pueden estar afectando tu rendimiento académico diario. Te sugerimos:</p>
-                        <ul class="list-disc pl-5 space-y-2 dark-text-emerald-list" style="color: #064e3b;">
+                        <ul class="list-disc pl-5 space-y-2 text-emerald-950 dark:text-emerald-100">
                             <li><strong>Uso de Agendas o Recordatorios Digitales:</strong> Apóyate en herramientas como
                                 Google Calendar o Notion.</li>
                             <li><strong>Listas de Tareas Diarias:</strong> Anota un máximo de 3 actividades clave para
@@ -186,9 +187,9 @@
 
                     {{-- Alerta Institucional --}}
                     @if ($analisis->resultado != 'no_tda')
-                        <div class="mt-4 p-3 rounded-lg dark-note-emerald"
-                            style="background-color: rgba(255,255,255,0.6); border: 1px solid #6ee7b7;">
-                            <p class="text-xs dark-text-emerald-note" style="color: #065f46;">
+                        <div
+                            class="mt-4 p-3 rounded-lg border border-emerald-300 bg-white/60 dark:border-emerald-700 dark:bg-emerald-900/40">
+                            <p class="text-xs text-emerald-800 dark:text-emerald-200">
                                 <strong>💡 Nota de Acompañamiento:</strong> Este reporte ha sido generado con fines de
                                 cribado y orientación psicoeducativa. El personal del Área de Bienestar Estudiantil de la
                                 UNEG tiene acceso confidencial a estos resultados para ofrecerte estrategias de apoyo
@@ -196,8 +197,8 @@
                             </p>
                         </div>
                     @else
-                        <div class="mt-4 pt-4 text-xs italic dark-text-emerald-note"
-                            style="border-top: 1px solid rgba(110, 231, 183, 0.6); color: rgba(6, 95, 70, 0.8);">
+                        <div
+                            class="mt-4 pt-4 text-xs italic border-t border-emerald-300/60 text-emerald-800/80 dark:border-emerald-700/60 dark:text-emerald-200/80">
                             * Nota: Este reporte es estrictamente confidencial y forma parte del programa de detección
                             temprana de Bienestar Estudiantil.
                         </div>

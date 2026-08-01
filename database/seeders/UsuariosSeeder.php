@@ -21,10 +21,12 @@ class UsuariosSeeder extends Seeder
         ];
 
         foreach ($usuarios as $usuario) {
-            User::firstOrCreate(
+            $user = User::firstOrCreate(
                 ['email' => $usuario['email']],
                 $usuario
             );
+
+            $user->syncRoles(['Administrador']);
         }
     }
 }

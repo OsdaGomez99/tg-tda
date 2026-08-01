@@ -185,20 +185,25 @@
                 }
             });
 
-            const successToast = document.getElementById('successToast');
-            const closeSuccessToast = document.getElementById('closeSuccessToast');
+            const setupToast = (toastId, closeButtonId) => {
+                const toast = document.getElementById(toastId);
+                const closeButton = document.getElementById(closeButtonId);
 
-            if (successToast) {
-                const hideToast = () => successToast.classList.add('hidden');
+                if (!toast) return;
+
+                const hideToast = () => toast.classList.add('hidden');
                 const timer = setTimeout(hideToast, 5000);
 
-                if (closeSuccessToast) {
-                    closeSuccessToast.addEventListener('click', () => {
+                if (closeButton) {
+                    closeButton.addEventListener('click', () => {
                         clearTimeout(timer);
                         hideToast();
                     });
                 }
-            }
+            };
+
+            setupToast('successToast', 'closeSuccessToast');
+            setupToast('errorToast', 'closeErrorToast');
         });
     </script>
 @endsection

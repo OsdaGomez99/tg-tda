@@ -235,4 +235,23 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const errorToast = document.getElementById('errorToast');
+            const closeErrorToast = document.getElementById('closeErrorToast');
+
+            if (errorToast) {
+                const hideToast = () => errorToast.classList.add('hidden');
+                const timer = setTimeout(hideToast, 5000);
+
+                if (closeErrorToast) {
+                    closeErrorToast.addEventListener('click', () => {
+                        clearTimeout(timer);
+                        hideToast();
+                    });
+                }
+            }
+        });
+    </script>
 @endsection

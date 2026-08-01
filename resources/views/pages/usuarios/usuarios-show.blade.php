@@ -53,6 +53,33 @@
                     </div>
                 </div>
 
+                <div class="mt-8 border-t border-gray-200 pt-6 dark:border-gray-800">
+                    <h4 class="text-md font-semibold text-gray-800 dark:text-white/90">Permisos de acceso</h4>
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                        Selecciona a qué secciones del sistema puede acceder este usuario.
+                    </p>
+
+                    @if ($esAdministrador)
+                        <p
+                            class="mt-4 rounded-lg border border-brand-200 bg-brand-50 px-4 py-3 text-sm text-brand-700 dark:border-brand-800 dark:bg-brand-500/10 dark:text-brand-300">
+                            Este usuario tiene el rol <strong>Administrador</strong> y tiene acceso a todas las rutas
+                            del sistema.
+                        </p>
+                    @else
+                        <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                            @foreach ($modulosPermisos as $modulo => $etiqueta)
+                                <label
+                                    class="flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-700 dark:border-gray-700 dark:text-gray-300">
+                                    <input type="checkbox" name="permisos[]" value="{{ $modulo }}"
+                                        class="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500 dark:border-gray-700"
+                                        {{ in_array($modulo, old('permisos', $permisosUsuario)) ? 'checked' : '' }}>
+                                    {{ $etiqueta }}
+                                </label>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+
                 <div class="mt-8 flex gap-3">
                     <button type="submit"
                         class="inline-flex items-center justify-center rounded-lg bg-blue-600 px-6 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
