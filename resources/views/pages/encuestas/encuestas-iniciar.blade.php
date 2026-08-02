@@ -79,7 +79,7 @@
                 <!-- Documento de Identidad -->
                 <div>
                     <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Documento de Identidad <span class="text-red-600">*</span>
+                        Documento de Identidad (Formato: V12345678) <span class="text-red-600">*</span>
                     </label>
                     <input type="text" name="documento_estudiante"
                         placeholder="Ingrese su documento de identidad (Formato: V12345678)"

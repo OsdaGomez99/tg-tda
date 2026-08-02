@@ -15,13 +15,23 @@ class UserController extends Controller
     /**
      * Mostrar lista de usuarios
      */
-    public function index(): View
+    public function index(Request $request): View
     {
-        $usuarios = User::orderBy('name')->get();
+        $search = trim((string) $request->query('search', ''));
+
+        $usuarios = User::when($search !== '', function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy('name')
+            ->get();
 
         return view('pages.usuarios.usuarios-index', [
             'title' => 'Usuarios',
             'usuarios' => $usuarios,
+            'search' => $search,
         ]);
     }
 

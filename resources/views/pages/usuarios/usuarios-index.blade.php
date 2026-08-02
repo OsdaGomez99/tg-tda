@@ -38,7 +38,7 @@
 
                 <div class="flex items-center gap-3">
                     <div class="hidden xl:block">
-                        <form>
+                        <form action="{{ route('usuarios.index') }}" method="GET" class="flex items-center gap-2">
                             <div class="relative">
                                 <span class="absolute -translate-y-1/2 pointer-events-none left-4 top-1/2">
                                     <svg class="fill-gray-500 dark:fill-gray-400" width="20" height="20"
@@ -48,9 +48,18 @@
                                             fill="" />
                                     </svg>
                                 </span>
-                                <input type="text" placeholder="Busqueda"
+                                <input id="searchInput" type="text" name="search" value="{{ $search ?? '' }}"
+                                    placeholder="Busqueda por nombre o correo"
                                     class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-12 pr-14 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-white/3 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[430px]" />
+                                @if (!empty($search))
+                                    <a href="{{ route('usuarios.index') }}"
+                                        class="absolute -translate-y-1/2 right-4 top-1/2 text-xs font-medium text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">
+                                        ×
+                                    </a>
+                                @endif
                             </div>
+                            <x-ui.button id="searchButton" size="sm" variant="outline" type="submit"
+                                :disabled="empty($search)">Buscar</x-ui.button>
                         </form>
                     </div>
                     <a href="{{ route('usuarios.create') }}">
@@ -133,7 +142,7 @@
                         @empty
                             <tr>
                                 <td colspan="4" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
-                                    No hay usuarios registrados
+                                    {{ !empty($search) ? 'No se encontraron usuarios para "' . $search . '"' : 'No hay usuarios registrados' }}
                                 </td>
                             </tr>
                         @endforelse
@@ -204,6 +213,21 @@
 
             setupToast('successToast', 'closeSuccessToast');
             setupToast('errorToast', 'closeErrorToast');
+
+            const searchInput = document.getElementById('searchInput');
+            const searchButton = document.getElementById('searchButton');
+
+            if (searchInput && searchButton) {
+                const toggleSearchButton = () => {
+                    const isEmpty = searchInput.value.trim() === '';
+                    searchButton.disabled = isEmpty;
+                    searchButton.classList.toggle('opacity-50', isEmpty);
+                    searchButton.classList.toggle('cursor-not-allowed', isEmpty);
+                };
+
+                toggleSearchButton();
+                searchInput.addEventListener('input', toggleSearchButton);
+            }
         });
     </script>
 @endsection

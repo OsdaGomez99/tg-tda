@@ -244,18 +244,28 @@
         @else
             <div
                 class="rounded-2xl border border-yellow-200 bg-yellow-50 p-6 dark:border-yellow-900/30 dark:bg-yellow-900/20">
-                <p class="text-yellow-800 dark:text-yellow-200">
-                    La encuesta aún no ha sido finalizada. Por favor, complete todas las preguntas.
-                </p>
-                <a href="{{ Auth::check()
-                    ? route('responder-encuesta', $resultado)
-                    : route('encuestas.public.responder', [
-                        'codigo_acceso' => $resultado->encuesta->codigo_acceso,
-                        'resultado' => str_replace(['+', '/', '='], ['-', '_', ''], encrypt($resultado->id)),
-                    ]) }}"
-                    class="mt-4 inline-block rounded-lg bg-blue-600 px-6 py-3 text-center font-medium text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800">
-                    Continuar Respondiendo
-                </a>
+                @if (request()->routeIs('encuestas.public.resultado'))
+                    <p class="text-yellow-800 dark:text-yellow-200">
+                        La encuesta aún no ha sido finalizada. Por favor, complete todas las preguntas.
+                    </p>
+                    <a href="{{ Auth::check()
+                        ? route('responder-encuesta', $resultado)
+                        : route('encuestas.public.responder', [
+                            'codigo_acceso' => $resultado->encuesta->codigo_acceso,
+                            'resultado' => str_replace(['+', '/', '='], ['-', '_', ''], encrypt($resultado->id)),
+                        ]) }}"
+                        class="mt-4 inline-block rounded-lg bg-blue-600 px-6 py-3 text-center font-medium text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800">
+                        Continuar Respondiendo
+                    </a>
+                @else
+                    <p class="text-yellow-800 dark:text-yellow-200">
+                        La encuesta aún no ha sido finalizada por el estudiante. Por favor, espere sus resultados.
+                    </p>
+                    <a href="{{ route('estadisticas-encuesta', $resultado->encuesta->id) }}"
+                        class="mt-4 inline-block rounded-lg bg-blue-600 px-6 py-3 text-center font-medium text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800">
+                        ← Volver a Estadísticas
+                    </a>
+                @endif
             </div>
         @endif
     </div>

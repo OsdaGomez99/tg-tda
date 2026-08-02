@@ -203,6 +203,30 @@ http://localhost:82
 
 ---
 
+# Flujo de funcionamiento de proyecto
+
+Al levantar el proyecto, los seeders dejan preparada una encuesta de ejemplo con 18 preguntas
+(orientadas a evaluar inatención e hiperactividad).
+
+1. **Semestres**: existe un módulo donde se crean los semestres de forma manual. Solo puede
+   haber un semestre activo a la vez, y es contra ese semestre activo que se registran las
+   respuestas de los estudiantes.
+
+2. **Encuestas**: en el listado de encuestas cada registro tiene asociado un enlace público
+   (con su propio código de acceso). Ese enlace es el que se comparte con los estudiantes para
+   que respondan la encuesta durante el semestre activo.
+
+3. **Respuesta del estudiante**: al completar la encuesta desde el enlace público, el estudiante
+   puede ver de inmediato sus resultados, junto con recomendaciones asociadas al análisis
+   obtenido, y descargar un PDF con dicho resultado.
+
+4. **Gestión de resultados**: dentro de la aplicación, los usuarios administradores/gestores
+   pueden ver el listado consolidado de todos los resultados de los estudiantes por encuesta,
+   junto con sus estadísticas, y también generar un PDF con ese consolidado.
+
+---
+
+
 # Comandos útiles
 
 Levantar contenedores

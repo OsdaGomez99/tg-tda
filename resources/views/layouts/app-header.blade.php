@@ -51,7 +51,7 @@
             <!-- Logo (mobile only) -->
             <a href="/" class="xl:hidden">
                 <img class="dark:hidden" src="/images/logo/logo.png" alt="Logo" />
-                <img class="hidden dark:block" src="/images/logo/logo-dark.svg" alt="Logo" />
+                <img class="hidden dark:block" src="/images/logo/logo.png" alt="Logo" />
             </a>
 
             <!-- Application Menu Toggle (mobile only) -->

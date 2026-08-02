@@ -16,6 +16,36 @@
             line-height: 1.5;
         }
 
+        .header {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .header td {
+            vertical-align: middle;
+        }
+
+        .header .logo-cell {
+            width: 55px;
+        }
+
+        .header .logo-cell img {
+            width: 45px;
+            height: 45px;
+        }
+
+        .header .institution {
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            color: #6b7280;
+            text-transform: uppercase;
+            margin: 0 0 2px 0;
+        }
+
         h1 {
             font-size: 18px;
             margin: 0 0 4px 0;
@@ -109,8 +139,17 @@
 </head>
 
 <body>
-    <h1>Estadísticas de Encuesta</h1>
-    <p class="subtitle">{{ $encuesta->nombre }} — {{ $estadisticas['total_respondientes'] ?? 0 }} respondientes</p>
+    <table class="header">
+        <tr>
+            <td class="logo-cell">
+                <img src="{{ public_path('/images/logo/logo-xl.png') }}" />
+            </td>
+            <td>
+                <h1>Estadísticas de Encuesta</h1>
+                <p class="subtitle" style="margin: 0;">{{ $encuesta->nombre }} — {{ $estadisticas['total_respondientes'] ?? 0 }} respondientes</p>
+            </td>
+        </tr>
+    </table>
 
     @if ($estadisticas && count($estadisticas) > 0)
         <div class="section">

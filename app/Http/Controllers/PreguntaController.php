@@ -7,13 +7,23 @@ use Illuminate\Http\Request;
 
 class PreguntaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $preguntas = Pregunta::orderBy('id', 'desc')->get();
+        $search = trim((string) $request->query('search', ''));
+
+        $preguntas = Pregunta::when($search !== '', function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('codigo', 'like', "%{$search}%")
+                        ->orWhere('nombre', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy('id', 'desc')
+            ->get();
 
         return view('pages.preguntas.preguntas-index', [
             'title' => 'Preguntas',
-            'preguntas' => $preguntas
+            'preguntas' => $preguntas,
+            'search' => $search,
         ]);
     }
 

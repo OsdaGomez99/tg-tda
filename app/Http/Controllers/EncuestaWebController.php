@@ -362,6 +362,21 @@ class EncuestaWebController extends Controller
     }
 
     /**
+     * Eliminar el resultado de un estudiante, haya finalizado la encuesta o no.
+     * Las respuestas y el análisis TDA asociados se eliminan en cascada a nivel de base de datos.
+     */
+    public function eliminarResultado(EncuestaResultado $resultado): RedirectResponse
+    {
+        $encuestaId = $resultado->encuesta_id;
+        $nombreEstudiante = $resultado->nombre_estudiante;
+
+        $resultado->delete();
+
+        return redirect()->route('estadisticas-encuesta', $encuestaId)
+            ->with('success', "Resultado de {$nombreEstudiante} eliminado correctamente.");
+    }
+
+    /**
      * Buscar la encuesta asociada a un código de acceso público (404 si no existe)
      */
     private function obtenerEncuestaPorCodigo(string $codigo_acceso): Encuesta

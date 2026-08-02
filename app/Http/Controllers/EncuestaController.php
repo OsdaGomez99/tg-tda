@@ -13,13 +13,24 @@ class EncuestaController extends Controller
     /**
      * Mostrar lista de encuestas
      */
-    public function index(): View
+    public function index(Request $request): View
     {
-        $encuestas = Encuesta::with(['usuario', 'preguntas'])->get();
+        $search = trim((string) $request->query('search', ''));
+
+        $encuestas = Encuesta::with(['usuario', 'preguntas'])
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('codigo', 'like', "%{$search}%")
+                        ->orWhere('nombre', 'like', "%{$search}%")
+                        ->orWhereHas('usuario', fn($u) => $u->where('name', 'like', "%{$search}%"));
+                });
+            })
+            ->get();
 
         return view('pages.encuestas.encuestas-index', [
             'title' => 'Encuestas',
-            'encuestas' => $encuestas
+            'encuestas' => $encuestas,
+            'search' => $search,
         ]);
     }
 

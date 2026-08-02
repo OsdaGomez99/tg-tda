@@ -123,5 +123,8 @@ Route::middleware(['auth'])->group(function () {
 
         // Página de detalles de resultado de encuesta en estudiante
         Route::get('/respuestas/{resultado}/detalles', [EncuestaWebController::class, 'detalles'])->name('detalles-encuesta');
+
+        // Eliminar el resultado de un estudiante (sin importar si finalizó la encuesta o no)
+        Route::delete('/respuestas/{resultado}', [EncuestaWebController::class, 'eliminarResultado'])->name('resultados.destroy');
     });
 });
