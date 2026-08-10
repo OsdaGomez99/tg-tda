@@ -85,6 +85,7 @@ class TdaAnalysisServiceTest extends TestCase
             $table->integer('puntuacion_total')->default(0);
             $table->integer('sintomas_inatención')->default(0);
             $table->integer('sintomas_hiperactividad')->default(0);
+            $table->integer('umbral_sintomas')->default(6);
             $table->string('resultado')->nullable();
             $table->decimal('porcentaje_inatención', 5, 2)->default(0);
             $table->decimal('porcentaje_hiperactividad', 5, 2)->default(0);
@@ -159,5 +160,98 @@ class TdaAnalysisServiceTest extends TestCase
         $this->assertSame(3, $analisis->puntuacion_inatención);
         $this->assertSame(3, $analisis->puntuacion_hiperactividad);
         $this->assertSame('no_tda', $analisis->resultado);
+    }
+
+    /**
+     * Crea una encuesta con 9 preguntas de inatención asignadas.
+     */
+    private function crearEncuestaInatencion(): Encuesta
+    {
+        $encuesta = Encuesta::create([
+            'nombre' => 'Encuesta DSM-5',
+            'descripcion' => 'Prueba de umbral por edad',
+            'usuario_id' => 1,
+        ]);
+
+        for ($i = 1; $i <= 9; $i++) {
+            $pregunta = Pregunta::create([
+                'nombre' => "Síntoma de inatención {$i}",
+                'descripcion' => 'Inatención',
+                'estado' => true,
+                'tipo_tda' => 'I',
+            ]);
+
+            $encuesta->preguntas()->attach([$pregunta->id => ['orden' => $i]]);
+        }
+
+        return $encuesta;
+    }
+
+    /**
+     * Registra respuestas: las primeras $sintomas preguntas con puntuación 3
+     * (síntoma presente) y el resto con 0.
+     */
+    private function responder(EncuestaResultado $resultado, Encuesta $encuesta, int $sintomas): void
+    {
+        foreach ($encuesta->preguntas as $indice => $pregunta) {
+            RespuestaEncuesta::create([
+                'encuesta_resultado_id' => $resultado->id,
+                'pregunta_id' => $pregunta->id,
+                'puntuacion' => $indice < $sintomas ? 3 : 0,
+            ]);
+        }
+    }
+
+    public function test_umbral_de_cinco_sintomas_se_aplica_desde_los_17_anios(): void
+    {
+        $service  = new TdaAnalysisService();
+        $encuesta = $this->crearEncuestaInatencion();
+
+        $resultado = EncuestaResultado::create([
+            'encuesta_id' => $encuesta->id,
+            'nombre_estudiante' => 'Estudiante universitario',
+            'edad_estudiante' => 17,
+            'sexo_estudiante' => 'F',
+        ]);
+
+        $this->responder($resultado, $encuesta, 5);
+
+        $analisis = $service->generarAnalisis($resultado);
+
+        $this->assertSame(5, $analisis->sintomas_inatención);
+        $this->assertSame(5, $analisis->umbral_sintomas);
+        $this->assertSame('tda_inatento', $analisis->resultado);
+    }
+
+    public function test_umbral_de_seis_sintomas_se_mantiene_en_menores_de_17(): void
+    {
+        $service  = new TdaAnalysisService();
+        $encuesta = $this->crearEncuestaInatencion();
+
+        $resultado = EncuestaResultado::create([
+            'encuesta_id' => $encuesta->id,
+            'nombre_estudiante' => 'Estudiante menor',
+            'edad_estudiante' => 16,
+            'sexo_estudiante' => 'M',
+        ]);
+
+        // Misma cantidad de síntomas que el caso anterior
+        $this->responder($resultado, $encuesta, 5);
+
+        $analisis = $service->generarAnalisis($resultado);
+
+        $this->assertSame(5, $analisis->sintomas_inatención);
+        $this->assertSame(6, $analisis->umbral_sintomas);
+        $this->assertSame('tda_posible', $analisis->resultado);
+    }
+
+    public function test_edad_desconocida_aplica_el_umbral_conservador(): void
+    {
+        $service = new TdaAnalysisService();
+
+        $this->assertSame(6, $service->umbralSintomas(null));
+        $this->assertSame(6, $service->umbralSintomas(16));
+        $this->assertSame(5, $service->umbralSintomas(17));
+        $this->assertSame(5, $service->umbralSintomas(30));
     }
 }

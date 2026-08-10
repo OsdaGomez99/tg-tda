@@ -99,6 +99,9 @@
                             {{ $analisis->descripcion }}
                         </p>
                     </div>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">
+                        Criterio de evaluación aplicado: {{ $analisis->getCriterioAplicado() }}.
+                    </p>
                 </div>
             </div>
 

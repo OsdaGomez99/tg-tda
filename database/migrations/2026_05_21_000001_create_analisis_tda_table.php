@@ -30,13 +30,17 @@ return new class extends Migration
                 ->default(0)
                 ->comment('Suma total de puntuaciones');
 
-            // Síntomas significativos (≥6 con puntuación ≥2)
+            // Síntomas significativos (puntuación ≥2); el umbral por dimensión
+            // depende de la edad y se registra en la columna umbral_sintomas
             $table->integer('sintomas_inatención')
                 ->default(0)
                 ->comment('Número de síntomas de inatención');
             $table->integer('sintomas_hiperactividad')
                 ->default(0)
                 ->comment('Número de síntomas de hiperactividad');
+            $table->unsignedTinyInteger('umbral_sintomas')
+                ->default(6)
+                ->comment('Síntomas mínimos por dimensión exigidos según DSM-5: 5 desde los 17 años, 6 en menores');
 
             // Resultado del análisis
             $table->enum('resultado', [

@@ -16,6 +16,7 @@ class AnalisisTda extends Model
         'puntuacion_total',
         'sintomas_inatención',
         'sintomas_hiperactividad',
+        'umbral_sintomas',
         'resultado',
         'porcentaje_inatención',
         'porcentaje_hiperactividad',
@@ -28,6 +29,7 @@ class AnalisisTda extends Model
         'puntuacion_total' => 'integer',
         'sintomas_inatención' => 'integer',
         'sintomas_hiperactividad' => 'integer',
+        'umbral_sintomas' => 'integer',
         'porcentaje_inatención' => 'float',
         'porcentaje_hiperactividad' => 'float',
     ];
@@ -53,6 +55,18 @@ class AnalisisTda extends Model
             'no_tda' => 'No detectado TDA',
             default => 'Resultado desconocido'
         };
+    }
+
+    /**
+     * Describe el criterio DSM-5 aplicado en este análisis.
+     */
+    public function getCriterioAplicado(): string
+    {
+        return sprintf(
+            '%d o más síntomas por dimensión (DSM-5, %s)',
+            $this->umbral_sintomas,
+            $this->umbral_sintomas === 5 ? '17 años o más' : 'menores de 17 años'
+        );
     }
 
     /**

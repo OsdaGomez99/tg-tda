@@ -229,6 +229,7 @@
         <div class="box">
             <p><strong>Resultado:</strong> {{ $analisis->getResultadoDescripcion() }}</p>
             <p>{{ $analisis->descripcion }}</p>
+            <p><em>Criterio de evaluación aplicado: {{ $analisis->getCriterioAplicado() }}.</em></p>
         </div>
     </div>
 

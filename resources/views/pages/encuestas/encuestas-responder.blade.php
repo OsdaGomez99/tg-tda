@@ -65,7 +65,7 @@
     </div>
 
     <!-- Modal de Confirmación de Finalización -->
-    <div id="confirmModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+    <div id="confirmModal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center bg-black/50 p-4">
         <div class="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
             <h3 class="text-lg font-bold text-gray-800 dark:text-white">Confirmar Finalización</h3>
             <p class="mt-2 text-gray-600 dark:text-gray-400">
@@ -85,7 +85,7 @@
     </div>
 
     <!-- Modal de Carga -->
-    <div id="loadingModal" class="hidden fixed inset-0 z-50 flex items-center justify-center"
+    <div id="loadingModal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center"
         style="background: rgba(0, 0, 0, 0.5);">
         <div class="rounded-2xl bg-white p-8 dark:bg-gray-900"
             style="padding: 3rem 4rem; min-width: 320px; text-align: center;">

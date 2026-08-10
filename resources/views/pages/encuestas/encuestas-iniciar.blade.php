@@ -84,6 +84,7 @@
                     <input type="text" name="documento_estudiante"
                         placeholder="Ingrese su documento de identidad (Formato: V12345678)"
                         value="{{ old('documento_estudiante') }}" required
+                        oninput="this.value = this.value.toUpperCase()"
                         class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-blue-600 dark:focus:ring-blue-600/20"
                         maxlength="9" pattern="[VEJPG][0-9]{7,8}">
                     @error('documento_estudiante')
@@ -97,7 +98,7 @@
                         Edad <span class="text-red-600">*</span>
                     </label>
                     <input type="number" name="edad_estudiante" placeholder="Ingrese su edad"
-                        value="{{ old('edad_estudiante') }}" min="10" max="100" required
+                        value="{{ old('edad_estudiante') }}" min="15" max="100" required
                         class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-blue-600 dark:focus:ring-blue-600/20">
                     @error('edad_estudiante')
                         <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>

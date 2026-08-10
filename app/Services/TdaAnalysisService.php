@@ -9,6 +9,29 @@ use App\Models\EncuestaResultado;
 class TdaAnalysisService
 {
     /**
+     * Edad a partir de la cual el DSM-5 reduce el umbral diagnóstico.
+     * DSM-5, Criterio A: "For older adolescents and adults (age 17 and older),
+     * at least five symptoms are required".
+     */
+    public const EDAD_ADULTO_DSM5 = 17;
+
+    /** Síntomas mínimos por dimensión en personas de 17 años o más. */
+    public const UMBRAL_SINTOMAS_ADULTO = 5;
+
+    /** Síntomas mínimos por dimensión en menores de 17 años. */
+    public const UMBRAL_SINTOMAS_MENOR = 6;
+
+    /**
+     * Síntomas mínimos para clasificar un perfil como "posible TDA".
+     * Criterio propio de la aplicación (no proviene del DSM-5): identifica
+     * perfiles subumbral que ameritan seguimiento sin alcanzar significación.
+     */
+    public const UMBRAL_SINTOMAS_POSIBLE = 3;
+
+    /** Puntuación Likert mínima para contabilizar un ítem como síntoma presente. */
+    public const PUNTUACION_SINTOMA_PRESENTE = 2;
+
+    /**
      * Opciones de respuesta con puntuación (escala Likert 0-3).
      */
     public function getResponseOptions(): array
@@ -22,16 +45,40 @@ class TdaAnalysisService
     }
 
     /**
-     * Analiza las respuestas y determina el tipo de TDA según criterios DSM-5.
-     * Umbral clínico: ≥6 síntomas con puntuación ≥2 en cada categoría.
+     * Determina el número mínimo de síntomas por dimensión exigido por el DSM-5
+     * según la edad del participante.
      *
-     * @param  array $answers  [question_id => score (0-3)]
-     * @param  Encuesta $encuesta
+     * Ante una edad desconocida se aplica el umbral más exigente (6 síntomas),
+     * criterio conservador que evita sobreestimar la detección.
+     *
+     * @param  int|null  $edad  Edad declarada por el participante.
+     * @return int
+     */
+    public function umbralSintomas(?int $edad): int
+    {
+        if ($edad !== null && $edad >= self::EDAD_ADULTO_DSM5) {
+            return self::UMBRAL_SINTOMAS_ADULTO;
+        }
+
+        return self::UMBRAL_SINTOMAS_MENOR;
+    }
+
+    /**
+     * Analiza las respuestas y determina el tipo de TDA según criterios DSM-5.
+     *
+     * Umbral clínico dependiente de la edad: 5 síntomas por dimensión desde los
+     * 17 años, 6 síntomas en menores de esa edad. Un ítem se contabiliza como
+     * síntoma cuando su puntuación es ≥ 2 en la escala Likert 0-3.
+     *
+     * @param  array     $answers   [question_id => score (0-3)]
+     * @param  Encuesta  $encuesta
+     * @param  int|null  $edad      Edad del participante.
      * @return array
      */
-    public function analyze(array $answers, Encuesta $encuesta): array
+    public function analyze(array $answers, Encuesta $encuesta, ?int $edad = null): array
     {
         $questions = collect($encuesta->obtenerPreguntasTda())->keyBy('id');
+        $umbral    = $this->umbralSintomas($edad);
 
         if ($questions->isEmpty()) {
             return [
@@ -46,6 +93,8 @@ class TdaAnalysisService
                 'max_total_score' => 54,
                 'inattention_percentage' => 0,
                 'hyperactivity_percentage' => 0,
+                'symptom_threshold' => $umbral,
+                'age' => $edad,
             ];
         }
 
@@ -64,12 +113,12 @@ class TdaAnalysisService
 
             if ($question['category'] === 'I') {
                 $inattentionScore += $score;
-                if ($score >= 2) {
+                if ($score >= self::PUNTUACION_SINTOMA_PRESENTE) {
                     $inattentionSymptoms++;
                 }
             } else {
                 $hyperactivityScore += $score;
-                if ($score >= 2) {
+                if ($score >= self::PUNTUACION_SINTOMA_PRESENTE) {
                     $hyperactivitySymptoms++;
                 }
             }
@@ -77,9 +126,9 @@ class TdaAnalysisService
 
         $totalScore = $inattentionScore + $hyperactivityScore;
 
-        // Determinación del resultado según DSM-5
-        $inattentiveSignificant   = $inattentionSymptoms >= 6;
-        $hyperactiveSignificant   = $hyperactivitySymptoms >= 6;
+        // Determinación del resultado según DSM-5 (umbral ajustado por edad)
+        $inattentiveSignificant = $inattentionSymptoms >= $umbral;
+        $hyperactiveSignificant = $hyperactivitySymptoms >= $umbral;
 
         if ($inattentiveSignificant && $hyperactiveSignificant) {
             $result = 'tda_combinado';
@@ -87,7 +136,10 @@ class TdaAnalysisService
             $result = 'tda_inatento';
         } elseif ($hyperactiveSignificant) {
             $result = 'tda_hiperactivo';
-        } elseif ($inattentionSymptoms >= 3 || $hyperactivitySymptoms >= 3) {
+        } elseif (
+            $inattentionSymptoms >= self::UMBRAL_SINTOMAS_POSIBLE
+            || $hyperactivitySymptoms >= self::UMBRAL_SINTOMAS_POSIBLE
+        ) {
             $result = 'tda_posible';
         } else {
             $result = 'no_tda';
@@ -105,6 +157,8 @@ class TdaAnalysisService
             'max_total_score'         => 54,
             'inattention_percentage'  => round(($inattentionScore / 27) * 100, 2),
             'hyperactivity_percentage' => round(($hyperactivityScore / 27) * 100, 2),
+            'symptom_threshold'       => $umbral,
+            'age'                     => $edad,
         ];
     }
 
@@ -122,8 +176,13 @@ class TdaAnalysisService
         // Obtener respuestas ya guardadas
         $respuestasGuardadas = $resultado->obtenerRespuestasArray();
 
-        // Realizar el análisis
-        $analisisData = $this->analyze($respuestasGuardadas, $encuesta);
+        // Realizar el análisis (el umbral se resuelve con la edad declarada)
+        $analisisData = $this->analyze(
+            $respuestasGuardadas,
+            $encuesta,
+            $resultado->edad_estudiante
+        );
+
         // Guardar el resultado del análisis
         $analisisTda = AnalisisTda::create([
             'encuesta_resultado_id' => $resultado->id,
@@ -132,6 +191,7 @@ class TdaAnalysisService
             'puntuacion_total' => $analisisData['total_score'],
             'sintomas_inatención' => $analisisData['inattention_symptoms'],
             'sintomas_hiperactividad' => $analisisData['hyperactivity_symptoms'],
+            'umbral_sintomas' => $analisisData['symptom_threshold'],
             'resultado' => $analisisData['result'],
             'porcentaje_inatención' => $analisisData['inattention_percentage'],
             'porcentaje_hiperactividad' => $analisisData['hyperactivity_percentage'],
@@ -151,6 +211,7 @@ class TdaAnalysisService
         $hyperactivityScore = $analisisData['hyperactivity_score'];
         $inattentionSymptoms = $analisisData['inattention_symptoms'];
         $hyperactivitySymptoms = $analisisData['hyperactivity_symptoms'];
+        $umbral = $analisisData['symptom_threshold'] ?? self::UMBRAL_SINTOMAS_MENOR;
 
         $descripcion = match ($result) {
             'tda_combinado' => sprintf(
@@ -182,6 +243,14 @@ class TdaAnalysisService
             ),
             default => 'Análisis completado.'
         };
+
+        $descripcion .= sprintf(
+            ' Criterio aplicado: %d o más síntomas por dimensión con frecuencia igual o superior a "Con frecuencia" (DSM-5, umbral correspondiente a %s).',
+            $umbral,
+            $umbral === self::UMBRAL_SINTOMAS_ADULTO
+                ? 'personas de 17 años o más'
+                : 'menores de 17 años'
+        );
 
         return $descripcion;
     }

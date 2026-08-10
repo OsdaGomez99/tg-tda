@@ -250,7 +250,7 @@ class EncuestaWebController extends Controller
                     ->where(fn($query) => $query->where('encuesta_id', $encuesta->id)
                         ->where('semestre_id', $semestre->id)),
             ],
-            'edad_estudiante' => 'required|integer|min:5|max:100',
+            'edad_estudiante' => 'required|integer|min:15|max:100',
             'sexo_estudiante' => 'required|in:M,F,O',
             'carrera_id' => 'required|exists:carreras,id',
         ]);
