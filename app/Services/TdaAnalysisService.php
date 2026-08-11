@@ -186,14 +186,14 @@ class TdaAnalysisService
         // Guardar el resultado del análisis
         $analisisTda = AnalisisTda::create([
             'encuesta_resultado_id' => $resultado->id,
-            'puntuacion_inatención' => $analisisData['inattention_score'],
+            'puntuacion_inatencion' => $analisisData['inattention_score'],
             'puntuacion_hiperactividad' => $analisisData['hyperactivity_score'],
             'puntuacion_total' => $analisisData['total_score'],
-            'sintomas_inatención' => $analisisData['inattention_symptoms'],
+            'sintomas_inatencion' => $analisisData['inattention_symptoms'],
             'sintomas_hiperactividad' => $analisisData['hyperactivity_symptoms'],
             'umbral_sintomas' => $analisisData['symptom_threshold'],
             'resultado' => $analisisData['result'],
-            'porcentaje_inatención' => $analisisData['inattention_percentage'],
+            'porcentaje_inatencion' => $analisisData['inattention_percentage'],
             'porcentaje_hiperactividad' => $analisisData['hyperactivity_percentage'],
             'descripcion' => $this->generarDescripcion($analisisData),
         ]);
@@ -273,7 +273,7 @@ class TdaAnalysisService
                 'tda_posible'   => $analisisArray->where('resultado', 'tda_posible')->count(),
                 'no_tda'         => $analisisArray->where('resultado', 'no_tda')->count(),
             ],
-            'promedio_inatención'    => round($analisisArray->avg('puntuacion_inatención'), 2),
+            'promedio_inatencion'    => round($analisisArray->avg('puntuacion_inatencion'), 2),
             'promedio_hiperactividad' => round($analisisArray->avg('puntuacion_hiperactividad'), 2),
             'promedio_total'         => round($analisisArray->avg('puntuacion_total'), 2),
             'edad_promedio'          => round($resultados->avg('edad_estudiante'), 1),

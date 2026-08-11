@@ -7,6 +7,7 @@ use App\Http\Controllers\PreguntaController;
 use App\Http\Controllers\EncuestaController;
 use App\Http\Controllers\ApiEncuestaController;
 use App\Http\Controllers\EncuestaWebController;
+use App\Http\Controllers\EstudianteController;
 use App\Http\Controllers\ResumenController;
 use Illuminate\Support\Facades\Route;
 
@@ -84,6 +85,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{encuesta}/editar', [EncuestaController::class, 'show'])->name('show');
         Route::put('/{encuesta}', [EncuestaController::class, 'update'])->name('update');
         Route::delete('/{encuesta}', [EncuestaController::class, 'destroy'])->name('destroy');
+    });
+
+    // RUTAS DE ESTUDIANTES
+    Route::prefix('/estudiantes')->name('estudiantes.')->middleware('permission:estudiantes')->group(function () {
+        Route::get('/', [EstudianteController::class, 'index'])->name('index');
+        Route::get('/{documento}', [EstudianteController::class, 'show'])->name('show');
     });
 
     // RUTAS DE USUARIOS

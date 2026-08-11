@@ -189,7 +189,7 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>{{ $estadisticas['promedio_inatención'] ?? 0 }}</td>
+                        <td>{{ $estadisticas['promedio_inatencion'] ?? 0 }}</td>
                         <td>{{ $estadisticas['promedio_hiperactividad'] ?? 0 }}</td>
                         <td>{{ $estadisticas['promedio_total'] ?? 0 }}</td>
                     </tr>

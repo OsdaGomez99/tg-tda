@@ -238,12 +238,12 @@
             if (!analisisData) return;
 
             // Actualizar barras de categoría
-            const inatencionPercent = (analisisData.puntuacion_inatención / 27) * 100;
+            const inatencionPercent = (analisisData.puntuacion_inatencion / 27) * 100;
             const hiperactividadPercent = (analisisData.puntuacion_hiperactividad / 27) * 100;
 
             document.getElementById('inatencionBar').style.width = inatencionPercent + '%';
             document.getElementById('hiperactividadBar').style.width = hiperactividadPercent + '%';
-            document.getElementById('inatencionPuntuacion').textContent = `${analisisData.puntuacion_inatención}/27`;
+            document.getElementById('inatencionPuntuacion').textContent = `${analisisData.puntuacion_inatencion}/27`;
             document.getElementById('hiperactividadPuntuacion').textContent =
                 `${analisisData.puntuacion_hiperactividad}/27`;
 

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->text('descripcion')
                   ->nullable()
                   ->comment('Descripción o explicación de la pregunta');
-            $table->char('tipo_tda', 1)
+            $table->enum('tipo_tda', ['I', 'H'])
                   ->nullable()
                   ->comment('I = Inatención, H = Hiperactividad/Impulsividad');
             $table->boolean('estado')

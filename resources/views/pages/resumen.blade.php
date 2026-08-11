@@ -149,11 +149,11 @@
                     <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Puntuación Promedio - Inatención
                     </h3>
                     <p class="mt-4 text-3xl font-bold text-amber-600 dark:text-amber-400">
-                        {{ $estadisticas['promedio_inatención'] ?? 0 }}</p>
+                        {{ $estadisticas['promedio_inatencion'] ?? 0 }}</p>
                     <p class="mt-1 text-xs text-gray-600 dark:text-gray-400">de 27 puntos</p>
                     <div class="mt-3 h-2 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
                         <div class="progress-bar h-full bg-amber-500 transition-all duration-1000 ease-out"
-                            style="width: 0%" data-progress="{{ round((($estadisticas['promedio_inatención'] ?? 0) / 27) * 100) }}"></div>
+                            style="width: 0%" data-progress="{{ round((($estadisticas['promedio_inatencion'] ?? 0) / 27) * 100) }}"></div>
                     </div>
                 </div>
 

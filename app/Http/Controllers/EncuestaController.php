@@ -25,7 +25,8 @@ class EncuestaController extends Controller
                         ->orWhereHas('usuario', fn($u) => $u->where('name', 'like', "%{$search}%"));
                 });
             })
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
 
         return view('pages.encuestas.encuestas-index', [
             'title' => 'Encuestas',
@@ -68,7 +69,7 @@ class EncuestaController extends Controller
         $encuesta = Encuesta::create([
             'nombre' => $validated['nombre'],
             'codigo_acceso' => $this->generarCodigoAcceso(),
-            'descripcion' => $validated['descripcion'],
+            'descripcion' => $validated['descripcion'] ?? null,
             'usuario_id' => $validated['usuario_id'],
         ]);
 
@@ -119,7 +120,7 @@ class EncuestaController extends Controller
         // Solo actualizar campos de la encuesta, no pregunta_ids
         $encuesta->update([
             'nombre'      => $validated['nombre'],
-            'descripcion' => $validated['descripcion'],
+            'descripcion' => $validated['descripcion'] ?? null,
             'usuario_id'  => $validated['usuario_id'],
         ]);
 
@@ -157,7 +158,7 @@ class EncuestaController extends Controller
         $codigo = '';
         do {
             $codigo = Str::upper(Str::random($longitud));
-        } while ($this->caracteresExcluidos($codigo));
+        } while ($this->caracteresExcluidos($codigo) || Encuesta::where('codigo_acceso', $codigo)->exists());
 
         return $codigo;
     }

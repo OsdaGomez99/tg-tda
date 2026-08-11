@@ -26,7 +26,8 @@ class UserController extends Controller
                 });
             })
             ->orderBy('name')
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
 
         return view('pages.usuarios.usuarios-index', [
             'title' => 'Usuarios',

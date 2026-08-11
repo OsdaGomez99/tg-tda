@@ -15,7 +15,7 @@ class SemestreController extends Controller
     {
         $semestres = Semestre::withCount('encuestaResultados')
             ->orderByDesc('nombre')
-            ->get();
+            ->paginate(10);
 
         return view('pages.semestres.semestres-index', [
             'title' => 'Semestres',

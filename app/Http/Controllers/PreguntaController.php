@@ -18,7 +18,8 @@ class PreguntaController extends Controller
                 });
             })
             ->orderBy('id', 'desc')
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
 
         return view('pages.preguntas.preguntas-index', [
             'title' => 'Preguntas',

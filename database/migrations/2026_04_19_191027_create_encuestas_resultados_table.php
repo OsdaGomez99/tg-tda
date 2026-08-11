@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('nombre_estudiante')
                 ->comment('Nombre completo del estudiante');
             $table->string('documento_estudiante')
+                ->index()
                 ->comment('Número de documento del estudiante');
             $table->integer('edad_estudiante')
                 ->comment('Edad del estudiante');

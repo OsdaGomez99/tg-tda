@@ -20,7 +20,7 @@ return new class extends Migration
                 ->comment('ID del resultado de la encuesta al que corresponde este análisis');
 
             // Puntuaciones
-            $table->integer('puntuacion_inatención')
+            $table->integer('puntuacion_inatencion')
                 ->default(0)
                 ->comment('Suma de puntuaciones de las preguntas de inatención');
             $table->integer('puntuacion_hiperactividad')
@@ -32,7 +32,7 @@ return new class extends Migration
 
             // Síntomas significativos (puntuación ≥2); el umbral por dimensión
             // depende de la edad y se registra en la columna umbral_sintomas
-            $table->integer('sintomas_inatención')
+            $table->integer('sintomas_inatencion')
                 ->default(0)
                 ->comment('Número de síntomas de inatención');
             $table->integer('sintomas_hiperactividad')
@@ -53,7 +53,7 @@ return new class extends Migration
                 ->comment('Resultado del análisis: TDA combinado, TDA inatento, TDA hiperactivo, TDA posible, No TDA');
 
             // Porcentajes para visualización
-            $table->decimal('porcentaje_inatención', 5, 2)
+            $table->decimal('porcentaje_inatencion', 5, 2)
                 ->default(0)
                 ->comment('Porcentaje de síntomas de inatención');
             $table->decimal('porcentaje_hiperactividad', 5, 2)

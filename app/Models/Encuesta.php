@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -9,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Encuesta extends Model
 {
+    use HasFactory;
+
     protected $fillable = ['codigo', 'codigo_acceso', 'nombre', 'descripcion', 'usuario_id'];
 
     protected static function boot()

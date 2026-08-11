@@ -34,6 +34,9 @@
             <div class="flex flex-col gap-4 px-6 mb-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">Preguntas</h3>
+                    <p class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+                        {{ $preguntas->total() }} pregunta(s) {{ !empty($search) ? 'encontrada(s)' : 'en total' }}
+                    </p>
                 </div>
 
                 <div class="flex items-center gap-3">
@@ -181,6 +184,11 @@
                     <!-- table body end -->
                 </table>
             </div>
+            @if ($preguntas->hasPages())
+                <div class="border-t border-gray-100 px-6 py-4 dark:border-white/[0.05]">
+                    {{ $preguntas->links() }}
+                </div>
+            @endif
         </div>
     </div>
 

@@ -11,26 +11,26 @@ class AnalisisTda extends Model
 
     protected $fillable = [
         'encuesta_resultado_id',
-        'puntuacion_inatención',
+        'puntuacion_inatencion',
         'puntuacion_hiperactividad',
         'puntuacion_total',
-        'sintomas_inatención',
+        'sintomas_inatencion',
         'sintomas_hiperactividad',
         'umbral_sintomas',
         'resultado',
-        'porcentaje_inatención',
+        'porcentaje_inatencion',
         'porcentaje_hiperactividad',
         'descripcion',
     ];
 
     protected $casts = [
-        'puntuacion_inatención' => 'integer',
+        'puntuacion_inatencion' => 'integer',
         'puntuacion_hiperactividad' => 'integer',
         'puntuacion_total' => 'integer',
-        'sintomas_inatención' => 'integer',
+        'sintomas_inatencion' => 'integer',
         'sintomas_hiperactividad' => 'integer',
         'umbral_sintomas' => 'integer',
-        'porcentaje_inatención' => 'float',
+        'porcentaje_inatencion' => 'float',
         'porcentaje_hiperactividad' => 'float',
     ];
 

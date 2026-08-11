@@ -204,9 +204,9 @@
             <tbody>
                 <tr>
                     <td>Inatención</td>
-                    <td>{{ $analisis->puntuacion_inatención }}/27</td>
-                    <td>{{ $analisis->porcentaje_inatención }}%</td>
-                    <td>{{ $analisis->sintomas_inatención }}/9</td>
+                    <td>{{ $analisis->puntuacion_inatencion }}/27</td>
+                    <td>{{ $analisis->porcentaje_inatencion }}%</td>
+                    <td>{{ $analisis->sintomas_inatencion }}/9</td>
                 </tr>
                 <tr>
                     <td>Hiperactividad/Impulsividad</td>

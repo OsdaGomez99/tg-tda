@@ -4,6 +4,37 @@
 @endphp
 
 @extends($layout)
+
+<?php
+if (!function_exists('getResultadoBadgeClass')) {
+    function getResultadoBadgeClass($resultado)
+    {
+        return match ($resultado) {
+            'tda_combinado' => 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200',
+            'tda_inatento' => 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-200',
+            'tda_hiperactivo' => 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-200',
+            'tda_posible' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200',
+            'no_tda' => 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200',
+            default => 'bg-gray-100 text-gray-800',
+        };
+    }
+}
+
+if (!function_exists('getResultadoLabel')) {
+    function getResultadoLabel($resultado)
+    {
+        return match ($resultado) {
+            'tda_combinado' => 'TDA Combinado',
+            'tda_inatento' => 'TDA Inatento',
+            'tda_hiperactivo' => 'TDA Hiperactivo',
+            'tda_posible' => 'Posible TDA',
+            'no_tda' => 'Sin TDA',
+            default => 'Desconocido',
+        };
+    }
+}
+?>
+
 @section('content')
     <div class="space-y-6">
         @if ($analisis)
@@ -33,17 +64,17 @@
                     <div class="mb-4 flex items-center justify-between">
                         <h3 class="text-sm font-semibold text-amber-900 dark:text-amber-300">Inatención</h3>
                         <span
-                            class="text-lg font-bold text-amber-600 dark:text-amber-400">{{ $analisis->porcentaje_inatención }}%</span>
+                            class="text-lg font-bold text-amber-600 dark:text-amber-400">{{ $analisis->porcentaje_inatencion }}%</span>
                     </div>
                     <div class="mb-3 h-3 overflow-hidden rounded-full bg-amber-200 dark:bg-amber-800">
                         <div class="h-full transition-all bg-amber-500 dark:bg-amber-400"
-                            style="width: {{ $analisis->porcentaje_inatención }}%;"></div>
+                            style="width: {{ $analisis->porcentaje_inatencion }}%;"></div>
                     </div>
                     <p class="text-sm text-amber-800 dark:text-amber-300">
-                        Puntuación: <span class="font-bold">{{ $analisis->puntuacion_inatención }}/27</span>
+                        Puntuación: <span class="font-bold">{{ $analisis->puntuacion_inatencion }}/27</span>
                     </p>
                     <p class="mt-2 text-xs text-amber-700 dark:text-amber-400">
-                        Síntomas significativos: <span class="font-bold">{{ $analisis->sintomas_inatención }}/9</span>
+                        Síntomas significativos: <span class="font-bold">{{ $analisis->sintomas_inatencion }}/9</span>
                     </p>
                 </div>
 
@@ -311,29 +342,3 @@
         </style>
     @endpush
 @endsection
-
-<?php
-function getResultadoBadgeClass($resultado)
-{
-    return match ($resultado) {
-        'tda_combinado' => 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200',
-        'tda_inatento' => 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-200',
-        'tda_hiperactivo' => 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-200',
-        'tda_posible' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200',
-        'no_tda' => 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200',
-        default => 'bg-gray-100 text-gray-800',
-    };
-}
-
-function getResultadoLabel($resultado)
-{
-    return match ($resultado) {
-        'tda_combinado' => 'TDA Combinado',
-        'tda_inatento' => 'TDA Inatento',
-        'tda_hiperactivo' => 'TDA Hiperactivo',
-        'tda_posible' => 'Posible TDA',
-        'no_tda' => 'Sin TDA',
-        default => 'Desconocido',
-    };
-}
-?>

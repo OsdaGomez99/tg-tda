@@ -255,9 +255,7 @@ class EncuestaWebController extends Controller
             'carrera_id' => 'required|exists:carreras,id',
         ]);
 
-        $request->merge([
-            'documento_estudiante' => strtoupper($request->documento_estudiante),
-        ]);
+        $validated['documento_estudiante'] = strtoupper($validated['documento_estudiante']);
 
         $resultado = EncuestaResultado::create(array_merge($validated, [
             'encuesta_id' => $encuesta->id,

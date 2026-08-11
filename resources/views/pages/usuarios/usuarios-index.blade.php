@@ -34,6 +34,9 @@
             <div class="flex flex-col gap-4 px-6 mb-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">Usuarios</h3>
+                    <p class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+                        {{ $usuarios->total() }} usuario(s) {{ !empty($search) ? 'encontrado(s)' : 'en total' }}
+                    </p>
                 </div>
 
                 <div class="flex items-center gap-3">
@@ -149,6 +152,11 @@
                     </tbody>
                 </table>
             </div>
+            @if ($usuarios->hasPages())
+                <div class="border-t border-gray-100 px-6 py-4 dark:border-white/[0.05]">
+                    {{ $usuarios->links() }}
+                </div>
+            @endif
         </div>
     </div>
 

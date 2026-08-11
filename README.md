@@ -3,7 +3,7 @@
 Aplicación web para la detección y orientación integral de Trastorno de Deficit de Atención
 (TDA) en los estudiantes de la Universidad Nacional Experimental de Guayana
 
-Permite administrar carreras, semestres, usuarios y roles, construir encuestas y preguntas,
+Permite administrar carreras, semestres, estudiantes encuestados, usuarios y roles, construir encuestas y preguntas,
 recolectar respuestas (mediante un enlace público con código de acceso), y generar automáticamente
 un análisis de resultados (puntuaciones de inatención e hiperactividad) con estadísticas y
 exportación a PDF.
@@ -223,6 +223,10 @@ Al levantar el proyecto, los seeders dejan preparada una encuesta de ejemplo con
 4. **Gestión de resultados**: dentro de la aplicación, los usuarios administradores/gestores
    pueden ver el listado consolidado de todos los resultados de los estudiantes por encuesta,
    junto con sus estadísticas, y también generar un PDF con ese consolidado.
+
+5. **Gestión de estudiantes encuestados**: los usuarios podran consultar en un listado, todos
+    los estudiantes que fueron encuestados a lo largo de los diferentes semestres y monitorear
+    sus resultados a través de una grafica individual 
 
 ---
 
