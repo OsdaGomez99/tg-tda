@@ -135,6 +135,44 @@
             font-size: 9px;
             color: #9ca3af;
         }
+
+        .badge-resultado {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 8px;
+            font-size: 8.5px;
+            font-weight: bold;
+        }
+
+        .badge-tda_combinado {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-tda_inatento {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-tda_hiperactivo {
+            background-color: #ffedd5;
+            color: #9a3412;
+        }
+
+        .badge-tda_posible {
+            background-color: #fef9c3;
+            color: #854d0e;
+        }
+
+        .badge-no_tda {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-pendiente {
+            background-color: #f3f4f6;
+            color: #374151;
+        }
     </style>
 </head>
 
@@ -145,7 +183,7 @@
                 <img src="{{ public_path('/images/logo/logo-xl.png') }}" />
             </td>
             <td>
-                <h1>Estadísticas de Encuesta</h1>
+                <h1>Estadísticas de encuesta</h1>
                 <p class="subtitle" style="margin: 0;">{{ $encuesta->nombre }} — {{ $estadisticas['total_respondientes'] ?? 0 }} respondientes</p>
             </td>
         </tr>
@@ -153,7 +191,7 @@
 
     @if ($estadisticas && count($estadisticas) > 0)
         <div class="section">
-            <h2>Distribución de Resultados</h2>
+            <h2>Distribución de resultados</h2>
             <table class="summary">
                 <thead>
                     <tr>
@@ -178,7 +216,7 @@
         </div>
 
         <div class="section">
-            <h2>Puntuaciones Promedio</h2>
+            <h2>Puntuaciones promedio</h2>
             <table class="summary">
                 <thead>
                     <tr>
@@ -198,11 +236,11 @@
         </div>
 
         <div class="section">
-            <h2>Datos Demográficos</h2>
+            <h2>Datos demográficos</h2>
             <table class="summary">
                 <thead>
                     <tr>
-                        <th>Edad Promedio</th>
+                        <th>Edad promedio</th>
                         <th>Masculino</th>
                         <th>Femenino</th>
                         <th>Otro</th>
@@ -220,7 +258,7 @@
         </div>
 
         <div class="section">
-            <h2>Listado de Respondientes</h2>
+            <h2>Listado de respondientes</h2>
             <table class="respondientes">
                 <thead>
                     <tr>
@@ -228,7 +266,7 @@
                         <th>Edad</th>
                         <th>Género</th>
                         <th>Resultado</th>
-                        <th>Puntuación Total</th>
+                        <th>Puntuación total</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -238,16 +276,18 @@
                             <td>{{ $resultado->edad_estudiante }}</td>
                             <td>{{ ['M' => 'Masculino', 'F' => 'Femenino', 'O' => 'Otro'][$resultado->sexo_estudiante] ?? '-' }}</td>
                             <td>
-                                {{ $resultado->analisisTda
-                                    ? match ($resultado->analisisTda->resultado) {
-                                        'tda_combinado' => 'TDA Combinado',
-                                        'tda_inatento' => 'TDA Inatento',
-                                        'tda_hiperactivo' => 'TDA Hiperactivo',
-                                        'tda_posible' => 'Posible TDA',
-                                        'no_tda' => 'Sin TDA',
-                                        default => 'Desconocido',
-                                    }
-                                    : 'Pendiente' }}
+                                <span class="badge-resultado badge-{{ $resultado->analisisTda ? $resultado->analisisTda->resultado : 'pendiente' }}">
+                                    {{ $resultado->analisisTda
+                                        ? match ($resultado->analisisTda->resultado) {
+                                            'tda_combinado' => 'TDA Combinado',
+                                            'tda_inatento' => 'TDA Inatento',
+                                            'tda_hiperactivo' => 'TDA Hiperactivo',
+                                            'tda_posible' => 'Posible TDA',
+                                            'no_tda' => 'Sin TDA',
+                                            default => 'Desconocido',
+                                        }
+                                        : 'Pendiente' }}
+                                </span>
                             </td>
                             <td>{{ $resultado->analisisTda ? $resultado->analisisTda->puntuacion_total . '/54' : '-' }}</td>
                         </tr>

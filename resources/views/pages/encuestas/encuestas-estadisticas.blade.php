@@ -77,7 +77,7 @@ if (!function_exists('getResultadoLabel')) {
             <div class="flex items-center justify-between">
                 <div>
                     <h1 class="text-2xl font-bold text-gray-800 dark:text-white">{{ $encuesta->nombre }}</h1>
-                    <p class="mt-2 text-gray-600 dark:text-gray-400">Resultados Consolidados</p>
+                    <p class="mt-2 text-gray-600 dark:text-gray-400">Resultados consolidados</p>
                 </div>
                 <div class="text-right">
                     <p class="text-2xl font-bold text-blue-600 dark:text-blue-400">
@@ -143,7 +143,7 @@ if (!function_exists('getResultadoLabel')) {
             <!-- Análisis Promedio -->
             <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
                 <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-                    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Puntuación Promedio - Inatención</h3>
+                    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Puntuación promedio - Inatención</h3>
                     <div class="mt-4">
                         <p class="text-3xl font-bold text-amber-600 dark:text-amber-400">
                             {{ $estadisticas['promedio_inatencion'] ?? 0 }}</p>
@@ -156,7 +156,7 @@ if (!function_exists('getResultadoLabel')) {
                 </div>
 
                 <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-                    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Puntuación Promedio - Hiperactividad
+                    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Puntuación promedio - Hiperactividad
                     </h3>
                     <div class="mt-4">
                         <p class="text-3xl font-bold text-blue-600 dark:text-blue-400">
@@ -170,7 +170,7 @@ if (!function_exists('getResultadoLabel')) {
                 </div>
 
                 <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-                    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Puntuación Promedio Total</h3>
+                    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Puntuación promedio total</h3>
                     <div class="mt-4">
                         <p class="text-3xl font-bold text-purple-600 dark:text-purple-400">
                             {{ $estadisticas['promedio_total'] ?? 0 }}</p>
@@ -186,7 +186,7 @@ if (!function_exists('getResultadoLabel')) {
             <!-- Datos Demográficos -->
             <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-                    <h3 class="text-lg font-bold text-gray-800 dark:text-white">Distribución por Género</h3>
+                    <h3 class="text-lg font-bold text-gray-800 dark:text-white">Distribución por género</h3>
                     <div class="mt-4 space-y-3">
                         <div class="flex items-center justify-between">
                             <span class="text-sm text-gray-700 dark:text-gray-300">Masculino</span>
@@ -216,15 +216,15 @@ if (!function_exists('getResultadoLabel')) {
                 </div>
 
                 <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-                    <h3 class="text-lg font-bold text-gray-800 dark:text-white">Información Demográfica</h3>
+                    <h3 class="text-lg font-bold text-gray-800 dark:text-white">Información demográfica</h3>
                     <div class="mt-4 space-y-4">
                         <div>
-                            <p class="text-xs font-semibold text-gray-600 dark:text-gray-400">Edad Promedio</p>
+                            <p class="text-xs font-semibold text-gray-600 dark:text-gray-400">Edad promedio</p>
                             <p class="mt-1 text-2xl font-bold text-gray-800 dark:text-white">
                                 {{ $estadisticas['edad_promedio'] ?? 0 }} años</p>
                         </div>
                         <div>
-                            <p class="text-xs font-semibold text-gray-600 dark:text-gray-400">Total de Respondientes</p>
+                            <p class="text-xs font-semibold text-gray-600 dark:text-gray-400">Total de respondientes</p>
                             <p class="mt-1 text-2xl font-bold text-gray-800 dark:text-white">
                                 {{ $estadisticas['total_respondientes'] ?? 0 }}</p>
                         </div>
@@ -237,7 +237,7 @@ if (!function_exists('getResultadoLabel')) {
                 <div
                     class="flex flex-col gap-4 border-b border-gray-200 p-6 dark:border-gray-800 lg:flex-row lg:items-center lg:justify-between">
                     <div>
-                        <h3 class="text-lg font-bold text-gray-800 dark:text-white">Listado de Respondientes</h3>
+                        <h3 class="text-lg font-bold text-gray-800 dark:text-white">Listado de respondientes</h3>
                         <p class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
                             {{ $resultados->total() }} respondiente(s) {{ $search !== '' || $resultadoFiltro !== '' ? 'encontrado(s)' : 'en total' }}
                         </p>
@@ -283,14 +283,14 @@ if (!function_exists('getResultadoLabel')) {
                             <tr>
                                 <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
                                     Nombre</th>
-                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Edad
-                                </th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                    Edad</th>
                                 <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
                                     Género</th>
                                 <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
                                     Resultado</th>
                                 <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-                                    Puntuación Total</th>
+                                    Puntuación total</th>
                                 <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
                                     Fecha de respuesta</th>
                                 <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">

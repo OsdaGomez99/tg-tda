@@ -63,15 +63,15 @@ if (!function_exists('getResultadoLabel')) {
         <!-- Resumen -->
         <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
             <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Semestres Participados</p>
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Semestres participados</p>
                 <p class="mt-2 text-3xl font-bold text-blue-600 dark:text-blue-400">{{ $totalSemestres }}</p>
             </div>
             <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Encuestas Respondidas</p>
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Encuestas respondidas</p>
                 <p class="mt-2 text-3xl font-bold text-purple-600 dark:text-purple-400">{{ $resultados->count() }}</p>
             </div>
             <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Último Resultado</p>
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Último resultado</p>
                 @if ($resultados->last()->analisisTda)
                     <span
                         class="mt-2 inline-flex items-center rounded-full px-3 py-1 text-xs font-medium {{ getResultadoBadgeClass($resultados->last()->analisisTda->resultado) }}">
@@ -86,7 +86,7 @@ if (!function_exists('getResultadoLabel')) {
 
         <!-- Gráfica de Evolución -->
         <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-            <h3 class="text-lg font-bold text-gray-800 dark:text-white">Evolución de Puntuaciones por Semestre</h3>
+            <h3 class="text-lg font-bold text-gray-800 dark:text-white">Evolución de puntuaciones por semestre</h3>
             <p class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
                 Puntuación de inatención, hiperactividad y total en cada semestre en que el estudiante respondió la
                 encuesta (máximo 27 / 27 / 54 puntos respectivamente).
@@ -99,7 +99,7 @@ if (!function_exists('getResultadoLabel')) {
         <!-- Historial por Semestre -->
         <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
             <div class="border-b border-gray-200 p-6 dark:border-gray-800">
-                <h3 class="text-lg font-bold text-gray-800 dark:text-white">Historial de Participación</h3>
+                <h3 class="text-lg font-bold text-gray-800 dark:text-white">Historial de participación</h3>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full">
@@ -112,7 +112,7 @@ if (!function_exists('getResultadoLabel')) {
                             <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
                                 Resultado</th>
                             <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-                                Puntuación Total</th>
+                                Puntuación total</th>
                             <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
                                 Fecha</th>
                             <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">

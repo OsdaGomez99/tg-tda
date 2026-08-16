@@ -76,13 +76,6 @@
                                             </span>
                                         </div>
                                     </div>
-                                    <!-- ¿Olvidaste tu contraseña? -->
-                                    <div class="flex items-center justify-between">
-                                        <a href="/reset-password"
-                                            class="text-brand-500 hover:text-brand-600 dark:text-brand-400 text-sm">
-                                            ¿Olvidaste tu contraseña?
-                                        </a>
-                                    </div>
                                     <!-- Button -->
                                     <div>
                                         <button type="submit" :disabled="isLoading"

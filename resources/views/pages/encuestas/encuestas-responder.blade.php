@@ -46,7 +46,7 @@
                         <button type="button" id="submitBtn"
                             class="flex-1 rounded-lg bg-blue-600 px-6 py-3 font-medium text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
                             style="display: none;">
-                            Finalizar Encuesta
+                            Finalizar encuesta
                         </button>
                     </div>
                 </form>
@@ -55,7 +55,7 @@
             <!-- Indicadores de Respuesta -->
             <div class="w-64 shrink-0 sticky top-6">
                 <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-                    <h3 class="mb-4 text-sm font-semibold text-gray-800 dark:text-white">Progreso de Respuestas</h3>
+                    <h3 class="mb-4 text-sm font-semibold text-gray-800 dark:text-white">Progreso de respuestas</h3>
                     <div class="grid grid-cols-5 gap-2" id="answeredIndicators">
                         <!-- Indicadores se generarán con JavaScript -->
                     </div>
@@ -67,7 +67,7 @@
     <!-- Modal de Confirmación de Finalización -->
     <div id="confirmModal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center bg-black/50 p-4">
         <div class="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
-            <h3 class="text-lg font-bold text-gray-800 dark:text-white">Confirmar Finalización</h3>
+            <h3 class="text-lg font-bold text-gray-800 dark:text-white">Confirmar finalización</h3>
             <p class="mt-2 text-gray-600 dark:text-gray-400">
                 ¿Está seguro de que desea finalizar la encuesta? Se procederá a analizar sus respuestas.
             </p>

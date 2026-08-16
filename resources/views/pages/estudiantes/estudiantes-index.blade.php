@@ -7,7 +7,7 @@
             <div
                 class="flex flex-col gap-4 border-b border-gray-200 p-6 dark:border-gray-800 lg:flex-row lg:items-center lg:justify-between">
                 <div>
-                    <h3 class="text-lg font-bold text-gray-800 dark:text-white">Listado de Estudiantes</h3>
+                    <h3 class="text-lg font-bold text-gray-800 dark:text-white">Listado de estudiantes</h3>
                     <p class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
                         {{ $estudiantes->total() }} estudiante(s) {{ $search !== '' || $carreraId !== '' ? 'encontrado(s)' : 'en total' }}
                     </p>
@@ -24,7 +24,7 @@
                             <option value="{{ $carrera->id }}" {{ (string) $carreraId === (string) $carrera->id ? 'selected' : '' }}>
                                 {{ $carrera->nombre }}
                             </option>
-                        
+
                         @endforeach
 
                     </select>

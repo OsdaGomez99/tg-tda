@@ -24,9 +24,7 @@
             Alpine.store('theme', {
                 init() {
                     const savedTheme = localStorage.getItem('theme');
-                    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' :
-                        'light';
-                    this.theme = savedTheme || systemTheme;
+                    this.theme = savedTheme || 'light';
                     document.cookie = 'theme=' + this.theme + ';path=/;max-age=31536000;samesite=lax';
                     this.updateTheme();
                 },
@@ -56,8 +54,7 @@
     <script>
         (function() {
             const savedTheme = localStorage.getItem('theme');
-            const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-            const theme = savedTheme || systemTheme;
+            const theme = savedTheme || 'light';
             if (theme === 'dark') {
                 if (document.documentElement) document.documentElement.classList.add('dark');
                 if (document.body) document.body.classList.add('dark', 'bg-gray-900');

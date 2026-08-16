@@ -96,7 +96,7 @@
                 <div
                     class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03] lg:col-span-2">
                     <div class="mb-4 flex items-center justify-between">
-                        <h3 class="text-lg font-bold text-gray-800 dark:text-white">Distribución de Resultados</h3>
+                        <h3 class="text-lg font-bold text-gray-800 dark:text-white">Distribución de resultados</h3>
                         <span class="text-xs text-gray-400">Total acumulado</span>
                     </div>
                     <div class="space-y-4">
@@ -120,16 +120,16 @@
                 </div>
 
                 <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-                    <h3 class="mb-3 text-lg font-bold text-gray-800 dark:text-white">Accesos Rápidos</h3>
+                    <h3 class="mb-3 text-lg font-bold text-gray-800 dark:text-white">Accesos rápidos</h3>
                     <div class="flex flex-col gap-2">
                         <a href="{{ route('encuestas.create') }}">
-                            <x-ui.button size="sm" variant="primary" class="w-full">Nueva Encuesta</x-ui.button>
+                            <x-ui.button size="sm" variant="primary" class="w-full">Nueva encuesta</x-ui.button>
                         </a>
                         <a href="{{ route('encuestas.index') }}">
-                            <x-ui.button size="sm" variant="outline" class="w-full">Ver Encuestas</x-ui.button>
+                            <x-ui.button size="sm" variant="outline" class="w-full">Ver encuestas</x-ui.button>
                         </a>
                         <a href="{{ route('preguntas.index') }}">
-                            <x-ui.button size="sm" variant="outline" class="w-full">Banco de Preguntas</x-ui.button>
+                            <x-ui.button size="sm" variant="outline" class="w-full">Banco de preguntas</x-ui.button>
                         </a>
                         <a href="{{ route('usuarios.index') }}">
                             <x-ui.button size="sm" variant="outline" class="w-full">Usuarios</x-ui.button>
@@ -146,7 +146,7 @@
             <!-- Promedios generales -->
             <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
                 <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-                    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Puntuación Promedio - Inatención
+                    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Puntuación promedio - Inatención
                     </h3>
                     <p class="mt-4 text-3xl font-bold text-amber-600 dark:text-amber-400">
                         {{ $estadisticas['promedio_inatencion'] ?? 0 }}</p>
@@ -158,7 +158,7 @@
                 </div>
 
                 <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-                    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Puntuación Promedio -
+                    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Puntuación promedio -
                         Hiperactividad</h3>
                     <p class="mt-4 text-3xl font-bold text-blue-600 dark:text-blue-400">
                         {{ $estadisticas['promedio_hiperactividad'] ?? 0 }}</p>
@@ -171,7 +171,7 @@
                 </div>
 
                 <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-                    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Puntuación Promedio Total</h3>
+                    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Puntuación promedio total</h3>
                     <p class="mt-4 text-3xl font-bold text-purple-600 dark:text-purple-400">
                         {{ $estadisticas['promedio_total'] ?? 0 }}</p>
                     <p class="mt-1 text-xs text-gray-600 dark:text-gray-400">de 54 puntos</p>
@@ -185,7 +185,7 @@
             <!-- Datos demográficos -->
             <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-                    <h3 class="text-lg font-bold text-gray-800 dark:text-white">Distribución por Género</h3>
+                    <h3 class="text-lg font-bold text-gray-800 dark:text-white">Distribución por género</h3>
                     <div class="mt-4 space-y-3">
                         <div class="flex items-center justify-between">
                             <span class="text-sm text-gray-700 dark:text-gray-300">Masculino</span>
@@ -206,15 +206,15 @@
                 </div>
 
                 <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-                    <h3 class="text-lg font-bold text-gray-800 dark:text-white">Información Demográfica</h3>
+                    <h3 class="text-lg font-bold text-gray-800 dark:text-white">Información demográfica</h3>
                     <div class="mt-4 space-y-4">
                         <div>
-                            <p class="text-xs font-semibold text-gray-600 dark:text-gray-400">Edad Promedio</p>
+                            <p class="text-xs font-semibold text-gray-600 dark:text-gray-400">Edad promedio</p>
                             <p class="mt-1 text-2xl font-bold text-gray-800 dark:text-white">
                                 {{ $estadisticas['edad_promedio'] ?? 0 }} años</p>
                         </div>
                         <div>
-                            <p class="text-xs font-semibold text-gray-600 dark:text-gray-400">Evaluaciones Completadas
+                            <p class="text-xs font-semibold text-gray-600 dark:text-gray-400">Evaluaciones completadas
                             </p>
                             <p class="mt-1 text-2xl font-bold text-gray-800 dark:text-white">
                                 {{ $completados }} / {{ $totalRespondientes }}</p>
@@ -226,7 +226,7 @@
             <!-- Casos prioritarios -->
             <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
                 <div class="border-b border-gray-200 p-6 dark:border-gray-800">
-                    <h3 class="text-lg font-bold text-gray-800 dark:text-white">Casos Prioritarios</h3>
+                    <h3 class="text-lg font-bold text-gray-800 dark:text-white">Casos prioritarios</h3>
                     <p class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">Estudiantes con resultado positivo,
                         ordenados por puntuación total</p>
                 </div>

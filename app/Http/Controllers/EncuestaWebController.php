@@ -137,6 +137,30 @@ class EncuestaWebController extends Controller
     }
 
     /**
+     * Descargar los detalles de respuestas en PDF
+     */
+    public function detallesPdf(EncuestaResultado $resultado): Response
+    {
+        return $this->generarPdfDetalles($resultado);
+    }
+
+    /**
+     * Descargar los detalles de respuestas en PDF (acceso público por código)
+     */
+    public function detallesPdfPublic(string $codigo_acceso, string $resultado): Response
+    {
+        $encuesta = $this->obtenerEncuestaPorCodigo($codigo_acceso);
+        $resultadoId = $this->decodeResultadoId($resultado);
+        $resultado = EncuestaResultado::findOrFail($resultadoId);
+
+        if ($resultado->encuesta_id !== $encuesta->id) {
+            abort(404);
+        }
+
+        return $this->generarPdfDetalles($resultado);
+    }
+
+    /**
      * Mostrar estadísticas de una encuesta
      */
     public function estadisticas(Encuesta $encuesta, Request $request): View
@@ -357,6 +381,24 @@ class EncuestaWebController extends Controller
             'respuestas' => $respuestas,
             'analisis' => $analisis
         ]);
+    }
+
+    /**
+     * Generar el PDF con el detalle de respuestas para un estudiante
+     */
+    private function generarPdfDetalles(EncuestaResultado $resultado): Response
+    {
+        $respuestas = $resultado->respuestas()->with('pregunta')->get();
+
+        $pdf = Pdf::loadView('pages.encuestas.pdf.detalles-pdf', [
+            'resultado' => $resultado,
+            'respuestas' => $respuestas,
+            'analisis' => $resultado->analisisTda,
+        ]);
+
+        $nombreArchivo = 'detalles-' . Str::slug($resultado->nombre_estudiante) . '.pdf';
+
+        return $pdf->stream($nombreArchivo);
     }
 
     /**

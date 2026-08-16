@@ -26,7 +26,7 @@
 
         <!-- Información de la Encuesta -->
         <div class="rounded-2xl border border-blue-200 bg-blue-50 p-6 dark:border-blue-900/30 dark:bg-blue-900/20">
-            <h2 class="text-lg font-bold text-blue-900 dark:text-blue-200">Información Importante</h2>
+            <h2 class="text-lg font-bold text-blue-900 dark:text-blue-200">Información importante</h2>
             <ul class="mt-4 space-y-2 text-sm text-blue-800 dark:text-blue-300">
                 <li class="flex items-start gap-3">
                     <span class="mt-0.5 inline-block h-2 w-2 rounded-full bg-blue-600"></span>
@@ -59,14 +59,14 @@
                 class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
                 @csrf
 
-            <h2 class="text-lg font-bold text-gray-800 dark:text-white">Datos Personales</h2>
+            <h2 class="text-lg font-bold text-gray-800 dark:text-white">Datos personales</h2>
             <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Por favor complete la siguiente información</p>
 
             <div class="mt-6 space-y-4">
                 <!-- Nombre Completo -->
                 <div>
                     <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Nombre Completo <span class="text-red-600">*</span>
+                        Nombre completo <span class="text-red-600">*</span>
                     </label>
                     <input type="text" name="nombre_estudiante" placeholder="Ingrese su nombre completo"
                         value="{{ old('nombre_estudiante') }}" required
@@ -79,7 +79,7 @@
                 <!-- Documento de Identidad -->
                 <div>
                     <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Documento de Identidad (Formato: V12345678) <span class="text-red-600">*</span>
+                        Documento de identidad (Formato: V12345678) <span class="text-red-600">*</span>
                     </label>
                     <input type="text" name="documento_estudiante"
                         placeholder="Ingrese su documento de identidad (Formato: V12345678)"
@@ -163,7 +163,7 @@
                 </a>
                 <button type="submit"
                     class="flex-1 rounded-lg bg-blue-600 px-6 py-3 font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500/50 dark:bg-blue-700 dark:hover:bg-blue-800">
-                    Comenzar Encuesta →
+                    Comenzar encuesta →
                 </button>
             </div>
         </form>
@@ -180,7 +180,7 @@
 
         <!-- Preguntas Frecuentes -->
         <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-            <h2 class="text-lg font-bold text-gray-800 dark:text-white">Preguntas Frecuentes</h2>
+            <h2 class="text-lg font-bold text-gray-800 dark:text-white">Preguntas frecuentes</h2>
 
             <div class="mt-6 space-y-4">
                 <details class="group cursor-pointer">

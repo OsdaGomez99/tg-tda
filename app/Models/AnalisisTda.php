@@ -76,28 +76,28 @@ class AnalisisTda extends Model
     {
         return match ($this->resultado) {
             'no_tda' => [
-                'Planificación Semanal: dedica 15 minutos al inicio de la semana para calendarizar tus entregas.',
-                'Descansos Activos: implementa pausas de 5 minutos por cada hora de estudio continuo para evitar la fatiga mental.',
+                'Planificación semanal: Dedica 15 minutos al inicio de la semana para calendarizar tus entregas.',
+                'Descansos activos: Implementa pausas de 5 minutos por cada hora de estudio continuo para evitar la fatiga mental.',
             ],
             'tda_inatento' => [
-                'Método Pomodoro (25/5): estudia en bloques cerrados de 25 minutos con temporizador y descansa 5 minutos. Evita las jornadas maratónicas.',
-                'Control Estricto de Estímulos: retira el teléfono de tu campo visual y bloquea redes sociales mientras estudias.',
-                'Segmentación de Tareas: divide los proyectos complejos en micro-tareas diarias de 15 minutos.',
+                'Método Pomodoro (25/5): Estudia en bloques cerrados de 25 minutos con temporizador y descansa 5 minutos. Evita las jornadas maratónicas.',
+                'Control estricto de estímulos: Retira el teléfono de tu campo visual y usa extensiones en el navegador para bloquear redes sociales mientras estudias.',
+                'Segmentación de tareas: Divide los proyectos complejos en micro-tareas diarias de 15 minutos.',
             ],
             'tda_hiperactivo' => [
-                'Estudio en Movimiento / Cambios de Entorno: incorpora escritorios de pie si es posible, o alterna tus lugares de estudio.',
-                'Canalización Física Previa: realiza una actividad física ligera o caminata corta antes de procesar lecturas complejas.',
-                'Técnicas de Estudio Activo: evita la lectura pasiva; usa mapas mentales, explica la materia en voz alta o escribe notas breves.',
+                'Estudio en movimiento / cambios de entorno: Incorpora el uso de escritorios de pie si es posible, o alterna tus lugares de estudio.',
+                'Canalización física previa: Realiza una actividad física ligera o caminata corta de 10 minutos antes de sentarte a procesar lecturas complejas.',
+                'Técnicas de estudio activo: Evita la lectura pasiva. Utiliza mapas mentales, explica la materia en voz alta o escribe notas breves.',
             ],
             'tda_combinado' => [
-                'Listas de Tareas Prioritarias (Regla de 3): anota solo 3 actividades cruciales al inicio del día.',
-                'Asistentes Visuales y Recordatorios: utiliza alarmas sonoras o tableros visuales físicos en tu área de estudio.',
-                'Entornos Libres de Interrupciones: busca espacios de alta estructura para tus horas de mayor exigencia académica.',
+                'Listas de tareas prioritarias (Regla de 3): Anota solo 3 actividades cruciales al inicio del día.',
+                'Asistentes visuales y recordatorios: Utiliza alarmas sonoras o tableros visuales físicos en tu área de estudio.',
+                'Entornos libres de interrupciones: Busca espacios de alta estructura para tus horas de mayor exigencia académica.',
             ],
             'tda_posible' => [
-                'Uso de Agendas o Recordatorios Digitales: apóyate en herramientas como Google Calendar o Notion.',
-                'Listas de Tareas Diarias: anota un máximo de 3 actividades clave para mitigar la procrastinación.',
-                'Auto-monitoreo de Distracciones: identifica y reduce tus mayores distractores durante los bloques de estudio.',
+                'Uso de agendas o recordatorios digitales: Apóyate en herramientas como Google Calendar o Notion.',
+                'Listas de tareas diarias: Anota un máximo de 3 actividades clave para mitigar la procrastinación.',
+                'Auto-monitoreo de distracciones: Identifica y reduce tus mayores distractores durante los bloques de estudio.',
             ],
             default => [],
         };

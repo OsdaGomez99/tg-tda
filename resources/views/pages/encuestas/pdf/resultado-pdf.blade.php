@@ -155,14 +155,14 @@
                 <img src="{{ public_path('/images/logo/logo-xl.png') }}" />
             </td>
             <td>
-                <h1>Resultado de Evaluación TDA</h1>
+                <h1>Resultado de evaluación TDA</h1>
                 <p class="subtitle" style="margin: 0;">{{ $resultado->encuesta->nombre }}</p>
             </td>
         </tr>
     </table>
 
     <div class="section">
-        <h2>Datos del Estudiante</h2>
+        <h2>Datos del estudiante</h2>
         <table class="info">
             <tr>
                 <td class="label">Nombre:</td>
@@ -186,7 +186,7 @@
     </div>
 
     <div class="section">
-        <h2>Resultado Principal</h2>
+        <h2>Resultado principal</h2>
         <p><span class="badge">{{ $resultadoLabel }}</span></p>
     </div>
 
@@ -225,7 +225,7 @@
     </div>
 
     <div class="section">
-        <h2>Análisis Detallado</h2>
+        <h2>Análisis detallado</h2>
         <div class="box">
             <p><strong>Resultado:</strong> {{ $analisis->getResultadoDescripcion() }}</p>
             <p>{{ $analisis->descripcion }}</p>
@@ -235,7 +235,7 @@
 
     @if (count($recomendaciones) > 0)
         <div class="section">
-            <h2>Orientación y Pautas de Organización Académica</h2>
+            <h2>Orientación y pautas de organización académica</h2>
             <div class="box-note">
                 <ul>
                     @foreach ($recomendaciones as $recomendacion)

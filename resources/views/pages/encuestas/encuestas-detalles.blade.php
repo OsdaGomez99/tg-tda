@@ -9,7 +9,7 @@
     <div class="space-y-6">
         <!-- Header -->
         <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-            <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Detalles de Respuestas</h1>
+            <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Detalles de respuestas</h1>
             <p class="mt-2 text-gray-600 dark:text-gray-400">{{ $resultado->nombre_estudiante }} - Edad:
                 {{ $resultado->edad_estudiante }} años</p>
         </div>
@@ -19,7 +19,7 @@
             <button onclick="filterByCategory('all')"
                 class="category-filter active rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
                 data-category="all">
-                Todas las Preguntas (18)
+                Todas las preguntas (18)
             </button>
             <button onclick="filterByCategory('I')"
                 class="category-filter rounded-lg border border-amber-300 bg-white px-4 py-2 font-medium text-amber-700 hover:bg-amber-50 dark:border-amber-700 dark:bg-gray-800 dark:text-amber-300"
@@ -58,7 +58,7 @@
         <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
             <!-- Análisis por Categoría -->
             <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-                <h2 class="text-lg font-bold text-gray-800 dark:text-white">Análisis por Categoría</h2>
+                <h2 class="text-lg font-bold text-gray-800 dark:text-white">Análisis por categoría</h2>
 
                 <div class="mt-6 space-y-4">
                     <div>
@@ -87,7 +87,7 @@
 
             <!-- Distribución de Respuestas -->
             <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-                <h2 class="text-lg font-bold text-gray-800 dark:text-white">Distribución de Respuestas</h2>
+                <h2 class="text-lg font-bold text-gray-800 dark:text-white">Distribución de respuestas</h2>
 
                 <div class="mt-6 space-y-3">
                     <div class="flex items-center justify-between">
@@ -137,10 +137,16 @@
                 class="flex-1 rounded-lg border border-gray-300 bg-white px-6 py-3 text-center font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
                 ← Volver a Resultado
             </a>
-            <button onclick="window.print()"
-                class="flex-1 rounded-lg bg-gray-600 px-6 py-3 font-medium text-white hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-800">
-                📄 Imprimir Detalles
-            </button>
+            <a href="{{ request()->routeIs('encuestas.public.detalles')
+                ? route('encuestas.public.detalles.pdf', [
+                    'codigo_acceso' => $resultado->encuesta->codigo_acceso,
+                    'resultado' => urlencode(base64_encode(encrypt($resultado->id))),
+                ])
+                : route('detalles-encuesta.pdf', $resultado) }}"
+                target="_blank"
+                class="flex-1 rounded-lg border border-gray-300 bg-white px-6 py-3 text-center font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+                📄 Descargar detalles en PDF
+            </a>
         </div>
     </div>
 

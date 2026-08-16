@@ -45,7 +45,7 @@ if (!function_exists('getResultadoLabel')) {
                     class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03] md:col-span-3">
                     <div class="flex items-center justify-between">
                         <div>
-                            <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Resultado del Análisis</h1>
+                            <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Resultado del análisis</h1>
                             <p class="mt-2 text-gray-600 dark:text-gray-400">{{ $resultado->nombre_estudiante }},
                                 {{ $resultado->edad_estudiante }} años</p>
                             <p class="mt-2 text-gray-600 dark:text-gray-400">{{ $resultado->carrera->nombre }}</p>
@@ -97,11 +97,11 @@ if (!function_exists('getResultadoLabel')) {
                     </p>
                 </div>
 
-                <!-- Puntuación Total -->
+                <!-- Puntuación total -->
                 <div
                     class="rounded-2xl border p-6 border-purple-300 bg-purple-50 dark:border-purple-700 dark:bg-purple-900/20">
                     <div class="mb-4 flex items-center justify-between">
-                        <h3 class="text-sm font-semibold text-purple-900 dark:text-purple-300">Puntuación Total</h3>
+                        <h3 class="text-sm font-semibold text-purple-900 dark:text-purple-300">Puntuación total</h3>
                         <span
                             class="text-lg font-bold text-purple-600 dark:text-purple-400">{{ round(($analisis->puntuacion_total / 54) * 100) }}%</span>
                     </div>
@@ -117,7 +117,7 @@ if (!function_exists('getResultadoLabel')) {
 
             <!-- Descripción Detallada -->
             <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-                <h2 class="text-lg font-bold text-gray-800 dark:text-white">Análisis Detallado</h2>
+                <h2 class="text-lg font-bold text-gray-800 dark:text-white">Análisis detallado</h2>
                 <div class="mt-4 space-y-3">
                     <div
                         class="rounded-lg border-l-4 border-blue-500 bg-blue-50 p-4 dark:border-blue-600 dark:bg-blue-900/20">
@@ -147,75 +147,33 @@ if (!function_exists('getResultadoLabel')) {
                             d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z">
                         </path>
                     </svg>
-                    <h3 class="text-lg font-bold text-emerald-950 dark:text-emerald-100">Orientación y Pautas de
-                        Organización Académica</h3>
+                    <h3 class="text-lg font-bold text-emerald-950 dark:text-emerald-100">Orientación y pautas de
+                        organización académica</h3>
                 </div>
 
                 <div class="space-y-4 text-sm leading-relaxed text-emerald-800 dark:text-emerald-200">
 
-                    {{-- CASO 1: SIN TDA --}}
-                    @if ($analisis->resultado == 'no_tda')
-                        <p>Tus hábitos de organización e indicadores atencionales se encuentran dentro de los parámetros
-                            típicos. Para mantener tu rendimiento académico en la UNEG, te sugerimos:</p>
-                        <ul class="list-disc pl-6 space-y-2 text-emerald-950 dark:text-emerald-100">
-                            <li><strong>Planificación Semanal:</strong> Dedica 15 minutos al inicio de la semana para
-                                calendarizar tus entregas.</li>
-                            <li><strong>Descansos Activos:</strong> Implementa pausas de 5 minutos por cada hora de estudio
-                                continuo para evitar la fatiga mental.</li>
-                        </ul>
+                    @php
+                        $recomendacionesIntro = match ($analisis->resultado) {
+                            'no_tda' => 'Tus hábitos de organización e indicadores atencionales se encuentran dentro de los parámetros típicos. Para mantener tu rendimiento académico en la UNEG, te sugerimos:',
+                            'tda_inatento' => 'Se identificaron indicadores significativos en la dimensión de desatención. El principal desafío es el enfoque prolongado y la gestión del tiempo. Te sugerimos aplicar:',
+                            'tda_hiperactivo' => 'Se identificaron indicadores significativos en la dimensión de hiperactividad e impulsividad. Tu perfil requiere canalizar la energía física y mitigar la procrastinación por aburrimiento. Te sugerimos:',
+                            'tda_combinado' => 'Se identificaron indicadores concurrentes tanto en desatención como en hiperactividad. Es el perfil que requiere mayor estructura externa para evitar la sobrecarga cognitiva. Te sugerimos:',
+                            'tda_posible' => 'Se identificaron algunos indicadores de dispersión o dificultades atencionales aisladas que pueden estar afectando tu rendimiento académico diario. Te sugerimos:',
+                            default => null,
+                        };
+                        $recomendaciones = $analisis->getRecomendaciones();
+                    @endphp
 
-                        {{-- CASO 2: TDA INATENCIÓN --}}
-                    @elseif($analisis->resultado == 'tda_inatento')
-                        <p>Se identificaron indicadores significativos en la dimensión de desatención. El principal desafío
-                            es el enfoque prolongado y la gestión del tiempo. Te sugerimos aplicar:</p>
+                    @if ($recomendacionesIntro && count($recomendaciones) > 0)
+                        <p>{{ $recomendacionesIntro }}</p>
                         <ul class="list-disc pl-5 space-y-2 text-emerald-950 dark:text-emerald-100">
-                            <li><strong>Método Pomodoro (25/5):</strong> Estudia en bloques cerrados de 25 minutos con
-                                temporizador y descansa 5 minutos. Evita las jornadas maratónicas.</li>
-                            <li><strong>Control Estricto de Estímulos:</strong> Retira el teléfono de tu campo visual y usa
-                                extensiones en el navegador para bloquear redes sociales mientras estudias.</li>
-                            <li><strong>Segmentación de Tareas:</strong> Divide los proyectos complejos en micro-tareas
-                                diarias de 15 minutos.</li>
-                        </ul>
-
-                        {{-- CASO 3: TDA HIPERACTIVIDAD --}}
-                    @elseif($analisis->resultado == 'tda_hiperactivo')
-                        <p>Se identificaron indicadores significativos en la dimensión de hiperactividad e impulsividad. Tu
-                            perfil requiere canalizar la energía física y mitigar la procrastinación por aburrimiento. Te
-                            sugerimos:</p>
-                        <ul class="list-disc pl-5 space-y-2 text-emerald-950 dark:text-emerald-100">
-                            <li><strong>Estudio en Movimiento / Cambios de Entorno:</strong> Incorpora el uso de escritorios
-                                de pie si es posible, o alterna tus lugares de estudio.</li>
-                            <li><strong>Canalización Física Previa:</strong> Realiza una actividad física ligera o caminata
-                                corta de 10 minutos antes de sentarte a procesar lecturas complejas.</li>
-                            <li><strong>Técnicas de Estudio Activo:</strong> Evita la lectura pasiva. Utiliza mapas
-                                mentales, explica la materia en voz alta o escribe notas breves.</li>
-                        </ul>
-
-                        {{-- CASO 4: TDA COMBINADO --}}
-                    @elseif($analisis->resultado == 'tda_combinado')
-                        <p>Se identificaron indicadores concurrentes tanto en desatención como en hiperactividad. Es el
-                            perfil que requiere mayor estructura externa para evitar la sobrecarga cognitiva. Te sugerimos:
-                        </p>
-                        <ul class="list-disc pl-5 space-y-2 text-emerald-950 dark:text-emerald-100">
-                            <li><strong>Listas de Tareas Prioritarias (Regla de 3):</strong> Anota solo 3 actividades
-                                cruciales al inicio del día.</li>
-                            <li><strong>Asistentes Visuales y Recordatorios:</strong> Utiliza alarmas sonoras o tableros
-                                visuales físicos en tu área de estudio.</li>
-                            <li><strong>Entornos Libres de Interrupciones:</strong> Busca espacios de alta estructura para
-                                tus horas de mayor exigencia académica.</li>
-                        </ul>
-
-                        {{-- CASO 5: POSIBLE TDA --}}
-                    @elseif($analisis->resultado == 'tda_posible')
-                        <p>Se identificaron algunos indicadores de dispersión o dificultades atencionales aisladas que
-                            pueden estar afectando tu rendimiento académico diario. Te sugerimos:</p>
-                        <ul class="list-disc pl-5 space-y-2 text-emerald-950 dark:text-emerald-100">
-                            <li><strong>Uso de Agendas o Recordatorios Digitales:</strong> Apóyate en herramientas como
-                                Google Calendar o Notion.</li>
-                            <li><strong>Listas de Tareas Diarias:</strong> Anota un máximo de 3 actividades clave para
-                                mitigar la procrastinación.</li>
-                            <li><strong>Auto-monitoreo de Distracciones:</strong> Identifica y reduce tus mayores
-                                distractores durante los bloques de estudio.</li>
+                            @foreach ($recomendaciones as $recomendacion)
+                                @php
+                                    [$label, $detalle] = array_pad(explode(': ', $recomendacion, 2), 2, '');
+                                @endphp
+                                <li><strong>{{ $label }}:</strong> {{ $detalle }}</li>
+                            @endforeach
                         </ul>
                     @endif
 
@@ -224,7 +182,7 @@ if (!function_exists('getResultadoLabel')) {
                         <div
                             class="mt-4 p-3 rounded-lg border border-emerald-300 bg-white/60 dark:border-emerald-700 dark:bg-emerald-900/40">
                             <p class="text-xs text-emerald-800 dark:text-emerald-200">
-                                <strong>💡 Nota de Acompañamiento:</strong> Este reporte ha sido generado con fines de
+                                <strong>💡 Nota de acompañamiento:</strong> Este reporte ha sido generado con fines de
                                 cribado y orientación psicoeducativa. El personal del Área de Bienestar Estudiantil de la
                                 UNEG tiene acceso confidencial a estos resultados para ofrecerte estrategias de apoyo
                                 personalizadas si así lo requieres.

@@ -39,6 +39,7 @@ Route::get('/encuestas/acceso/{codigo_acceso}/responder/{resultado}', [EncuestaW
 Route::get('/encuestas/acceso/{codigo_acceso}/resultado/{resultado}', [EncuestaWebController::class, 'resultadoPublic'])->name('encuestas.public.resultado');
 Route::get('/encuestas/acceso/{codigo_acceso}/resultado/{resultado}/pdf', [EncuestaWebController::class, 'resultadoPdfPublic'])->name('encuestas.public.resultado.pdf');
 Route::get('/encuestas/acceso/{codigo_acceso}/detalles/{resultado}', [EncuestaWebController::class, 'detallesPublic'])->name('encuestas.public.detalles');
+Route::get('/encuestas/acceso/{codigo_acceso}/detalles/{resultado}/pdf', [EncuestaWebController::class, 'detallesPdfPublic'])->name('encuestas.public.detalles.pdf');
 
 // ===== RUTAS DE API INTERNA (usadas por fetch() en el flujo de encuestas) =====
 // Sin 'auth' porque también las usa el flujo público por código de acceso; el
@@ -130,6 +131,9 @@ Route::middleware(['auth'])->group(function () {
 
         // Página de detalles de resultado de encuesta en estudiante
         Route::get('/respuestas/{resultado}/detalles', [EncuestaWebController::class, 'detalles'])->name('detalles-encuesta');
+
+        // PDF de detalles de resultado de encuesta en estudiante
+        Route::get('/respuestas/{resultado}/detalles/pdf', [EncuestaWebController::class, 'detallesPdf'])->name('detalles-encuesta.pdf');
 
         // Eliminar el resultado de un estudiante (sin importar si finalizó la encuesta o no)
         Route::delete('/respuestas/{resultado}', [EncuestaWebController::class, 'eliminarResultado'])->name('resultados.destroy');
